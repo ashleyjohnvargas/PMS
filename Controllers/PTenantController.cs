@@ -29,8 +29,10 @@ namespace PMS.Controllers
                 UnitId = u.UnitID,
                 UnitName = u.UnitName,
                 Description = u.Description,
-                NumberOfUnits = u.NumberOfUnits ?? 0,
-                NumberOfRooms = u.NumberOfBedrooms ?? 0 + (u.NumberOfBathrooms ?? 0), // Assuming total rooms = bedrooms + bathrooms
+                //NumberOfUnits = u.NumberOfUnits ?? 0,
+                NumberOfRooms = u.NumberOfBedrooms ?? 0, //+ (u.NumberOfBathrooms ?? 0), // Assuming total rooms = bedrooms + bathrooms
+                NumberOfBathrooms = u.NumberOfBathrooms ?? 0,
+
                 FirstImagePath = u.Images?.FirstOrDefault()?.FilePath ?? "" // Get the first image path
             }).ToList();
 

@@ -38,6 +38,7 @@ namespace PMS.Controllers
                         UnitId = u.UnitID,
                         UnitName = u.UnitName,
                         PricePerMonth = u.PricePerMonth,
+                        UnitType = u.UnitType,
                         UnitStatus = u.UnitStatus
                     })
                     .ToListAsync();
@@ -60,14 +61,62 @@ namespace PMS.Controllers
         {
             return View();
         }
-        public IActionResult PMTenants()
+        public async Task<IActionResult> PMTenants()
         {
-            return View();
+            try
+            {
+                // Fetch data from the Tenants table
+                var tenants = await _context.Tenants
+                    .Include(t => t.User) // Include User data
+                                          //.Include(t => t.Unit) // Include Unit data
+                    .Select(t => new TenantViewModel
+                    {
+                        TenantID = t.TenantID,
+                        UserId = t.UserId,
+                        PhoneNumber = t.PhoneNumber,
+                        //UnitID = t.UnitID,
+                        User = t.User, // Optional: Pass the User object if needed
+                        //Unit = t.Unit  // Optional: Pass the Unit object if needed
+                    })
+                    .ToListAsync();
+
+                // Pass the list of tenants to the view
+                return View(tenants);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error loading tenants: {ex.Message}";
+                return View(new List<TenantViewModel>()); // Return an empty list in case of error
+            }
         }
 
-        public IActionResult PMManageUsers()
+        public async Task<IActionResult> PMManageUsers()
         {
-            return View();
+            try
+            {
+                // Fetch data from the users table
+                var users = await _context.Users
+                    .Where(u => u.Role != "Tenant")
+                    .Select(u => new UserViewModel
+                    {
+                        UserID = u.UserID,
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        Email = u.Email,
+                        Role = u.Role,
+                        IsActive = u.IsActive,
+
+                    })
+                    .ToListAsync();
+
+                // Pass the list of users to the view
+                return View(users);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error loading users: {ex.Message}";
+                return View(new List<UserViewModel>()); // Return an empty list in case of error
+            }
         }
 
         public IActionResult PMEditProfile()

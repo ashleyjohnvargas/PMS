@@ -2,3 +2,66 @@
     ViewData["Title"] = "Cozy Homes - Maintenance Assignment";
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
 }
+
+<div class="header-panel">
+    <h2>MAINTENANCE ASSIGNMENT</h2>
+    <div class="search-bar">
+        <input type="text" placeholder="Search..." id="search" />
+        <button><i class="fas fa-search"></i></button>
+    </div>
+
+    <!-- Date Dropdown -->
+    <div class="dropdown-container">
+        <select id="date-dropdown">
+            <option value="2025-01-15">January 15, 2025</option>
+            <option value="2025-01-14">January 14, 2025</option>
+        </select>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Unit Name</th>
+                <th>Date Requested</th>
+                <th>Request Task</th>
+                <th>Category</th>
+                <th>Urgency Level</th>
+                <th>Date Started</th>
+                <th>Date Finished</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Unit 101</td>
+                <td>2025-01-15 08:00</td>
+                <td>Fix Air Conditioning</td>
+                <td>Electrical</td>
+                <td>High</td>
+                <td>2025-01-15 09:00</td>
+                <td>2025-01-15 12:00</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Unit 102</td>
+                <td>2025-01-14 10:30</td>
+                <td>Replace Lightbulbs</td>
+                <td>Electrical</td>
+                <td>Medium</td>
+                <td>2025-01-14 11:00</td>
+                <td>2025-01-14 11:30</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination Buttons -->
+    <div class="pagination">
+        <button class="prev">Previous</button>
+        <button class="next">Next</button>
+    </div>
+</div>
+

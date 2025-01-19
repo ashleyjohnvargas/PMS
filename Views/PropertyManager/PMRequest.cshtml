@@ -2,3 +2,93 @@
     ViewData["Title"] = "Cozy Homes - Maintenance Requests";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
+
+@* <!DOCTYPE html> *@
+@* <html lang="en"> *@
+@* <head> *@
+@*     <meta charset="UTF-8"> *@
+@*     <meta name="viewport" content="width=device-width, initial-scale=1.0"> *@
+@*     <title>Maintenance Requests</title> *@
+@*     <link rel="stylesheet" href="styles.css"> *@
+@* </head> *@
+@* <body> *@
+@*     <div class="container"> *@
+<h1>Maintenance Requests</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Tenant Name</th>
+            <th>Unit</th>
+            <th>Request Date</th>
+            <th>Issue Description</th>
+            <th>Assigned Staff</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>John Doe</td>
+            <td>Unit 101</td>
+            <td>2024-01-05</td>
+            <td>Leaking faucet</td>
+            <td>
+                <select>
+                    <option value="staff1">Alice</option>
+                    <option value="staff2">Bob</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </td>
+            <td><button class="invoice-button">Assign</button></td>
+        </tr>
+        <tr>
+            <td>Jane Smith</td>
+            <td>Unit 102</td>
+            <td>2024-01-06</td>
+            <td>Broken window</td>
+            <td>
+                <select>
+                    <option value="staff1">Alice</option>
+                    <option value="staff2">Bob</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </td>
+            <td><button class="invoice-button">Assign</button></td>
+        </tr>
+        <!-- More rows as needed -->
+    </tbody>
+</table>
+@* </div> *@
+
+<script>
+            // script.js
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', function () {
+            const row = this.closest('tr');
+            const tenantName = row.cells[0].textContent;
+            const unit = row.cells[1].textContent;
+            const issue = row.cells[3].textContent;
+            const assignedStaff = row.querySelector('select').value;
+            const status = row.querySelectorAll('select')[1].value;
+
+            alert(`Request from ${tenantName} for ${unit}:\nIssue: ${issue}\nAssigned to: ${assignedStaff}\nStatus: ${status}`);
+
+            // In a real application, you could send this information to the backend or update the database.
+        });
+    });
+
+</script>
+@* </body> *@
+@* </html> *@

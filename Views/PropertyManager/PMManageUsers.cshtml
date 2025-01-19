@@ -1,4 +1,110 @@
 ﻿@{
-    ViewData["Title"] = "Cozy Homes - Dashboard";
+    ViewData["Title"] = "Cozy Homes - Users";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
+@model List<UserViewModel>
+
+<h1>User Management</h1>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>IsActive</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int index = 1;
+            foreach (var user in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>@user.Email</td>
+                    <td>@user.Role</td>
+                    <td>
+                        @user.IsActive
+                        @* <select> *@
+                        @*     <option value="active">Active</option> *@
+                        @*     <option value="inactive">Inactive</option> *@
+                        @* </select> *@
+                    </td>
+                    <td class="action-icons">
+                        <a title="Edit" style="font-size: 20px;"><i class="fas fa-edit edit"></i></a> <!--asp-action="#" asp-route-id="user.UserID"-->
+                        <!-- Form for deleting the unit -->
+                        <form asp-action="#" asp-route-id="@user.UserID" method="post" style="display:inline;">
+                            <button type="submit" title="Delete" style="background: none; border: none; padding: 0; width: fit-content; height: fit-content;">
+                                <i class="fas fa-trash delete" style="font-size: 20px;"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" style="text-align:center;">No users found.</td>
+            </tr>
+        }
+
+        <!-- More rows as needed -->
+    </tbody>
+</table>
+
+
+<script>
+    document.querySelectorAll('button').forEach(button => {
+               button.addEventListener('click', function () {
+                   const row = this.closest('tr');
+                   const userId = row.cells[0].textContent;
+                   const username = row.cells[1].textContent;
+                   const email = row.cells[2].textContent;
+                   const role = row.cells[3].value;
+                   const status = row.querySelectorAll('select')[1].value;
+
+                   alert(`Updating user ${username} (ID: ${userId})\nEmail: ${email}\nRole: ${role}\nStatus: ${status}`);
+
+                   // In a real application, send this data to a backend system to update the user's role or status.
+               });
+           });
+
+    document.querySelector(".search-unit-button").addEventListener("click", function () {
+           var searchQuery = document.querySelector("input[type='text']").value;
+
+           // Make an AJAX request to search for units based on the input
+           fetch(`/PropertyManager/SearchUnits?query=${searchQuery}`)
+               .then(response => response.json())
+               .then(data => {
+                   updateUnitsTable(data);
+               })
+               .catch(error => console.error('Error:', error));
+       });
+
+
+       // Function to handle input field changes
+       document.querySelector("#searchInput").addEventListener("input", function () {
+           var searchQuery = this.value;
+
+           // If the search input is empty, fetch all units
+           if (searchQuery === "") {
+               fetch(`/PropertyManager/SearchUnits?query=`)
+                   .then(response => response.json())
+                   .then(data => {
+                       updateUnitsTable(data);
+                   })
+                   .catch(error => console.error('Error:', error));
+           }
+       });
+
+
+       }
+</script>
+
+

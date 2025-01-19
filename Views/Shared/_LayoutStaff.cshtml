@@ -9,23 +9,23 @@
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" asp-append-version="true">
     @* <link rel="stylesheet" href="homepage.css" asp-append-version="true" /> *@
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/styles.css" />
-    <!-- Add SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+    @* <link rel="stylesheet" href="~/css/site.css"  /> *@
+    @* <link rel="stylesheet" href="~/css/styles.css"  /> *@
+    <link rel="stylesheet" href="~/css/staff.css" />
+
 
     <!-- <link rel="stylesheet" href="~/RMS.styles.css" asp-append-version="true" /> -->
 </head>
 
 <body>
     <!-- Top Header -->
-    <div class="top-header">
+    <div class="stop-header">
         <!-- Optional: Add top header content here -->
     </div>
 
     <!-- Main Header -->
     <header>
-        <div class="main-header">
+        <div class="smain-header">
             <!-- Logo -->
             <div class="logo">
                 <img src="~/images/cozy-logo.png" alt="logo" style="height: 20px; width: 50px;">
@@ -35,16 +35,17 @@
             <!-- Navigation -->
             <nav>
                 <ul>
-                    <li><a asp-controller="Staff" asp-action="SMaintenanceAssignment">Maintenance Assignment</a></li>
-                    <li><a asp-controller="Staff" asp-action="SMaintenanceHistory">Maintenance History</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropbtn">
+                    <li><a asp-controller="Staff" asp-action="SHomePage">Home</a></li>
+                    <li><a asp-controller="Staff" asp-action="SMaintenanceAssignment">Assignment</a></li>
+                    <li><a asp-controller="Staff" asp-action="SMaintenanceHistory">Requests</a></li>
+                    <li class="s-dropdown">
+                        <a href="#" class="s-dropbtn">
                             <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px;">
                             Profile
                         </a>
-                        <div class="dropdown-content">
+                        <div class="sdropdown-content">
                             <a asp-controller="Staff" asp-action="SEditProfile">Edit Profile</a>
-                            <a asp-controller="Login" asp-action="Logout">Log Out</a>
+                            <a asp-controller="Login" asp-action="Logout" class="logout" onclick="return confirmLogout(event);">Log Out</a>
                         </div>
                     </li>
                 </ul>
@@ -52,7 +53,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -60,10 +61,31 @@
 
     <!-- Footer -->
     <footer>
-        <div class="container">
+        <div>
             <p>&copy; 2025 Cozy Homes. All rights reserved.</p>
         </div>
     </footer>
+
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);">
+        <div style="margin: 20% auto; padding: 20px; background: white; width: 300px; text-align: center;">
+            <p>Are you sure you want to logout?</p>
+            <button onclick="logoutConfirmed()">Yes</button>
+            <button onclick="closeModal()">No</button>
+        </div>
+    </div>
+    <script>
+              // Logout Confirmation
+        function confirmLogout(event) {
+            const confirmation = confirm("Are you sure you want to log out?");
+            if (!confirmation) {
+                // Prevent the default action if the user cancels
+                event.preventDefault();
+            }
+            return confirmation;
+        }
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

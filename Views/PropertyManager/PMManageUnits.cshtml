@@ -168,6 +168,7 @@
                     <th>#</th>
                     <th>Unit Name</th>
                     <th>Price/Month</th>
+                   <th>Category</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -182,6 +183,7 @@
                             <td>@index</td>
                             <td>@unit.UnitName</td>
                             <td>@Convert.ToDecimal(unit.PricePerMonth).ToString("C")</td>
+                             <td>@unit.UnitType</td>
                             <td>@unit.UnitStatus</td>
                             <td class="action-icons">
                                 <a asp-action="EditUnitPage" asp-route-id="@unit.UnitId" title="Edit" style="font-size: 20px;"><i class="fas fa-edit edit"></i></a>

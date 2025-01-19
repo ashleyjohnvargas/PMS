@@ -2,3 +2,139 @@
     ViewData["Title"] = "Cozy Homes - Payments";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
+<style>
+    /* styles.css */
+    /* body { */
+    /*     font-family: Arial, sans-serif; */
+    /*     background-color: #f9f9f9; */
+    /*     margin: 0; */
+    /*     padding: 20px; */
+    /* } */
+
+    /* .container { */
+    /*     max-width: 1200px; */
+    /*     margin: 0 auto; */
+    /* } */
+
+    /* h1 { */
+    /*     text-align: center; */
+    /*     color: #333; */
+    /* } */
+
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+    table, th, td {
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th, td {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    th {
+        background-color: #b0836e;
+        color: white;
+    }
+
+    button {
+        padding: 5px 10px;
+        font-size: 14px;
+        margin: 5px;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #b0836e;
+        }
+
+
+    .view {
+        background-color: #4CAF50;
+    }
+
+    .refund {
+        background-color: #d0342c;
+    }
+
+    }
+</style>
+@* <div class="container"> *@
+<h1>Payments List</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Tenant Name</th>
+            <th>Unit</th>
+            <th>Payment Date</th>
+            <th>Amount Paid</th>
+            <th>Payment Method</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>John Doe</td>
+            <td>Unit 101</td>
+            <td>2024-01-05</td>
+            <td>$1000</td>
+            <td>Credit Card</td>
+            <td>Paid</td>
+            <td>
+
+                <a href="invoice-john-doe.pdf" target="_blank">
+
+                    <button class="view">View</button>
+
+                </a>
+
+                <button class="refund">Refund</button>
+
+            </td>
+        </tr>
+        <tr>
+            <td>Jane Smith</td>
+            <td>Unit 102</td>
+            <td>2024-01-06</td>
+            <td>$950</td>
+            <td>Bank Transfer</td>
+            <td>Paid</td>
+            <td>
+                <a href="invoice-jane-smith.pdf" target="_blank">
+
+                    <button class="view">View</button>
+
+                </a>
+
+                <button class="refund">Refund</button>
+            </td>
+        </tr>
+        <!-- More rows as needed -->
+    </tbody>
+</table>
+@* </div> *@
+
+<script>
+
+
+
+
+
+    function viewInvoice(fileName) {
+
+        const baseURL = 'https://example.com/invoices/'; // Replace with your server's PDF directory
+
+        const url = baseURL + fileName;
+
+        window.open(url, '_blank');
+
+    }
+
+</script>
+

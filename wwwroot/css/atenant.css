@@ -1,0 +1,626 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* General reset */
+body, ul {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+/* --------------------------------------- HEADER --------------------------------------------- */
+/* Top Bar Header */
+.atop-header {
+    background-color: #B0836E;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Main Header Container */
+.atmain-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 30px;
+    background-color: whitesmoke;
+    color: #B0836E;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0;
+}
+
+    /* Logo */
+    .atmain-header h1 {
+        font-size: 25px;
+        margin: 0;
+        font-weight: bold;
+        color: #B0836E;
+    }
+
+.logo {
+    display: flex; /* Use flexbox */
+    align-items: center; /* Center items vertically */
+}
+
+    .logo img {
+        height: 20px; /* Ensure the height is set */
+        width: 50px; /* Ensure the width is set */
+        margin-right: 10px; /* Add some space between the image and the text */
+    }
+
+/* Navigation Menu */
+.atmain-header nav ul {
+    display: flex;
+    list-style: none;
+}
+
+    .atmain-header nav ul li {
+        margin: 0 15px;
+    }
+
+        .atmain-header nav ul li a {
+            color: #B0836E;
+            text-decoration: none;
+            font-size: 18px;
+            position: relative;
+            font-weight: 500;
+        }
+
+            .atmain-header nav ul li a::after {
+                content: '';
+                width: 0%;
+                height: 3px;
+                background: #B0836E;
+                position: absolute;
+                left: 0;
+                bottom: -6px;
+                transition: 0.5s;
+            }
+
+            .atmain-header nav ul li a:hover::after {
+                width: 100%;
+            }
+
+/* DROP-DOWN --------------------- */
+.at-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Style the button that opens the dropdown */
+.at-dropbtn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+/* Dropdown content (hidden by default) */
+.atdropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+    /* Links inside the dropdown */
+    .atdropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+        /* Change color of dropdown links on hover */
+        .atdropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+/* Show the dropdown menu on hover */
+.at-dropdown:hover .atdropdown-content {
+    display: block;
+}
+
+/* --------------------------------------- HOME PAGE --------------------------------------------- */
+/* Banner Image */
+.at-banner {
+    margin-top: 0;
+    width: 100%;
+    height: 200px;
+    text-align: center;
+}
+
+.atbanner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Centered text */
+.at-centered {
+    position: absolute;
+    color: whitesmoke;
+    font-size: 35px;
+    font-weight: 500;
+    white-space: nowrap;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Home Page Section -------------*/
+.at-home {
+    padding: 40px 10px;
+    background-color: #e7e1d3;
+}
+
+.at-dashboard {
+    max-width: 1200px;
+    margin: auto;
+    padding: 5px;
+}
+
+.atwelcome-message {
+    width: auto;
+    margin: 0 auto;
+    text-align: center;
+}
+
+    .atwelcome-message h2 {
+        font-size: 1.5rem;
+        margin-bottom: 50px;
+        color: #333;
+        font-weight: 500;
+        position: relative;
+    }
+
+        .atwelcome-message h2::after {
+            content: '';
+            width: 10%;
+            height: 5px;
+            background: #333;
+            position: absolute;
+            left: 50%; /* Center it horizontally */
+            bottom: -7px;
+            transform: translateX(-50%);
+        }
+
+.actual-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.at-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+    .at-card h3 {
+        color: #B0836E;
+        margin-bottom: 15px;
+    }
+
+    .at-card p {
+        margin: 10px 0;
+    }
+
+    .at-card a {
+        display: inline-block;
+        background-color: #B0836E;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+
+        .at-card a:hover {
+            background-color: #8b6c56;
+        }
+
+/* ----------------------------------------- LEASE PAGE ------------------------------------------ */
+.lease {
+    padding: 40px 10px;
+    background-color: #e7e1d3;
+}
+
+.lease-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+h2 {
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.lease-info {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+    .lease-info p {
+        margin: 5px 0;
+    }
+
+    .lease-info ul {
+        list-style: none;
+        padding: 0;
+    }
+
+        .lease-info ul li {
+            margin: 5px 0;
+        }
+
+            .lease-info ul li a {
+                color: #007bff;
+                text-decoration: none;
+            }
+
+                .lease-info ul li a:hover {
+                    text-decoration: underline;
+                }
+
+.lease-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+    .lease-actions .button {
+        display: inline-block;
+        background-color: #B0836E;
+        color: #fff;
+        padding: 10px 15px;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        margin: 0 10px;
+        width: 25%;
+        font-family: 'Poppins';
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+        .lease-actions .button.danger {
+            background-color: #000;
+        }
+
+        .lease-actions .button.print {
+            background-color: transparent;
+            border: 2px solid #B0836E;
+            color: #B0836E;
+        }
+
+
+        .lease-actions .button:hover {
+            opacity: 0.9;
+        }
+
+/* Pop-Up Background */
+.lease-popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Pop-Up Content */
+.popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+    .popup-content h2 {
+        margin: 0 0 10px;
+        color: #333;
+    }
+
+    .popup-content p {
+        color: #555;
+    }
+
+    .popup-content form label {
+        display: block;
+        margin: 10px 0 5px;
+        color: #555;
+    }
+
+    .popup-content form input,
+    .popup-content form select,
+    .popup-content form textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .popup-content form button {
+        display: block;
+        width: 100%;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        font-family: 'Poppins';
+    }
+
+        .popup-content form button.danger {
+            background-color: #dc3545;
+        }
+
+        .popup-content form button:hover {
+            opacity: 0.9;
+        }
+
+/* Close Button */
+.atlease-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Message Box Background */
+.lease-message {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+}
+
+/* Message Content */
+.lease-msg-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 90%;
+    max-width: 300px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+    .lease-msg-content p {
+        margin: 0 0 15px;
+        color: #333;
+        font-size: 16px;
+    }
+
+    .lease-msg-content button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+        .lease-msg-content button:hover {
+            opacity: 0.9;
+        }
+
+/* ---------------------------------------- PAYMENT HISTORY PAGE --------------------------------- */
+.payment {
+    padding: 40px 10px;
+    background-color: #e7e1d3;
+}
+
+.pay-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.paybutton-container {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start; /* Aligns to the left by default */
+    padding-left: 60%;
+    margin-top: 35px;
+}
+
+.invoice-button {
+    white-space: nowrap;
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #B0836E;
+    border-style: solid;
+    border-color: #B0836E;
+    border-width: 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 35%;
+    font-family: 'Poppins';
+    font-size: 16px;
+}
+
+.pay-button {
+    white-space: nowrap;
+    padding: 10px 20px;
+    background-color: #B0836E;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 35%;
+    font-family: 'Poppins';
+    font-size: 16px;
+}
+
+    .pay-button:hover {
+        background-color: #7c4e39;
+    }
+
+.invoice-button:hover {
+    background-color: #7c4e39;
+    color: #fff;
+    border-color: #7c4e39;
+}
+
+/* -----------------------------------------MAINTENANCE REQUEST PAGE------------------------------------------ */
+/* Maintenance Request Page Content */
+.maintenance {
+    padding: 40px 10px;
+    background-color: #e7e1d3;
+}
+
+.maintenance-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+    .maintenance-container h2 {
+        color: #000;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .form-group textarea {
+        height: 100px;
+    }
+
+    .form-group button {
+        background-color: #B0836E;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-family: 'Poppins';
+    }
+
+        .form-group button:hover {
+            background-color: #8c6959;
+        }
+
+.request-list {
+    margin-top: 30px;
+}
+
+.request-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+}
+
+    .request-item h4 {
+        margin: 0 0 5px 0;
+        color: #B0836E;
+    }
+
+    .request-item p {
+        margin: 5px 0;
+    }
+
+/* -----------------------------------------FOOTER------------------------------------------ */
+footer {
+    background-color: #B0836E;
+    color: #ffd8bd;
+    padding: 20px 0;
+}
+
+    footer p {
+        text-align: center;
+    }
+
+    footer a {
+        color: whitesmoke;
+        text-decoration: none;
+    }
+
+        footer a:hover {
+            text-decoration: underline;
+        }

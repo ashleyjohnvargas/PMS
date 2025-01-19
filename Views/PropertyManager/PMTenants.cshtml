@@ -2,3 +2,228 @@
     ViewData["Title"] = "Cozy Homes - Tenants";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
+@model List<TenantViewModel>
+
+<div class="tenants-page">
+    <h1>Tenants Management</h1>
+    @* <button asp-controller="PropertyManager" asp-action="AddTenant" class="pay-button">Add New Tenant</button> *@
+    @* <button class="button" onclick="exportToCSV()">Export to CSV</button> *@
+    @* <button class="pay-button" onclick="exportToPDF()">Export to PDF</button> *@
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button class="search-button" onclick="searchTable()"><i class="fas fa-search"></i></button>
+        <button class="search-button" onclick="exportToPDF()">Export to PDF</button>
+        <button class="search-button" onclick="exportToCSV()">Export to CSV</button>
+
+    </div>
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Tenant Name</th>
+                <th>Unit Number</th>
+                <th>Contact</th>
+                @* <th>Lease Start Date</th> *@
+                @* <th>Lease End Date</th> *@
+                @* <th>Monthly Rent</th> *@
+                @* <th>Outstanding Balance</th> *@
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int index = 1;
+                foreach (var tenant in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@tenant.FirstName @tenant.LastName</td>
+                        <td>@tenant.UnitID</td>
+                        <td>@tenant.PhoneNumber @tenant.Email</td>
+                        <td>
+                            @tenant.IsActive
+                            <select>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </td>
+                        <td class="action-icons">
+                            <a asp-action="UpdateUserPage" asp-route-id="@tenant.TenantID" title="Edit" style="font-size: 20px;"><i class="fas fa-edit edit"></i></a>
+                            <!-- Form for deleting the unit -->
+                            <form asp-action="DeleteUnit" asp-route-id="@tenant.TenantID" method="post" style="display:inline;">
+                                <button type="submit" title="Delete" style="background: none; border: none; padding: 0; width: fit-content; height: fit-content;">
+                                    <i class="fas fa-trash delete" style="font-size: 20px;"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;">No tenants found.</td>
+                </tr>
+            }
+            @* <tr> *@
+            @*     <td>John Doe</td> *@
+            @*     <td>101</td> *@
+            @*     <td>(555) 123-4567</td> *@
+            @*     <td>01/01/2024</td> *@
+            @*     <td>12/31/2024</td> *@
+            @*     <td>$1,200</td> *@
+            @*     <td>$0</td> *@
+            @*     <td>Active</td> *@
+            @*     <td style="flex-direction: row"> *@
+            @*         <span>  *@
+            @*         <a class="search-button"><i class="fas fa-eye"></i></a> *@
+            @*         <a class="add-lease-button"><i class="fas fa-pencil"></i></a> *@
+            @*             <a class="search-button" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a> *@
+            @*         </span> *@
+            @*     </td> *@
+            @* </tr> *@
+            <!-- Add more rows dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal structure -->
+<div class="modal" id="tenantModal" tabindex="-1" aria-labelledby="tenantModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tenantModalLabel">Tenant Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="tenantDetails">Loading...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Tenant Modal -->
+<!-- Modal Code (same as above) -->
+<!-- Button to trigger modal
+<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTenantModal">
+    Add Tenant
+</button>  -->
+<!-- Table
+<table class="tenants-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Unit</th>
+            <th>Lease Start</th>
+            <th>Lease End</th>
+            <th>Status</th>
+        </tr>
+    </thead>  -->
+<!--  <tbody>
+        <!-- Existing tenant rows
+    </tbody>
+    </table> -->
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+<!-- Script to load tenant details -->
+<script>
+    function viewTenantDetails(tenantId) {
+        fetch(`/PropertyManager/ViewTenantDetails/${tenantId}`)
+            .then(response => response.json())
+            .then(data => {
+                const details = `
+                    <strong>Name:</strong> ${data.name}<br>
+                    <strong>Unit:</strong> ${data.unit}<br>
+                    <strong>Lease Start:</strong> ${data.leaseStartDate}<br>
+                    <strong>Lease End:</strong> ${data.leaseEndDate}<br>
+                    <strong>Status:</strong> ${data.status}
+                `;
+                document.getElementById('tenantDetails').innerHTML = details;
+                const modal = new bootstrap.Modal(document.getElementById('tenantModal'));
+                modal.show();
+            })
+            .catch(error => console.error('Error loading tenant details:', error));
+    }
+</script>
+
+
+<script>
+
+       function exportToCSV() {
+        const table = document.querySelector('.tenants-table');
+        const rows = Array.from(table.rows);
+
+        const csvContent = rows.map(row => {
+            const cells = Array.from(row.cells).map(cell => cell.innerText);
+            return cells.join(',');
+        }).join('\n');
+
+        const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(csvBlob);
+        downloadLink.download = 'tenants.csv';
+        downloadLink.click();
+    }
+
+
+       function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const table = document.querySelector('.tenants-table'); // Target the tenants table
+
+        // Convert table to an array of rows and columns for jsPDF autoTable
+        const rows = Array.from(table.rows).map(row => {
+            return Array.from(row.cells).map(cell => cell.innerText); // Extract text from each cell
+        });
+
+        // Prepare the table data for jsPDF's autoTable method
+        const headers = rows.shift(); // Remove the first row (headers)
+
+        doc.autoTable({
+            head: [headers], // Table headers
+            body: rows, // Table rows
+            startY: 20, // Adjust to position the table on the page
+            margin: { horizontal: 10 }, // Add margin around the table
+        });
+
+        // Save the generated PDF
+        doc.save('tenants.pdf');
+    }
+
+            document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById('tenantSearch');
+            const table = document.querySelector('.tenants-table');
+
+            searchInput.addEventListener('keyup', function () {
+                const query = searchInput.value.toLowerCase();
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const columns = row.querySelectorAll('td');
+                    const tenantName = columns[0].innerText.toLowerCase(); // Assuming name is in the first column
+
+                    if (tenantName.includes(query)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+
+</script>

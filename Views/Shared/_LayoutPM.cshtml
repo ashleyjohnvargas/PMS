@@ -8,7 +8,9 @@
     <meta name="theme-color" content="#000000" />
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" asp-append-version="true">
-    <link rel="stylesheet" href="~/css/pm.css"/>
+    @* <link rel="stylesheet" href="~/css/pm.css"/> *@
+    <link rel="stylesheet" href="~/css/pmanager.css" asp-append-version="true"/>
+
      <!-- Add SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
 </head>
@@ -28,9 +30,9 @@
             <div class="sidebar-header">
                 <img src="~/images/cozy-logo.png" alt="logo">
                 <h1>Cozy Homes</h1>
-                <div class="hamburger-icon" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </div>
+                @* <div class="hamburger-icon" onclick="toggleSidebar()"> *@
+                @*     <i class="fas fa-bars"></i> *@
+                @* </div> *@
 
             </div>
 
@@ -98,9 +100,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-person"></i>
-                        Users
+                    <a asp-controller="PropertyManager" asp-action="PMManageUsers" class="nav-link">
+                        <i class="fas fa-user"></i> <!-- Adjusted icon to a more relevant user icon -->
+                        <span class="link-text">Users</span>
                     </a>
                 </li>
             </ul>
@@ -122,7 +124,7 @@
     
     <!-- Footer -->
     <footer>
-        <div class="container">
+        <div>
             <p>&copy; 2025 Cozy Homes. All rights reserved.</p>
         </div>
     </footer>

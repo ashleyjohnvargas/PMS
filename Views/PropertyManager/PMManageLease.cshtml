@@ -2,3 +2,189 @@
     ViewData["Title"] = "Cozy Homes - Lease";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
+<style>
+    /* Table Styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #B0836E;
+    }
+
+
+
+    .view-button, .add-lease-button, .delete-button, .search-button {
+        background-color: #B0836E;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .view-button:hover, .add-lease-button:hover, .delete-button:hover, .search-button:hover {
+            background-color: #8a5c3c;
+        }
+    /* Utility Classes */
+    .text-center {
+        text-align: center;
+    }
+
+    .flex {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+    }
+
+        .search-container input {
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+    .search-button {
+        margin-right: 10px; /* Add margin to separate the buttons */
+    }
+</style>
+
+@* <div class="main-content"> *@
+@*     <section> *@
+@*         <div class="container"> *@
+@*             <main role="main" class="pb-3"> *@
+<!-- NOTE: put the body/content here -->
+<div class="table-header">
+    <h1>   Leases </h1>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button class="search-button" onclick="searchTable()">Search</button>
+        <button class="add-lease-button">Add Lease</button>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Lease ID</th>
+            <th>Tenant Name</th>
+            <th>Property Address</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Monthly Rent</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>John Doe</td>
+            <td>123 Main St</td>
+            <td>01/01/2023</td>
+            <td>12/31/2023</td>
+            <td>$1000</td>
+            <td>
+                <button class="view-button" onclick="printDocument()">View Lease Document</button>
+                <button class="delete-button">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Jane Smith</td>
+            <td>456 Elm St</td>
+            <td>02/01/2023</td>
+            <td>01/31/2024</td>
+            <td>$1200</td>
+            <td>
+                <button class="view-button" onclick="printDocument()">View Lease Document</button>
+                <button class="delete-button">Delete</button>
+            </td>
+        </tr>
+        <!-- Add more rows as needed -->
+    </tbody>
+</table>
+@*             </main> *@
+@*         </div> *@
+@*     </section> *@
+@* </div> *@
+
+
+<script>
+    function printDocument() {
+        window.print();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("sidebar");
+        const hamburger = document.getElementById("hamburger");
+        const mainContent = document.querySelector(".main-content");
+
+        hamburger.addEventListener("click", function () {
+            sidebar.classList.toggle("hidden");
+
+            if (sidebar.classList.contains("hidden")) {
+                mainContent.style.marginLeft = "0";
+            } else {
+                mainContent.style.marginLeft = "250px";
+            }
+        });
+
+        // Add event listeners to the view buttons
+        const viewButtons = document.querySelectorAll(".view-button");
+        viewButtons.forEach(button => {
+            button.addEventListener("click", printDocument);
+        });
+
+        // Add event listener to the add lease button
+        const addLeaseButton = document.querySelector(".add-lease-button");
+        const tableBody = document.querySelector(".table tbody");
+
+        addLeaseButton.addEventListener("click", function () {
+            const newRow = document.createElement("tr");
+
+            newRow.innerHTML = `
+                <td>3</td>
+                <td>New Tenant</td>
+                <td>789 Pine St</td>
+                <td>03/01/2023</td>
+                <td>02/28/2024</td>
+                <td>$1300</td>
+                <td>
+                    <button class="view-button" onclick="printDocument()">View Lease Document</button>
+                    <button class="delete-button">Delete</button>
+                </td>
+            `;
+
+            tableBody.appendChild(newRow);
+
+            // Add event listener to the new delete button
+            newRow.querySelector(".delete-button").addEventListener("click", function () {
+                newRow.remove();
+            });
+        });
+
+        // Add event listeners to existing delete buttons
+        const deleteButtons = document.querySelectorAll(".delete-button");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                button.closest("tr").remove();
+            });
+        });
+    });
+</script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

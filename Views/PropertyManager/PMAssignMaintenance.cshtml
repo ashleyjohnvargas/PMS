@@ -2,3 +2,335 @@
     ViewData["Title"] = "Cozy Homes - Staff";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
+<style>
+    body {
+        background-color: #e7e1d3;
+    }
+
+</style>
+@* <section class="manage-maintenance"> *@
+@* <div class="maintenancepm-container">  *@
+<h1>Maintenance and Staff Management</h1>
+
+<!-- Stats Section -->
+<div class="stats">
+    <div class="stat-card">
+        <h3>Total Requests</h3>
+        <p>120</p>
+    </div>
+    <div class="stat-card">
+        <h3>Pending</h3>
+        <p>45</p>
+    </div>
+    <div class="stat-card">
+        <h3>In Progress</h3>
+        <p>30</p>
+    </div>
+    <div class="stat-card">
+        <h3>Completed</h3>
+        <p>45</p>
+    </div>
+</div>
+
+<!-- Maintenance Requests Table -->
+<h3>Maintenance Requests</h3>
+<table id="maintenanceTable">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Tenant Name</th>
+            <th>Unit</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="maintenanceTableBody">
+        <!-- Table Rows will be inserted dynamically -->
+    </tbody>
+</table>
+
+<!-- Pagination Controls -->
+<div id="pagination" class="text-center">
+    <button class="pagination-btn" onclick="changePage('prev')">Previous</button>
+    <button class="pagination-btn" onclick="changePage('next')">Next</button>
+</div>
+
+<script>
+    // Sample Data (usually, this would come from your server)
+    const maintenanceRequests = [
+        { id: '#001', date: '2025-01-08', tenant: 'Joshua Washington', unit: 'Unit 101', category: 'Plumbing', priority: 'High', status: 'Pending' },
+        { id: '#002', date: '2025-01-07', tenant: 'Christopher Hartley', unit: 'Unit 102', category: 'Electrical', priority: 'Medium', status: 'In Progress' },
+        { id: '#003', date: '2025-01-06', tenant: 'Sarah Moore', unit: 'Unit 103', category: 'HVAC', priority: 'Low', status: 'Completed' },
+        { id: '#004', date: '2025-01-05', tenant: 'John Doe', unit: 'Unit 104', category: 'Plumbing', priority: 'High', status: 'Pending' },
+        { id: '#005', date: '2025-01-04', tenant: 'Jane Smith', unit: 'Unit 105', category: 'Electrical', priority: 'Medium', status: 'In Progress' },
+        { id: '#006', date: '2025-01-03', tenant: 'Emma Stone', unit: 'Unit 106', category: 'Plumbing', priority: 'High', status: 'Completed' },
+        { id: '#007', date: '2025-01-02', tenant: 'Liam Brown', unit: 'Unit 107', category: 'HVAC', priority: 'Low', status: 'Pending' },
+        { id: '#008', date: '2025-01-01', tenant: 'Olivia Johnson', unit: 'Unit 108', category: 'Electrical', priority: 'Medium', status: 'In Progress' },
+        { id: '#009', date: '2024-12-31', tenant: 'Noah Wilson', unit: 'Unit 109', category: 'Plumbing', priority: 'High', status: 'Completed' },
+        { id: '#010', date: '2024-12-30', tenant: 'Sophia Davis', unit: 'Unit 110', category: 'HVAC', priority: 'Low', status: 'Pending' }
+    ];
+
+    const rowsPerPage = 3; // Number of rows per page
+    let currentPage = 1;
+
+    // Function to render the table rows based on the current page
+    function renderTable() {
+        const tableBody = document.getElementById('maintenanceTableBody');
+        tableBody.innerHTML = '';
+
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const rowsToDisplay = maintenanceRequests.slice(startIndex, endIndex);
+
+        rowsToDisplay.forEach(request => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${request.id}</td>
+                <td>${request.date}</td>
+                <td>${request.tenant}</td>
+                <td>${request.unit}</td>
+                <td>${request.category}</td>
+                <td>${request.priority}</td>
+                <td>${request.status}</td>
+                <td><button class="pay-button">View</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Function to handle pagination (Next and Previous buttons)
+    function changePage(direction) {
+        const totalPages = Math.ceil(maintenanceRequests.length / rowsPerPage);
+
+        if (direction === 'next' && currentPage < totalPages) {
+            currentPage++;
+        } else if (direction === 'prev' && currentPage > 1) {
+            currentPage--;
+        }
+
+        renderTable();
+    }
+
+    // Initialize the table with the first page of data
+    renderTable();
+</script>
+
+
+<!-- Staff Section -->
+<h3>Staff Management</h3>
+<table id="staffTable">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Assigned Tasks</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="staffTableBody">
+        <!-- Table Rows will be inserted dynamically -->
+    </tbody>
+</table>
+
+<!-- Pagination Controls -->
+<div id="pagination" class="text-center">
+    <button class="pagination-btn" onclick="changePg('prevPage')">Previous</button>
+    <button class="pagination-btn" onclick="changePg('nextPage')">Next</button>
+</div>
+
+<script>
+    // Sample Data (usually, this would come from your server)
+    const staffData = [
+        { id: 'S001', name: 'Samantha Giddings', role: 'Electrician', tasks: 3, status: 'Available' },
+        { id: 'S002', name: 'Emily Davis', role: 'Plumber', tasks: 2, status: 'On Leave' },
+        { id: 'S003', name: 'John Doe', role: 'HVAC Technician', tasks: 5, status: 'Busy' },
+        { id: 'S004', name: 'Olivia Green', role: 'Electrician', tasks: 1, status: 'Available' },
+        { id: 'S005', name: 'Liam Brown', role: 'Plumber', tasks: 4, status: 'On Duty' },
+        { id: 'S006', name: 'Sophia Williams', role: 'HVAC Technician', tasks: 0, status: 'Available' },
+        { id: 'S007', name: 'Aiden Clark', role: 'Electrician', tasks: 2, status: 'On Leave' },
+        { id: 'S008', name: 'Mia Johnson', role: 'Plumber', tasks: 1, status: 'Busy' },
+        { id: 'S009', name: 'Lucas White', role: 'HVAC Technician', tasks: 3, status: 'On Duty' },
+        { id: 'S010', name: 'Ella Harris', role: 'Electrician', tasks: 0, status: 'Available' }
+    ];
+
+    const rowPerPage = 3; // Number of rows per page
+    let currPage = 1;
+
+    // Function to render the table rows based on the current page
+    function renderTabl() {
+        const tableBody = document.getElementById('staffTableBody');
+        tableBody.innerHTML = '';
+
+        const startIndex = (currPage - 1) * rowPerPage;
+        const endIndex = startIndex + rowPerPage;
+        const rowToDisplay = staffData.slice(startIndex, endIndex);
+
+        rowToDisplay.forEach(staff => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${staff.id}</td>
+                <td>${staff.name}</td>
+                <td>${staff.role}</td>
+                <td>${staff.tasks}</td>
+                <td>${staff.status}</td>
+                <td><button class="pay-button">Edit</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Function to handle pagination (Next and Previous buttons)
+    function changePg(direction) {
+        const totalPage = Math.ceil(staffData.length / rowPerPage);
+
+        if (direction === 'nextPage' && currPage < totalPage) {
+            currPage++;
+        } else if (direction === 'prevPage' && currPage > 1) {
+            currPage--;
+        }
+
+        renderTabl();
+    }
+
+    // Initialize the table with the first page of data
+    renderTabl();
+</script>
+
+
+
+<!-- Add New Buttons -->
+<div class="maintenbtn-container">
+    <button class="pay-button add-request-button">Add New Request</button>
+    <button class="invoice-button add-staff-button">Add New Staff</button>
+</div>
+
+
+<!-- View Modal -->
+<div id="viewModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>View Maintenance Request</h3>
+        <p>Details about the selected request go here.</p>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Edit Staff Details</h3>
+        <form>
+            <div class="form-group">
+                <label for="staffName">Name:</label>
+                <input type="text" id="staffName" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label for="staffRole">Role:</label>
+                <input type="text" id="staffRole" placeholder="Enter role">
+            </div>
+            <button class="pay-button" type="submit">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add New Request Modal -->
+<div id="addRequestModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Add New Maintenance Request</h3>
+        <form>
+            <div class="form-group">
+                <label for="requestDetails">Request Details:</label>
+                <textarea id="requestDetails" placeholder="Enter details"></textarea>
+            </div>
+            <button class="pay-button" type="submit">Add Request</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add New Staff Modal -->
+<div id="addStaffModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Add New Staff</h3>
+        <form>
+            <div class="form-group">
+                <label for="newStaffName">Name:</label>
+                <input type="text" id="newStaffName" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label for="newStaffRole">Role:</label>
+                <input type="text" id="newStaffRole" placeholder="Enter role">
+            </div>
+            <button class="pay-button" type="submit">Add Staff</button>
+        </form>
+    </div>
+</div>
+@* </div> *@
+@* </section> *@
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("sidebar");
+        const hamburger = document.getElementById("hamburger");
+        const mainContent = document.querySelector(".main-content");
+
+        hamburger.addEventListener("click", function () {
+            sidebar.classList.toggle("hidden");
+
+            if (sidebar.classList.contains("hidden")) {
+                mainContent.style.marginLeft = "0";
+            } else {
+                mainContent.style.marginLeft = "250px";
+            }
+        });
+    });
+</script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modals = {
+            view: document.getElementById("viewModal"),
+            edit: document.getElementById("editModal"),
+            addRequest: document.getElementById("addRequestModal"),
+            addStaff: document.getElementById("addStaffModal")
+        };
+
+        const buttons = {
+            view: document.querySelectorAll(".pay-button"), // Adjust the selector for your "View" button
+            edit: document.querySelectorAll(".edit-button"), // Adjust the selector for your "Edit" button
+            addRequest: document.querySelector(".add-request-button"),
+            addStaff: document.querySelector(".add-staff-button")
+        };
+
+        const closeButtons = document.querySelectorAll(".close");
+
+        // Open modal on button click
+        buttons.view.forEach(btn => btn.addEventListener("click", () => modals.view.style.display = "block"));
+        buttons.edit.forEach(btn => btn.addEventListener("click", () => modals.edit.style.display = "block"));
+        buttons.addRequest.addEventListener("click", () => modals.addRequest.style.display = "block");
+        buttons.addStaff.addEventListener("click", () => modals.addStaff.style.display = "block");
+
+        // Close modal on close button click
+        closeButtons.forEach(btn => btn.addEventListener("click", function () {
+            Object.values(modals).forEach(modal => modal.style.display = "none");
+        }));
+
+        // Close modal on outside click
+        window.addEventListener("click", function (event) {
+            Object.values(modals).forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+    });
+</script>

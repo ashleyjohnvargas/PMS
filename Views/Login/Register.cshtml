@@ -11,6 +11,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozy Homes Registration</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Include CSS files -->
+    <link rel="stylesheet" href="~/css/loginpage.css" asp-append-version="true" />
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css" rel="stylesheet" asp-append-version="true">
+
+    <!--Font Awesome Icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
         body {
             font-family: 'Poppins', Arial, sans-serif;
@@ -29,6 +41,8 @@
         }
 
         .container {
+            margin-top: 30px;
+            margin-bottom: 30px;
             background-color: #fff;
             padding: 40px;
             border-radius: 5px;
@@ -54,12 +68,6 @@
             font-size: 20px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
 
         input[type="text"],
         input[type="email"],
@@ -83,6 +91,7 @@
             background-color: #B0836E;
             color: white;
             cursor: pointer;
+            margin-top:10px;
             border-radius: 5px;
         }
 
@@ -157,10 +166,46 @@
             font-weight: bold;
             color: #B0836E;
         }
+
+        ul.validation-summary-errors {
+            list-style-type: none; /* Removes the dot (bullet) */
+            padding-left: 0; /* Removes the indentation */
+        }
+
+        .validation-summary-errors li {
+            color: red; /* Optional: set the text color to red */
+            font-weight: bold; /* Optional: make the error messages bold */
+        }
+
+        /* .text-danger { */
+        /*     color: red; */
+        /*     font-weight: 400; */
+        /* } */
+
+        
+        /* Change icon color */
+        .toggle-password i {
+            color: #B0836E; /* Change to any color you prefer */
+        }
+
+        /* Optionally, change the size of the icon */
+        .toggle-password i {
+            margin-top: 35px;
+            font-size: 20px; /* Adjust the size if necessary */
+        }
+
+        /* Optional: Change color on hover */
+        .toggle-password:hover i {
+            color: #007bff; /* Color when hovering over the icon */
+        }
+
+        }
     </style>
 </head>
 
 <body>
+    @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
     <div class="container">
         <div class="logo">
             <img src="~/images/cozy-logo.png" alt="Cozy Homes Logo">
@@ -170,54 +215,79 @@
         <h2>Cozy Homes Rental Management System</h2>
         <p>Register with your email to create an account.</p>
 
+        
         <!-- New User Registration Form-->
+        <!-- New User Registration Form -->
         <form asp-action="RegisterUser" method="post">
+            <!-- Name Fields -->
             <div class="form-group">
                 <div style="display: flex; justify-content: space-between;">
                     <div style="width: 48%;">
                         <label for="first-name">First Name</label>
-                        <input type="text" asp-for="FirstName" id="first-name" name="first-name" placeholder="Enter your first name" required>
+                        <input type="text" asp-for="FirstName" id="first-name" placeholder="Enter your first name" required>
                     </div>
                     <div style="width: 48%;">
                         <label for="last-name">Last Name</label>
-                        <input type="text" asp-for="LastName" id="last-name" name="last-name" placeholder="Enter your last name" required>
+                        <input type="text" asp-for="LastName" id="last-name" placeholder="Enter your last name" required>
                     </div>
                 </div>
             </div>
+
+            <!-- Email Field -->
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" asp-for="Email" id="email" name="email" placeholder="Enter your email" required>
             </div>
-            <div class="form-group" style="display: flex; justify-content: space-between;">
-                <div style="width: 48%;">
+
+            <!-- Password and Confirm Password Fields -->
+            <div class="form-group" style="display: flex; justify-content: space-between; gap: 4%;">
+                <!-- Password Field -->
+                <div style="width: 48%; position: relative;">
                     <label for="password">Password</label>
-                    <input type="password" asp-for="Password" id="password" placeholder="Create your password">
-                    <!--required minlength="8" maxlength="100" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                    title="Must contain at least one number, one uppercase, one lowercase letter, and at least 8 characters"-->
+                    <input type="password" asp-for="Password" id="password" placeholder="Create your password"
+                           style="width: 100%; padding-right: 40px;" required>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('password', this)"
+                          title="Show/Hide Password"
+                          style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                        <i class="bx bx-hide"></i>
+                    </span>
                 </div>
-                <div style="width: 48%;">
+
+                <!-- Confirm Password Field -->
+                <div style="width: 48%; position: relative;">
                     <label for="confirm-password">Confirm Password</label>
-                    <input type="password" asp-for="ConfirmPassword" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                    <input type="password" asp-for="ConfirmPassword" id="confirm-password"
+                           placeholder="Confirm your password" style="width: 100%; padding-right: 40px;" required>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password', this)"
+                          title="Show/Hide Password"
+                          style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                        <i class="bx bx-hide"></i>
+                    </span>
                 </div>
             </div>
-            <div class="form-group">
+
+            <!-- Terms and Conditions -->
+           <div style="margin:10px">
                 <label>
-                    <input type="checkbox" name="TermsAndConditions" value="true" @(Model.TermsAndConditions.HasValue && Model.TermsAndConditions.Value ? "checked" : "")>
+                    <input type="checkbox" name="TermsAndConditions" value="true"
+                    @(Model.TermsAndConditions.HasValue && Model.TermsAndConditions.Value ? "checked" : "")>
                     I agree to the
                     <a href="javascript:void(0);" id="termsLink">Terms and Conditions</a>
                     and
                     <a href="javascript:void(0);" id="privacyLink">Privacy Policy</a>.
                 </label>
-            </div>
+           </div>
+           
 
-            <!-- Hidden Properties-->
+            <!-- Hidden Properties -->
             <input type="hidden" asp-for="Role" />
             <input type="hidden" asp-for="IsActive" />
+
+            <!-- Submit Button -->
             <button type="submit" class="signup-btn">Sign Up</button>
 
             <p>Already a member? <a asp-controller="Login" asp-action="Login" class="login">Log In</a></p>
         </form>
-
     </div>
 
     <!-- Terms Modal -->
@@ -362,6 +432,23 @@
                 privacyModal.style.display = "none";
             }
         }
+
+ 
+                // Show/Hide Password
+                function togglePasswordVisibility(fieldId, toggleIcon) {
+                    const passwordField = document.getElementById(fieldId);
+                    const icon = toggleIcon.querySelector("i");
+                    if (passwordField.type === "password") {
+                        passwordField.type = "text";
+                        icon.classList.remove("bx-hide");
+                        icon.classList.add("bx-show");
+                    } else {
+                        passwordField.type = "password";
+                        icon.classList.remove("bx-show");
+                        icon.classList.add("bx-hide");
+                    }
+                }
+
     </script>
 </body>
 </html>

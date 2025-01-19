@@ -8,18 +8,20 @@
     <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/styles.css">
+    <link rel="stylesheet" href="~/css/atenant.css" asp-append-version="true">
+
     <!-- Add SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
 
 </head>
 <body>
     <!-- Top Header -->
-    <div class="top-header">
+    <div class="atop-header">
     </div>
 
     <!-- Main Header -->
     <header>
-        <div class="main-header">
+        <div class="atmain-header">
             <!-- Logo -->
             <div class="logo">
                 <img src="~/images/cozy-logo.png" alt="logo" style="height: 20px; width: 50px;">
@@ -34,12 +36,12 @@
                     <li><a asp-controller="ATenant" asp-action="ATenantPayment">Payment History</a></li>
                     <li><a asp-controller="ATenant" asp-action="ATenantMaintenance">Maintenance Request</a></li>
                     <!-- <li><a href="#">About</a></li> -->
-                    <li class="dropdown">
-                        <a href="#" class="dropbtn">
+                    <li class="at-dropdown">
+                        <a href="#" class="at-dropbtn">
                             <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px;">
                             Profile
                         </a>
-                        <div class="dropdown-content">
+                        <div class="atdropdown-content">
                             <a asp-controller="ATenant" asp-action="ATenantEditProfile">Edit Profile</a>
                             <a asp-controller="Login" asp-action="Logout">Log Out</a>
                         </div>
@@ -67,6 +69,63 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.getElementById('generatePdfButton').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            const content = document.getElementById('content').innerText;
+            pdf.text(content, 10, 10);
+            pdf.save('Sample.pdf');
+        });
+    </script>
+
+    </section>
+
+    <!-- Pay Rent Pop-Up -->
+    <div id="pay-rent-popup" class="lease-popup">
+        <div class="popup-content">
+            <span class="atlease-close" onclick="closePopup('pay-rent-popup')">&times;</span>
+            <h2>Pay Rent</h2>
+            <p>Please enter your payment details to complete the transaction.</p>
+            <form onsubmit="event.preventDefault(); handlePayRent();">
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" required>
+
+                <label for="payment-method">Payment Method:</label>
+                <select id="payment-method" name="payment-method" required>
+                    <option value="credit-card">Credit Card</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="bank-transfer">Bank Transfer</option>
+                </select>
+
+                <button type="submit" class="button">Submit Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Terminate Lease Pop-Up -->
+    <div id="terminate-lease-popup" class="lease-popup">
+        <div class="popup-content">
+            <span class="atlease-close" onclick="closePopup('terminate-lease-popup')">&times;</span>
+            <h2>Terminate Lease</h2>
+            <p>Please provide a reason for terminating the lease:</p>
+            <form onsubmit="event.preventDefault(); handleTerminateLease();">
+                <label for="termination-reason">Reason:</label>
+                <textarea id="termination-reason" name="termination-reason" rows="4" required></textarea>
+
+                <button type="submit" class="button danger">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Message Box -->
+    <div id="message-box" class="lease-message">
+        <div class="lease-msg-content">
+            <p id="message-text"></p>
+            <button onclick="closeMessageBox()">Close</button>
+        </div>
+    </div>
+
     <script>
         // Function to open a specific pop-up
         function openPopup(popupId) {
@@ -106,5 +165,6 @@
             showMessage('Your lease has been successfully terminated.');
         }
     </script>
+
 </body>
 </html>
