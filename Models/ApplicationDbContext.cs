@@ -43,6 +43,31 @@ namespace PMS.Models
             modelBuilder.Entity<User>()
                 .Property(u => u.IsActive)
                 .HasDefaultValue(true);
+            
+            
+            //modelBuilder.Entity<User>().HasData(
+            //new User
+            //{
+            //    UserID = 1,
+            //    FirstName = "Test",
+            //    LastName = "User",
+            //    Email = "test@example.com",
+            //    Password = BCrypt.Net.BCrypt.HashPassword("Password123"),
+            //    Role = "Tenant",
+            //    DateCreated = DateTime.Now
+            //}
+            //);
+
+            //modelBuilder.Entity<Profile>().HasData(
+            //    new Profile
+            //    {
+            //        Id = 1,
+            //        FirstName = "Test",
+            //        LastName = "User",
+            //        Email = "test@example.com"
+            //    }
+            //);
+
         }
     }
 }

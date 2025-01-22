@@ -12,5 +12,6 @@ namespace PMS.Models
         public string? PhoneNumber { get; set; }
         public string? Role { get; set; }
         public bool IsActive { get; set; } = true; // Default value is true
+        public string Status { get; set; } // For dropdown value
     }
 }

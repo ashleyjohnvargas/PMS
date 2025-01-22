@@ -141,9 +141,24 @@
 <body>
     <!-- Page Header -->
     <section class="profile-page">      
+        @* @TempData["ErrorMessage"] *@
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
 
         <!-- Profile Card -->
         <div class="profile-card">
+
             <div class="cancel-profile" align="left">
                 <a href="javascript:history.back()" class="text-decoration-none"
                    title="Go Back" style="position: relative; top: 0px; left: 30px; bottom:0px; font-size: 20px;">
@@ -151,8 +166,28 @@
                     <h1 style="margin-left: 10px;">Profile</h1>
                 </a>
             </div>
+
+            @{
+                var successMessage = TempData["SuccessMessage"];
+                var errorMessage = TempData["ErrorMessage"];
+            }
+            @if (ViewData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger mt-3 text-center">
+                    @ViewData["ErrorMessage"]
+                </div>
+            }
+
+            @if (ViewData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success mt-3 text-center">
+                    @ViewData["SuccessMessage"]
+                </div>
+            }
+
             <div class="profile-info" align="left">
                 <p><strong>First Name:</strong> @(Model.FirstName ?? "First name not provided")</p>
+
             </div>
             <div class="profile-info" align="left">
                 <p><strong>Last Name:</strong> @(Model.LastName ?? "Last name not provided")</p>
