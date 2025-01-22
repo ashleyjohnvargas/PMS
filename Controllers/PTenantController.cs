@@ -17,6 +17,12 @@ namespace PMS.Controllers
             return View();
         }
 
+        public IActionResult PTenantContacts()
+        {
+            return View();
+        }
+
+
         public async Task<IActionResult> PTenantUnits()
         {
             var units = await _context.Units
