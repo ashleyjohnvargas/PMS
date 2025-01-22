@@ -12,6 +12,8 @@
 
     <!-- Add SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
 
 </head>
 <body>
@@ -32,19 +34,54 @@
             <nav>
                 <ul>
                     <li><a asp-controller="ATenant" asp-action="ATenantHome">Home</a></li>
+                    <li><a asp-controller="ATenant" asp-action="ATenantUnits">Units</a></li>
                     <li><a asp-controller="ATenant" asp-action="ATenantLease">Lease</a></li>
-                    <li><a asp-controller="ATenant" asp-action="ATenantPayment">Payment History</a></li>
-                    <li><a asp-controller="ATenant" asp-action="ATenantMaintenance">Maintenance Request</a></li>
+                    <li><a asp-controller="ATenant" asp-action="ATenantPayment">Payments</a></li>
+                    <li><a asp-controller="ATenant" asp-action="ATenantMaintenance">Requests</a></li>
+                    <li class="at-dropdown">
+                        <a href="#" class="dropbtn" aria-label="Notifications">
+                            <i class="fas fa-bell" style="margin-right: 10px; margin-top:4px; text-decoration: none"></i>
+                            @* Notifications *@
+                        </a>
+                    </li>
                     <!-- <li><a href="#">About</a></li> -->
                     <li class="at-dropdown">
-                        <a href="#" class="at-dropbtn">
-                            <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px;">
-                            Profile
+                        @* <a href="#" class="at-dropbtn" aria-label="User Profile"> *@
+                        @*     <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px; margin-right: 10px;"> *@
+                        @*         @Context.Session.GetString("FirstName")  *@
+                        @*         @Context.Session.GetString("LastName") *@
+                        @* </a> *@
+
+                        <a href="#" class="at-dropbtn" aria-label="User Profile">
+                            @if (Context.Session.GetString("ProfilePicture") != null)
+                            {
+                                <!-- Display Profile Picture -->
+                                <img src="@Url.Content($"~/images/{Context.Session.GetString("ProfilePicture")}")"
+                                     alt="Profile Picture"
+                                     style="height: 35px; width: 35px; border-radius: 50%; margin-right: 10px;">
+                            }
+                            else
+                            {
+                                <!-- Display Initials if No Profile Picture -->
+                                <div style="height: 35px; width: 35px; border-radius: 50%;
+                                    background-color: #555; display: inline-flex;
+                                    align-items: center; justify-content: center;
+                                    font-weight: bold; color: #fff; margin-right: 10px;">
+                                    @($"{Context.Session.GetString("FirstName")?.Substring(0, 1)}{Context.Session.GetString("LastName")?.Substring(0, 1)}")
+                                </div>
+                            }
+
+                            <!-- Display User Name -->
+                            @* @Context.Session.GetString("FirstName") @Context.Session.GetString("LastName") *@
                         </a>
+
                         <div class="atdropdown-content">
-                            <a asp-controller="ATenant" asp-action="ATenantEditProfile">Edit Profile</a>
+                            <a asp-controller="ATenant" asp-action="ATenantEditProfile">Profile</a>
+
                             <a asp-controller="Login" asp-action="Logout">Log Out</a>
                         </div>
+
+
                     </li>
                 </ul>
             </nav>
@@ -126,7 +163,29 @@
         </div>
     </div>
 
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);">
+        <div style="margin: 20% auto; padding: 20px; background: white; width: 300px; text-align: center;">
+            <p>Are you sure you want to logout?</p>
+            <button onclick="logoutConfirmed()">Yes</button>
+            <button onclick="closeModal()">No</button>
+        </div>
+    </div>
+
     <script>
+
+    
+ 
+                  // Logout Confirmation
+            function confirmLogout(event) {
+                const confirmation = confirm("Are you sure you want to log out?");
+                if (!confirmation) {
+                    // Prevent the default action if the user cancels
+                    event.preventDefault();
+                }
+                return confirmation;
+            }
+ 
         // Function to open a specific pop-up
         function openPopup(popupId) {
             document.getElementById(popupId).style.display = 'block';

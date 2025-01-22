@@ -91,7 +91,7 @@
             background-color: #B0836E;
             color: white;
             cursor: pointer;
-            margin-top:10px;
+            margin-top: 10px;
             border-radius: 5px;
         }
 
@@ -182,7 +182,7 @@
         /*     font-weight: 400; */
         /* } */
 
-        
+
         /* Change icon color */
         .toggle-password i {
             color: #B0836E; /* Change to any color you prefer */
@@ -204,9 +204,9 @@
 </head>
 
 <body>
-    @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
 
     <div class="container">
+
         <div class="logo">
             <img src="~/images/cozy-logo.png" alt="Cozy Homes Logo">
             <span class="logo">Cozy Homes</span>
@@ -215,7 +215,18 @@
         <h2>Cozy Homes Rental Management System</h2>
         <p>Register with your email to create an account.</p>
 
-        
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+
         <!-- New User Registration Form-->
         <!-- New User Registration Form -->
         <form asp-action="RegisterUser" method="post">
@@ -267,17 +278,18 @@
             </div>
 
             <!-- Terms and Conditions -->
-           <div style="margin:10px">
+            <div class="form-group">
+                @* <div style="margin:10px"> *@
                 <label>
-                    <input type="checkbox" name="TermsAndConditions" value="true"
-                    @(Model.TermsAndConditions.HasValue && Model.TermsAndConditions.Value ? "checked" : "")>
+                    <input type="checkbox" name="TermsAndConditions" value="true" @(Model.TermsAndConditions.HasValue && Model.TermsAndConditions.Value ? "checked" : "") required>
                     I agree to the
                     <a href="javascript:void(0);" id="termsLink">Terms and Conditions</a>
                     and
                     <a href="javascript:void(0);" id="privacyLink">Privacy Policy</a>.
                 </label>
-           </div>
-           
+            </div>
+            @* </div> *@
+
 
             <!-- Hidden Properties -->
             <input type="hidden" asp-for="Role" />
@@ -433,7 +445,7 @@
             }
         }
 
- 
+
                 // Show/Hide Password
                 function togglePasswordVisibility(fieldId, toggleIcon) {
                     const passwordField = document.getElementById(fieldId);

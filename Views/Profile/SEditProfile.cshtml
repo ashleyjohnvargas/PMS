@@ -34,7 +34,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 10px;
         }
-
+  
         form {
             display: flex;
             justify-content: space-between;
@@ -120,73 +120,54 @@
 
     </style>
 </head>
-<main>
+@* <main> *@
     <form>
         <div class="form-section">
             <div class="form-row">
                 <div style="flex: 1; margin-right: 20px;">
                     <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" name="first-name" value="@Model.FirstName" required>
+                    <input type="text" id="first-name" name="first-name" value="Mik" required>
                 </div>
                 <div style="flex: 1;">
                     <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" name="last-name" value="@Model.LastName" required>
+                    <input type="text" id="last-name" name="last-name" value="Mik" required>
                 </div>
             </div>
             <div class="form-row">
                 <div style="flex: 1; margin-right: 20px;">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="@Model.Email" required>
+                    <input type="email" id="email" name="email" value="mikmik@gmail.com" required>
                 </div>
-                <div style="flex: 1; margin-right: 20px;">
-                    <label for="phone-number">Phone Number</label>
-                    <input type="tel" id="phone-number" name="phone-number" value="@Model.PhoneNumber" required>
+                <div style="flex: 1;">
+                    <label for="unit">Unit</label>
+                    <input type="text" id="unit" name="unit" value="1" required>
                 </div>
-                @* <div style="flex: 1;"> *@
-                @*     <label for="unit">Unit</label> *@
-                @*     <input type="text" id="unit" name="unit" value="1" required> *@
-                @* </div> *@
             </div>
-
-
-
             <div>
                 <label for="current-password">Current Password</label>
                 <input type="password" id="current-password" name="current-password" required>
-                <span class="toggle-password" onclick="togglePasswordVisibility('NewPassword', this)"
-                      style="position: absolute; top: 38px; right: 15px; cursor: pointer;">
-                    <i class="bx bx-hide"></i>
-                </span>
-
             </div>
             <div>
                 <label for="new-password">New Password</label>
                 <input type="password" id="new-password" name="new-password" required>
-                <span class="toggle-password" onclick="togglePasswordVisibility('NewPassword', this)"
-                      style="position: absolute; top: 38px; right: 15px; cursor: pointer;">
-                    <i class="bx bx-hide"></i>
-                </span>
             </div>
             <div>
                 <label for="confirm-password">Confirm New Password</label>
                 <input type="password" id="confirm-password" name="confirm-password" required>
-                <span class="toggle-password" onclick="togglePasswordVisibility('NewPassword', this)"
-                      style="position: absolute; top: 38px; right: 15px; cursor: pointer;">
-                    <i class="bx bx-hide"></i>
-                </span>
             </div>
         </div>
-        @* <div class="form-section"> *@
-        @*     <div class="profile-picture"> *@
-        @*         <label for="file">Change Picture</label> *@
-        @*         <img src="~/images/user-pic.png" alt="Profile Picture"> *@
-        @*         <label for="file">Attach File</label> *@
-        @*         <input type="file" id="file" name="file"> *@
-        @*     </div> *@
+        <div class="form-section">
+            <div class="profile-picture">
+                <label for="file">Change Picture</label>
+                <img src="~/images/user-pic.png" alt="Profile Picture">
+                <label for="file">Attach File</label>
+                <input type="file" id="file" name="file">
+            </div>
             <div class="buttons">
                 <button type="button" class="cancel">Cancel</button>
                 <button type="submit" class="save">Save Changes</button>
+                @* <button type="submit" class="log out">Log Out</button> *@
             </div>
         </div>
     </form>
-</main>
+@* </main> *@

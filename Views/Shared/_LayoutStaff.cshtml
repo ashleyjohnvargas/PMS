@@ -39,10 +39,42 @@
                     <li><a asp-controller="Staff" asp-action="SMaintenanceAssignment">Assignment</a></li>
                     <li><a asp-controller="Staff" asp-action="SMaintenanceHistory">Requests</a></li>
                     <li class="s-dropdown">
-                        <a href="#" class="s-dropbtn">
-                            <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px;">
-                            Profile
+                        <a href="#" class="dropbtn" aria-label="Notifications">
+                            <i class="fas fa-bell" style="margin-right: 10px; margin-top:4px; text-decoration: none"></i>
+                            @* Notifications *@
                         </a>
+                    </li>
+                    <!-- <li><a href="#">About</a></li> -->
+                    <li class="s-dropdown">
+                        @* <a href="#" class="at-dropbtn" aria-label="User Profile"> *@
+                        @*     <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px; margin-right: 10px;"> *@
+                        @*         @Context.Session.GetString("FirstName")  *@
+                        @*         @Context.Session.GetString("LastName") *@
+                        @* </a> *@
+
+                        <a href="#" class="s-dropbtn" aria-label="User Profile">
+                            @* @if (Context.Session.GetString("ProfilePicture") != null) *@
+                            @* { *@
+                            @*     <!-- Display Profile Picture --> *@
+                            @*     <img src="@Url.Content($"~/images/{Context.Session.GetString("ProfilePicture")}")" *@
+                            @*          alt="Profile Picture" *@
+                            @*          style="height: 35px; width: 35px; border-radius: 50%; margin-right: 10px;"> *@
+                            @* } *@
+                            @* else *@
+                            @* { *@
+                                <!-- Display Initials if No Profile Picture -->
+                                <div style="height: 35px; width: 35px; border-radius: 50%;
+                                    background-color: darkgrey; display: inline-flex;
+                                    align-items: center; justify-content: center;
+                                    font-weight: bold; color: #fff; margin-right: 10px;">
+                                    @($"{Context.Session.GetString("FirstName")?.Substring(0, 1)}{Context.Session.GetString("LastName")?.Substring(0, 1)}")
+                                </div>
+                            @* } *@
+
+                            <!-- Display User Name -->
+                            @* @Context.Session.GetString("FirstName") @Context.Session.GetString("LastName") *@
+                        </a>
+
                         <div class="sdropdown-content">
                             <a asp-controller="Staff" asp-action="SEditProfile">Edit Profile</a>
                             <a asp-controller="Login" asp-action="Logout" class="logout" onclick="return confirmLogout(event);">Log Out</a>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PMS.Models
 {
@@ -15,6 +16,8 @@ namespace PMS.Models
         public DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<User> Users { get; set; }
+        public required DbSet<Profile> UserProfiles { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

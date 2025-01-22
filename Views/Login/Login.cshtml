@@ -162,6 +162,17 @@
         <h1>Welcome to</h1>
         <h2>Cozy Homes Rental Management System</h2>
         <p>Please Login to your account.</p>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
         <form asp-action="LoginUser" method="post">
             <div class="form-group">
                 <label for="email">Email</label>

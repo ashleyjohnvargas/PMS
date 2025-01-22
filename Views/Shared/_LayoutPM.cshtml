@@ -8,31 +8,38 @@
     <meta name="theme-color" content="#000000" />
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" asp-append-version="true">
-    @* <link rel="stylesheet" href="~/css/pm.css"/> *@
-    <link rel="stylesheet" href="~/css/pmanager.css" asp-append-version="true"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    @* <link rel="stylesheet" href="~/css/homepage.css" asp-append-version="true" /> *@
+    @* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="~/css/pm.css" asp-append-version="true" />
+    <!-- Font Awesome (for the arrow icon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-     <!-- Add SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+    <!-- Boxicons (for the password toggle icons) -->
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+
+
+    <!-- <link rel="stylesheet" href="~/RMS.styles.css" asp-append-version="true" /> -->
 </head>
 
 
 <body>
 
-    <!-- Top Header -->
-    <div class="top-header">
-        <!-- Optional: Add top header content here -->
-    </div>
-
-    <!-- Main Header -->
     <header>
+        <!-- Top Header -->
+        <div class="top-header" style="position: sticky; ">
+            <!-- Optional: Add top header content here -->
+        </div>
+
+        <!-- Main Header -->
         <div class="main-header" style="position: sticky; ">
             <!-- Sidebar Header: Logo and Brand -->
             <div class="sidebar-header">
                 <img src="~/images/cozy-logo.png" alt="logo">
                 <h1>Cozy Homes</h1>
-                @* <div class="hamburger-icon" onclick="toggleSidebar()"> *@
-                @*     <i class="fas fa-bars"></i> *@
-                @* </div> *@
+                <!--<div class="hamburger-icon" id="hamburger" >
+                        <i class="fas fa-bars"></i>
+                    </div>  -->
 
             </div>
 
@@ -40,63 +47,98 @@
             <nav>
                 <ul>
                     <li class="dropdown">
+                        <a href="#" class="dropbtn" aria-label="Notifications">
+                            <i class="fas fa-bell" style="margin-right: 10px;"></i>
+                            Notifications
+                        </a>
+
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropbtn" aria-label="User Profile">
-                            <img src="~/images/user-pic.png" alt="logo">
-                            Profile
+                            <div style="height: 35px; width: 35px; border-radius: 50%;
+                                    background-color: #555; display: inline-flex;
+                                    align-items: center; justify-content: center;
+                                    font-weight: bold; color: #fff; margin-right: 10px;">
+                                @($"{Context.Session.GetString("FirstName")?.Substring(0, 1)}{Context.Session.GetString("LastName")?.Substring(0, 1)}")
+                            </div>
+                            @* <img src="~/images/user-pic.png" alt="logo"> *@
+                            @* @Context.Session.GetString("FirstName")  *@
+                            @* @Context.Session.GetString("LastName") *@
+
                         </a>
                         <div class="dropdown-content">
-                            <a href="#">Edit Profile</a>
-                            <a asp-controller="Login" asp-action="Logout">Log Out</a>
+                            
+                            <!--edit as row instead of column-->
+                            <a asp-controller="PropertyManager" asp-action="PMEditProfile">Profile</a>
+                            <a asp-controller="Login" asp-action="Logout" class="logout" onclick="return confirmLogout(event);">Log Out</a>
                         </div>
                     </li>
                 </ul>
             </nav>
         </div>
-    </header>
 
-    <div class="sidebar-content-container" style="display: grid; grid-template-columns: auto 1fr; column-gap: 25px; min-height: 100vh; min-width: 100vh;">
-        <div class="sidebar">
+
+        <div class="sidebar" id="sidebar">
             <ul>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMDashboard" class="nav-link active">
+                    <a asp-controller="PropertyManager" asp-action="PMDashboard" class="nav-link">
                         <i class="fas fa-dashboard"></i>
-                        Dashboard
+                        <span class="link-text">Dashboard</span>
                     </a>
                 </li>
                 <li>
                     <a asp-controller="PropertyManager" asp-action="PMmanageUnits" class="nav-link">
                         <i class="fas fa-house"></i>
-                        Units
+                        <span class="link-text">Units</span>
                     </a>
                 </li>
                 <li>
                     <a asp-controller="PropertyManager" asp-action="PMTenants" class="nav-link">
                         <i class="fas fa-people-roof"></i>
-                        Tenants
+                        <span class="link-text">Tenants</span>
                     </a>
                 </li>
+               
+
                 <li>
                     <a asp-controller="PropertyManager" asp-action="PMManageLease" class="nav-link">
                         <i class="fas fa-clipboard"></i>
-                        Lease
+                        <span class="link-text">Lease</span>
                     </a>
+                    <ul class="sub-tabs" >
+                        <!-- Add a nested unordered list for sub-tabs -->
+                        <li>
+                            <a asp-controller="PropertyManager" asp-action="PMLeasePending" class="nav-link" >
+                                <i class="fas fa-hourglass-half"></i>
+                                <span class="link-text">Pending</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="PropertyManager" asp-action="PMLeaseActive" class="nav-link">
+                                <i class="fas fa-file-alt"></i>
+                                <span class="link-text">Active</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                    
                 </li>
                 <li>
                     <a asp-controller="PropertyManager" asp-action="PMPayments" class="nav-link">
                         <i class="fas fa-receipt"></i>
-                        Payments
+                        <span class="link-text">Payments</span>
                     </a>
                 </li>
                 <li>
                     <a asp-controller="PropertyManager" asp-action="PMRequest" class="nav-link">
                         <i class="fas fa-hammer"></i>
-                        Request
+                        <span class="link-text">Requests</span>
                     </a>
                 </li>
                 <li>
                     <a asp-controller="PropertyManager" asp-action="PMAssignMaintenance" class="nav-link">
                         <i class="fas fa-wrench"></i>
-                        Staff
+                        <span class="link-text">Staff</span>
                     </a>
                 </li>
                 <li>
@@ -105,48 +147,143 @@
                         <span class="link-text">Users</span>
                     </a>
                 </li>
+
             </ul>
         </div>
+    </header>
 
-        <section>
-            <div class="container">
-                <main role="main" class="pb-3">
-
-                    <!-- NOTE: put the body/content here -->
-                    @RenderBody()
-
-                </main>
-            </div>
-        </section>
+    @* <main>  *@
+    @* <section class="body"> *@
+    <div class="container">
+        <main role="main">
+            @if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
+            {
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: '@TempData["PopupMessage"]',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+                </script>
+            }
+            @RenderBody()
+        </main>
     </div>
 
-
-    
-    <!-- Footer -->
-    <footer>
-        <div>
+    @* </section> *@
+    @* </main> *@
+    <section>
+        <!-- Footer -->
+        <footer>
+            @* <div class="container" style="position: sticky; bottom:0; "> *@
             <p>&copy; 2025 Cozy Homes. All rights reserved.</p>
+            @* </div> *@
+        </footer>
+    </section>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);">
+        <div style="margin: 20% auto; padding: 20px; background: white; width: 300px; text-align: center;">
+            <p>Are you sure you want to logout?</p>
+            <button onclick="logoutConfirmed()">Yes</button>
+            <button onclick="closeModal()">No</button>
         </div>
-    </footer>
-
+    </div>
     <script>
-            document.addEventListener("DOMContentLoaded", function () {
+        function toggleSidebar() {
             const sidebar = document.getElementById("sidebar");
-            const hamburger = document.getElementById("hamburger");
-            const mainContent = document.querySelector(".main-content");
+            sidebar.classList.toggle("collapsed");
+        }
 
-            hamburger.addEventListener("click", function () {
-                sidebar.classList.toggle("hidden");
+        document.getElementById("hamburger").addEventListener("click", toggleSidebar);
 
-                if (sidebar.classList.contains("hidden")) {
-                    mainContent.style.marginLeft = "0";
+              // Logout Confirmation
+        function confirmLogout(event) {
+            const confirmation = confirm("Are you sure you want to log out?");
+            if (!confirmation) {
+                // Prevent the default action if the user cancels
+                event.preventDefault();
+            }
+            return confirmation;
+        }
+        document.querySelector(".search-unit-button").addEventListener("click", function () {
+                var searchQuery = document.querySelector("input[type='text']").value;
+
+                // Make an AJAX request to search for units based on the input
+                fetch(`/PropertyManager/SearchUnits?query=${searchQuery}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateUnitsTable(data);
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+
+            // Function to handle input field changes
+            document.querySelector("#searchInput").addEventListener("input", function () {
+                var searchQuery = this.value;
+
+                // If the search input is empty, fetch all units
+                if (searchQuery === "") {
+                    fetch(`/PropertyManager/SearchUnits?query=`)
+                        .then(response => response.json())
+                        .then(data => {
+                            updateUnitsTable(data);
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            });
+
+
+            // Update the table with the search results
+            function updateUnitsTable(units) {
+                const tbody = document.querySelector("table tbody");
+                tbody.innerHTML = ''; // Clear the existing rows
+
+                if (units.length > 0) {
+                    units.forEach((unit, index) => {
+                        let row = document.createElement('tr');
+                        row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td>${unit.unitName}</td>
+                                <td>${unit.pricePerMonth}</td>
+                                <td>${unit.unitStatus}</td>
+                                <td class="action-icons">
+                                    <a href="/Units/EditUnitPage/${unit.unitId}" title="Edit"><i class="fas fa-edit edit"></i></a>
+                                    <form action="/Units/DeleteUnit/${unit.unitId}" method="post" style="display:inline;">
+                                        <button type="submit" title="Delete" style="background: none; border: none;">
+                                            <i class="fas fa-trash delete"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            `;
+                        tbody.appendChild(row);
+                    });
                 } else {
-                    mainContent.style.marginLeft = "250px";
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No units found.</td></tr>';
+                }
+            }
+
+      
+        document.querySelectorAll('.nav-link').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                const subTabs = e.target.nextElementSibling;
+                if (subTabs && subTabs.classList.contains('sub-tabs')) {
+                    e.preventDefault(); // Prevent default link behavior
+                    subTabs.style.display = subTabs.style.display === 'block' ? 'none' : 'block';
                 }
             });
         });
+
+
     </script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

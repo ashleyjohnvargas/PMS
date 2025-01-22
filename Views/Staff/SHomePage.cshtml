@@ -7,7 +7,7 @@
 <!-- Banner Section -->
 <section class="s-banner">
     <img src="~/images/bg.png" alt="Banner Image" class="sbanner-img">
-    <div class="s-centered"> <span>Welcome back, [User]! </span></div>
+    <div class="s-centered"> <span>Welcome, @Context.Session.GetString("FirstName") @Context.Session.GetString("LastName")!</span></div>
 </section>
 
 <!-- Dashboard -->

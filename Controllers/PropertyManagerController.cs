@@ -21,6 +21,14 @@ namespace PMS.Controllers
         {
             return View();
         }
+        public IActionResult PMLeasePending()
+        {
+            return View();
+        }
+        public IActionResult PMLeaseActive()
+        {
+            return View();
+        }
         public IActionResult PMAssignMaintenance()
         {
             return View();

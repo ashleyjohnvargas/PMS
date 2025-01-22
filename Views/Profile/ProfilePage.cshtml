@@ -1,0 +1,207 @@
+﻿    @model PMS.Models.Profile
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: "Poppins", serif;
+            color: #ffffff;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .d-flex.align-items-center a {
+            margin-right: 10px;
+            color: inherit;
+        }
+
+        .d-flex.align-items-center h1 {
+            margin: 0;
+        }
+
+        .card {
+            background-color: #2b2d42;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 750px;
+            height: 100%;
+            margin-top: 12px;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            width: 200px;
+            height: 45px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+            .btn i {
+                margin-right: 8px;
+            }
+
+        .btn-primary {
+            background-color: #06d6a0;
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: #073b4c;
+            border: none;
+        }
+
+        /* Header alignment adjustments */
+        .page-header {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 13px; /* Space between go-back icon and title */
+            margin-top: 40px;
+            margin-left: 17px;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+        }
+
+            .profile-info p {
+                font-size: 20px;
+            }
+
+        .actions-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    @{
+        var successMessage = TempData["SuccessMessage"];
+        var errorMessage = TempData["ErrorMessage"];
+    }
+    @if (ViewData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mt-3 text-center">
+            @ViewData["ErrorMessage"]
+        </div>
+    }
+
+    @if (ViewData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mt-3 text-center">
+            @ViewData["SuccessMessage"]
+        </div>
+    }
+
+    <!-- Page Header with Go Back Icon -->
+    <div class="page-header">
+        <a href="javascript:history.back()" class="text-decoration-none" title="Go Back">
+            <i class="fa-solid fa-arrow-left fs-3 text-light"></i>
+        </a>
+        <h1 class="fw-bold" >My Profile</h1>
+    </div>
+
+    <!-- Profile Details in a Card -->
+    <div class="container d-flex justify-content-center mt-4" style="align-items: flex-start">
+        <div class="card">
+            <div class="card-body">
+                <div class="profile-container"> 
+             
+                <div class="profile-info">
+                    <p>First Name: </p>
+                    @* <p>@Model.Email</p> *@
+                    <p>@(Model.FirstName ?? "First name not provided")</p>
+
+                </div>
+                <div class="profile-info">
+                    <p>Last Name: </p>
+                    @* <p>@Model.Email</p> *@
+                    <p>@(Model.LastName ?? "Last name not provided")</p>
+
+                </div>
+                    <div class="profile-info">
+                        <p>Email: </p>
+                        @* <p>@Model.Email</p> *@
+                        <p>@(Model.Email ?? "Email not provided")</p>
+
+                    </div>
+                    <div class="profile-info">
+                        <p>Phone Number: </p>
+                        @* <p>@Model.PhoneNumber</p> *@
+                        <p>@(Model.PhoneNumber ?? "Phone number not provided")</p>
+
+                    </div>
+            
+               
+                </div>
+
+
+                <!-- Action Buttons -->
+                <div class="actions-container">
+                    <a asp-action="EditProfile" class="btn btn-primary">
+                        <i class="fa-solid fa-user-edit"></i>Edit Profile
+                    </a>
+                    <a asp-action="ChangePasswordPage" class="btn btn-secondary">
+                        <i class="fa-solid fa-key"></i>Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Script for Animations -->
+    <script>
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                button.style.transform = 'scale(1.05)';
+                button.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.3)';
+            });
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = 'scale(1)';
+                button.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

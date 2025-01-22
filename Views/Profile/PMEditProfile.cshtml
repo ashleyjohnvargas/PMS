@@ -1,0 +1,181 @@
+﻿@{
+    ViewData["Title"] = "Cozy Homes - Edit Profile";
+    Layout = "~/Views/Shared/_LayoutPM.cshtml";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozy Homes - Profile</title>
+    <!-- Add Poppins Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+
+        main {
+            flex: 1;
+            background: white;
+            margin: 10px auto;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        form {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 15px;
+        }
+
+            .form-section:first-child {
+                margin-right: 10px;
+            }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+            .form-row div {
+                flex: 1;
+            }
+
+        .label {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .profile-picture {
+            text-align: center;
+        }
+
+            .profile-picture img {
+                width: 250px;
+                height: 300px;
+                border-radius: 1%;
+                border: 2px solid #ccc;
+            }
+
+            .profile-picture label {
+                display: block;
+                margin-top: 10px;
+                font-size: 14px;
+                color: #555;
+            }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+            .buttons button {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            .buttons .cancel {
+                background-color: #ccc;
+                color: white;
+            }
+
+            .buttons .save {
+                background-color: #a67c68;
+                color: white;
+            }
+
+        footer {
+            text-align: center;
+            font-size: 16px;
+            color: white;
+            background-color: #a67c68;
+            padding: 24px 24px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+  
+        <form>
+            <div class="form-section">
+                <div class="form-row">
+                    <div style="flex: 1; margin-right: 20px;">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name" name="first-name" value="Mik" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name" name="last-name" value="Mik" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div style="flex: 1; margin-right: 20px;">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="mikmik@gmail.com" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="unit">Unit</label>
+                        <input type="text" id="unit" name="unit" value="1" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" name="current-password" required>
+                </div>
+                <div>
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" name="new-password" required>
+                </div>
+                <div>
+                    <label for="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
+            </div>
+            <div class="form-section">
+                <div class="profile-picture">
+                    <label for="file">Change Picture</label>
+                    <img src="~/images/user-pic.png" alt="Profile Picture">
+                    <label for="file">Attach File</label>
+                    <input type="file" id="file" name="file">
+                </div>
+                <div class="buttons">
+                    <button type="button" class="cancel">Cancel</button>
+                    <button type="submit" class="save">Save Changes</button>
+                    @* <button type="submit" class="log out">Log Out</button> *@
+                </div>
+            </div>
+        </form>

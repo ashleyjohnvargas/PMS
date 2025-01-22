@@ -265,7 +265,7 @@
     <!-- Banner Section -->
     <section class="banner">
         <img src="~/images/bg.png" alt="Banner Image" class="banner-image">
-        <div class="centered"> <span>Welcome back, MikMik Alexander! </span></div>
+        <div class="centered"> <span>Welcome, @Context.Session.GetString("FirstName") @Context.Session.GetString("LastName")!</span></div>
     </section>
 
     <!-- Dashboard -->

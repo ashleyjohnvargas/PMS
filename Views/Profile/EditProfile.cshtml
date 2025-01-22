@@ -1,0 +1,192 @@
+@model PMS.Models.Profile
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<!-- Include CSS files -->
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+
+<div class="fade-in">
+    @* @{ *@
+    @*     var successMessage = TempData["SuccessMessage"]; *@
+    @*     var errorMessage = TempData["ErrorMessage"]; *@
+    @* } *@
+
+  
+
+    <!-- Page Header with Go Back Icon -->
+    <div class="d-flex align-items-center mb-4" style="width: 1000px; margin: 20px 0 0 26px;">
+        <a href="javascript:history.back()" class="text-decoration-none" title="Go Back">
+            <i class="fa-solid fa-arrow-left fs-3 text-light"></i>
+        </a>
+        @* <a asp-controller="Profile" asp-action="GoBack" class="text-decoration-none me-3 text-dark" title="Go Back"> *@
+        @*     <i class="fa-solid fa-arrow-left fs-3"></i> *@
+        @* </a> *@
+        <h2 class="mb-0 fw-bold" style="font-size: 1.8rem; color: #343a40;">Edit Profile</h2>
+    </div>
+    <div>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    </div>
+
+    <!-- Centered Form in a Card -->
+    <div class="container d-flex justify-content-center" style="margin-bottom: 80px;">
+        <div class="card shadow-sm p-4" style="width: 100%; max-width: 750px; border-radius: 12px; background-color: #ffffff;">
+            <div class="card-body">
+                <form asp-action="UpdateProfile" method="post">
+                    
+                    <!-- First and Last Name -->
+                    <div class="form-group mb-4">
+                        <label for="FirstName" class="fw-semibold" style="font-size: 1.1rem; color: #555;">First Name</label>
+                        <input type="text" class="form-control form-control-lg" id="FirstName" name="FirstName" value="@Model.FirstName">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="LastName" class="fw-semibold" style="font-size: 1.1rem; color: #555;">Last Name</label>
+                        <input type="text" class="form-control form-control-lg" id="LastName" name="LastName" value="@Model.LastName">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group mb-4">
+                        <label for="Email" class="fw-semibold" style="font-size: 1.1rem; color: #555;">Email</label>
+                        <input type="email" class="form-control form-control-lg" id="Email" name="Email" value="@Model.Email">
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group mb-4">
+                        <label for="PhoneNumber" class="fw-semibold" style="font-size: 1.1rem; color: #555;">Phone Number</label>
+                        <input type="tel" class="form-control form-control-lg" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber">
+                    </div>
+
+                    @* <!-- Address --> *@
+                    @* <div class="form-group mb-4"> *@
+                    @*     <label for="Address" class="fw-semibold" style="font-size: 1.1rem; color: #555;">Address</label> *@
+                    @*     <input type="text" class="form-control form-control-lg" id="Address" name="Address" value="@Model.Address"> *@
+                    @* </div> *@
+
+                    @* <form method="post" enctype="multipart/form-data" action="/Profile/UploadPicture"> *@
+                    @*     <div class="form-group mb-4"> *@
+                    @*         <label for="ProfilePicture" class="fw-semibold" style="font-size: 1.1rem; color: #555;">Profile Picture</label> *@
+                    @*         <input type="file" class="form-control form-control-lg" id="ProfilePicture" name="ProfilePicture" accept="image/*"> *@
+                    @*     </div> *@
+                    @*     <button type="submit" class="btn btn-primary">Upload</button> *@
+                    @* </form> *@
+                    @* <div class="form-section"> *@
+                    @*     <div class="profile-picture"> *@
+                    @*         <label for="file">Change Picture</label> *@
+                    @*         <img src="~/images/user-pic.png" alt="Profile Picture"> *@
+                    @*         <label for="file">Attach File</label> *@
+                    @*         <input type="file" id="file" name="file"> *@
+                    @*     </div> *@
+                    @* </div> *@
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg px-5" style="border-radius: 25px; font-size: 1.1rem;">
+                            <i class="fa-solid fa-check-circle me-2"></i> Save Changes
+                        </button>
+                    </div>
+
+                    <!-- Cancel Button -->
+                    <div class="text-center mt-3">
+                        <a asp-action="ProfilePage" class="btn btn-secondary btn-lg px-5" style="border-radius: 25px; font-size: 1.1rem;">
+                            <i class="fa-solid fa-times-circle me-2"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger mt-3 text-center">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+@if (ViewData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success mt-3 text-center">
+        @ViewData["SuccessMessage"]
+    </div>
+}
+
+
+<!-- Fade-In Animation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fadeInElements = document.querySelectorAll('.fade-in');
+        fadeInElements.forEach(el => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                el.style.transition = 'opacity 0.8s ease-in-out, transform 0.8s ease-in-out';
+                el.style.opacity = 1;
+                el.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    });
+</script>
+
+<!-- Custom Styling -->
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        width: auto 1000px;
+        margin-bottom: 50px;
+    }
+
+    h2 {
+        color: #495057;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        border-color: #80bdff;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+    }
+
+    .fade-in {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    .fw-semibold {
+        font-weight: 600;
+    }
+</style>
