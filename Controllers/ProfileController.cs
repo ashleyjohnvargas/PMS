@@ -14,6 +14,21 @@ namespace PMS.Controllers
             _logger = logger;
         }
 
+        public IActionResult ProfilePage2()
+        {
+            var model = new Profile(); // Ensure it's initialized
+            return View(model);
+        }
+        public IActionResult EditProfile2()
+        {
+            return View();
+        }
+
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
         // Display the profile page
         public IActionResult ProfilePage()
         {

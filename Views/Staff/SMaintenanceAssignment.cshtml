@@ -2,21 +2,144 @@
     ViewData["Title"] = "Cozy Homes - Maintenance Assignment";
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
 }
+<style>
+    /* body { */
+    /*     font-family: Arial, sans-serif; */
+    /* } */
 
-<div class="header-panel">
-    <h2>MAINTENANCE ASSIGNMENT</h2>
-    <div class="search-bar">
-        <input type="text" placeholder="Search..." id="search" />
-        <button><i class="fas fa-search"></i></button>
+    /* Button Styling */
+    .start-btn {
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .start-btn:hover {
+            background-color: #0056b3;
+    }
+    /* Button Styling */
+    .mark-as-done-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .mark-as-done-btn:hover {
+            background-color: #45a049;
+        }
+
+    /* Modal Styling */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        border-radius: 8px;
+        width: 40%;
+        text-align: left;
+    }
+
+    .modal-header {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .modal input,
+    .modal textarea {
+        width: 100%;
+        padding: 8px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .modal-buttons {
+        text-align: right;
+    }
+
+    .close-btn,
+    .save-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .close-btn {
+        background-color: #f44336;
+    }
+
+        .close-btn:hover {
+            background-color: #d32f2f;
+        }
+
+    .save-btn:hover {
+        background-color: #45a049;
+    }
+</style>
+<header>
+    <div class="main-header">
+        <p><span class="header-title">MAINTENANCE ASSIGNMENT</span></p>
+        @* <nav> *@
+        @*     <ul> *@
+        @*                     <li><a href="#">Maintenance Assignment</a></li> *@
+        @*                     <li><a href="#">Maintenance History</a></li> *@
+        @*                     <li class="dropdown"></li> *@
+        @*                 </ul> *@
+        @*             </nav> *@
     </div>
-
+</header>
+@* <div class="header-panel"> *@
+@*     <h2>MAINTENANCE ASSIGNMENT</h2> *@
+    @* <div class="search-bar"> *@
+    @*     <input type="text" placeholder="Search..." id="search" /> *@
+    @*     <button><i class="fas fa-search"></i></button> *@
+    @* </div> *@
+<main class="container">
+    <div class="header-panel">
     <!-- Date Dropdown -->
-    <div class="dropdown-container">
-        <select id="date-dropdown">
-            <option value="2025-01-15">January 15, 2025</option>
-            <option value="2025-01-14">January 14, 2025</option>
-        </select>
+        <div class="dropdown-container">
+            <label for="date-picker" style="color: #fff; margin-right: 8px;">Select Date:  </label>
+            <input id="date-picker" type="text" style="padding: 5px; border-style:none; background-color: transparent; color: #fff" placeholder="">
+        </div>
+
+        @* <div class="dropdown-container" style="font-size: 16px;"> *@
+        @*     <label for="month-picker" style="color: #fff; ">Select Month:</label> *@
+        @*     <input id="month-picker" type="text" style="padding: 5px; border-radius: 5px; margin-left: 8px; width: 140px" placeholder="Select a month"> *@
+        @* </div> *@
     </div>
+
+
+    @* <div class="dropdown-container"> *@
+    @*     <select id="date-dropdown"> *@
+    @*         <option value="2025-01-15">January 15, 2025</option> *@
+    @*         <option value="2025-01-14">January 14, 2025</option> *@
+    @*     </select> *@
+    @* </div> *@
 </div>
 
 <!-- Table -->
@@ -30,8 +153,8 @@
                 <th>Request Task</th>
                 <th>Category</th>
                 <th>Urgency Level</th>
-                <th>Date Started</th>
-                <th>Date Finished</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -42,19 +165,15 @@
                 <td>Fix Air Conditioning</td>
                 <td>Electrical</td>
                 <td>High</td>
-                <td>2025-01-15 09:00</td>
-                <td>2025-01-15 12:00</td>
+                <td>Pending</td>
+                <td>
+                        <button class="start-btn">Start</button>
+                        @* <button class="details-btn">Mark As Done</button> *@
+                        <button class="mark-as-done-btn" id="markAsDoneBtn">Mark As Done</button>
+
+                    </td>
             </tr>
-            <tr>
-                <td>2</td>
-                <td>Unit 102</td>
-                <td>2025-01-14 10:30</td>
-                <td>Replace Lightbulbs</td>
-                <td>Electrical</td>
-                <td>Medium</td>
-                <td>2025-01-14 11:00</td>
-                <td>2025-01-14 11:30</td>
-            </tr>
+          
         </tbody>
     </table>
 
@@ -65,3 +184,78 @@
     </div>
 </div>
 
+</main>
+
+
+<!-- Modal -->
+<div id="markAsDoneModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">Mark As Done</div>
+        <form id="markAsDoneForm">
+            <label for="done-date">Date:</label>
+            <input type="text" id="done-date" placeholder="Select a date" required>
+
+            <label for="done-time">Time:</label>
+            <input type="time" id="done-time" required>
+
+            <label for="done-comment">Comment:</label>
+            <textarea id="done-comment" rows="4" placeholder="Enter your comment"></textarea>
+
+            <label for="done-fee">Fee:</label>
+            <input type="number" id="done-fee" placeholder="Enter fee amount" required>
+
+            <div class="modal-buttons">
+                <button type="button" class="close-btn" id="closeModalBtn">Close</button>
+                <button type="submit" class="save-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    // Initialize flatpickr for date picker
+    flatpickr("#done-date", {
+      dateFormat: "F j, Y",
+      defaultDate: new Date() // Default to today
+    });
+
+    // Modal functionality
+    const modal = document.getElementById('markAsDoneModal');
+    const openModalBtn = document.getElementById('markAsDoneBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const form = document.getElementById('markAsDoneForm');
+
+    // Open modal
+    openModalBtn.addEventListener('click', () => {
+      modal.style.display = 'block';
+    });
+
+    // Close modal
+    closeModalBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const date = document.getElementById('done-date').value;
+      const time = document.getElementById('done-time').value;
+      const comment = document.getElementById('done-comment').value;
+      const fee = document.getElementById('done-fee').value;
+
+      // Save the data (you can replace this with an API call or database logic)
+      console.log({ date, time, comment, fee });
+
+      alert('Marked as done successfully!');
+      modal.style.display = 'none';
+      form.reset();
+    });
+</script>

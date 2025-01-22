@@ -12,7 +12,16 @@
     @* <link rel="stylesheet" href="~/css/site.css"  /> *@
     @* <link rel="stylesheet" href="~/css/styles.css"  /> *@
     <link rel="stylesheet" href="~/css/staff.css" />
+    <link rel="stylesheet" href="~/css/maintenance.css" />
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- Include Flatpickr Month Select Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+    <!-- Include Flatpickr JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- <link rel="stylesheet" href="~/RMS.styles.css" asp-append-version="true" /> -->
 </head>
@@ -37,7 +46,7 @@
                 <ul>
                     <li><a asp-controller="Staff" asp-action="SHomePage">Home</a></li>
                     <li><a asp-controller="Staff" asp-action="SMaintenanceAssignment">Assignment</a></li>
-                    <li><a asp-controller="Staff" asp-action="SMaintenanceHistory">Requests</a></li>
+                    <li><a asp-controller="Staff" asp-action="SMaintenanceHistory">History</a></li>
                     <li class="s-dropdown">
                         <a href="#" class="dropbtn" aria-label="Notifications">
                             <i class="fas fa-bell" style="margin-right: 10px; margin-top:4px; text-decoration: none"></i>
@@ -76,7 +85,7 @@
                         </a>
 
                         <div class="sdropdown-content">
-                            <a asp-controller="Staff" asp-action="SEditProfile">Edit Profile</a>
+                            <a asp-controller="Profile" asp-action="ProfilePage2">Profile</a>
                             <a asp-controller="Login" asp-action="Logout" class="logout" onclick="return confirmLogout(event);">Log Out</a>
                         </div>
                     </li>
@@ -117,10 +126,52 @@
             }
             return confirmation;
         }
+
+         document.addEventListener("DOMContentLoaded", function() {
+            flatpickr("#date-picker", {
+                dateFormat: "F j, Y", // Format: January 15, 2025
+                defaultDate: "2025-01-15" // Set a default date
+            });
+        });
+
+            // Initialize Flatpickr with custom date format
+        flatpickr("#date-picker", {
+            dateFormat: "F j, Y", // Format: January 15, 2025
+            defaultDate: new Date(), // Default to today's date
+        });
+
+              
+   
+
+        // Initialize Flatpickr as a month picker
+        flatpickr("#month-picker", {
+            dateFormat: "F Y", // Display format: January 2025
+            defaultDate: new Date(), // Default to current month/year
+            plugins: [new monthSelectPlugin({ // Use the month select plugin
+                shorthand: false, // Full month names (e.g., January instead of Jan)
+                dateFormat: "F Y", // Display format in the input
+                altFormat: "F Y" // Alternate display format
+            })]
+        });
+  
+
+   
+             // Get today's date in YYYY-MM-DD format
+        // const today = new Date();
+        // const formattedDate = today.toISOString().split('T')[0]; "2025-01-22"
+
+        // Set the placeholder to today's date
+        // const datePicker = document.getElementById("date-picker");
+        // datePicker.placeholder = formattedDate;
+
+        // Optionally set the default value to today's date as well
+        // datePicker.value = formattedDate;
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/maintenance.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

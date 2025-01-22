@@ -19,6 +19,8 @@
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css" rel="stylesheet" asp-append-version="true">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 
     <!--Font Awesome Icons-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -154,11 +156,22 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    
+
+    <div class="container" style="position: relative;">
+        <!-- Arrow in the upper left -->
+        <a href="javascript:history.back()" class="text-decoration-none"
+           title="Go Back" style="position: absolute; top: 10px; left: 10px; margin: 30px; font-size: 20px;">
+            <i class="fa-solid fa-arrow-left fs-3 text-light"></i>
+        </a>
+
         <div class="logo">
+
             <img src="~/images/cozy-logo.png" alt="Cozy Homes Logo">
             <span class="logo">Cozy Homes</span>
         </div>
+
+
         <h1>Welcome to</h1>
         <h2>Cozy Homes Rental Management System</h2>
         <p>Please Login to your account.</p>
