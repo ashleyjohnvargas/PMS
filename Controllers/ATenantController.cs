@@ -57,21 +57,21 @@ namespace PMS.Controllers
             var profile = _context.UserProfiles.FirstOrDefault(p => p.Id == userId);
             var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
 
-            if (profile == null)
-            {
-                // Create a default profile for new users
-                profile = new Profile
-                {
-                    FirstName = "",
-                    LastName = "",
+            //if (profile == null)
+            //{
+            //    // Create a default profile for new users
+            //    profile = new Profile
+            //    {
+            //        FirstName = "",
+            //        LastName = "",
 
-                    Email = "",
-                    PhoneNumber = "",
-                    Address = ""
-                };
-                _context.UserProfiles.Add(profile);
-                _context.SaveChanges();
-            }
+            //        Email = "",
+            //        PhoneNumber = "",
+            //        Address = ""
+            //    };
+            //    _context.UserProfiles.Add(profile);
+            //    _context.SaveChanges();
+            //}
             return View(profile);
         }
 
@@ -169,7 +169,7 @@ namespace PMS.Controllers
             }
 
             // Redirect to the profile page
-            return RedirectToAction("ATenantProfile2");
+            return RedirectToAction("ATenantProfilePage");
         }
 
 

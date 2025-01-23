@@ -1,8 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Cozy Homes - Tenant Profile Page";
-    Layout = "~/Views/Shared/_LayoutATenant.cshtml";
+    ViewData["Title"] = "Cozy Homes - Staff Profile";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    // Layout = null;
 }
-
 
  @model PMS.Models.Profile
 <!DOCTYPE html>
@@ -11,13 +11,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozy Homes: Profile</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* General Styles */
@@ -147,7 +144,7 @@
 </head>
 <body>
     <!-- Page Header -->
-    <section class="profile-page">
+    <section class="profile-page">      
         @* @TempData["ErrorMessage"] *@
 
         @* @if (TempData["ErrorMessage"] != null) *@
@@ -173,6 +170,7 @@
                     <h1 style="margin-left: 10px;">Profile</h1>
                 </a>
             </div>
+
             @{
                 var successMessage = TempData["SuccessMessage"];
                 var errorMessage = TempData["ErrorMessage"];
@@ -191,24 +189,6 @@
                     @errorMessage
                 </div>
             }
-            
-            @* @{ *@
-            @*     var successMessage = TempData["SuccessMessage"]; *@
-            @*     var errorMessage = TempData["ErrorMessage"]; *@
-            @* } *@
-            @* @if (ViewData["ErrorMessage"] != null) *@
-            @* { *@
-            @*     <div class="alert alert-danger mt-3 text-center"> *@
-            @*         @ViewData["ErrorMessage"] *@
-            @*     </div> *@
-            @* } *@
-
-            @* @if (ViewData["SuccessMessage"] != null) *@
-            @* { *@
-            @*     <div class="alert alert-success mt-3 text-center"> *@
-            @*         @ViewData["SuccessMessage"] *@
-            @*     </div> *@
-            @* } *@
 
             <div class="profile-info" align="left">
                 <p><strong>First Name:</strong> @(Model.FirstName ?? "First name not provided")</p>
@@ -230,15 +210,15 @@
 
             <!-- Action Buttons -->
             <div class="actions-container">
-                <a asp-controller="ATenant" asp-action="ATenantEditProfile2">
+                <a asp-controller="Staff" asp-action="SEditProfile">
                     <button class="btn btn-primary">
                         <i class="fa-solid fa-user-edit"></i> Edit Profile
                     </button>
                 </a>
-                <a asp-controller="ATenant" asp-action="ATenantChangePassword">
-                    <button class="btn btn-secondary">
-                        <i class="fa-solid fa-key"></i> Change Password
-                    </button>
+                <a asp-controller="Staff" asp-action="ChangePassword"> 
+                <button  class="btn btn-secondary">
+                    <i class="fa-solid fa-key"></i> Change Password
+                </button>
                 </a>
             </div>
         </div>

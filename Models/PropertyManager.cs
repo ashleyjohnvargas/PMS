@@ -10,7 +10,6 @@ namespace PMS.Models
 
         [ForeignKey(nameof(User))]
         public int? UserId { get; set; }
-        public string? PhoneNumber { get; set; } // Staff phone number
         public virtual User? User { get; set; }
     }
 }

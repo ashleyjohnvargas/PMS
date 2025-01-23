@@ -233,21 +233,25 @@ namespace PMS.Controllers
                 TermsAndConditions = user.TermsAndConditions,
                 DateCreated = DateTime.Now,
             };
-            _context.Users.Add(newUser);
 
-            // Before adding the profile, check if one already exists for the user
+            // Add the new user to the Users table
+            _context.Users.Add(newUser);
+            _context.SaveChanges();  // Save the user to generate the UserID
+
+            // After saving, newUser.UserID will be populated with the generated value
             var existingProfile = _context.UserProfiles.FirstOrDefault(p => p.Id == newUser.UserID);
             if (existingProfile == null)
             {
+                // Create a new profile using the generated UserID
                 var newProfile = new Profile
                 {
-                    Id = newUser.UserID,
+                    Id = newUser.UserID, // Use the generated UserID
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email
                 };
                 _context.UserProfiles.Add(newProfile);
-                _context.SaveChanges();  // Save the profile only if it's a new user
+                _context.SaveChanges();  // Save the profile
             }
 
             // Store user information in the session

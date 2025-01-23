@@ -14,7 +14,7 @@ namespace PMS.Models
         public decimal? Amount { get; set; } // Amount paid
         public string? PaymentMethod { get; set; } // E.g., Cash, Credit Card, Bank Transfer
         public string PaymentStatus { get; set; } = "Pending"; // E.g., Paid, Pending, Failed
-        public string? TransactionReference { get; set; } // Unique transaction identifier for tracking
+        //public string? TransactionReference { get; set; } // Unique transaction identifier for tracking
         public virtual Lease? Lease { get; set; } // Navigation property
     }
 }

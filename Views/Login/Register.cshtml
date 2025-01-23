@@ -255,15 +255,25 @@
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" asp-for="Email" id="email" name="email" placeholder="Enter your email" required>
-            </div>
 
+
+            </div>
+            
             <!-- Password and Confirm Password Fields -->
             <div class="form-group" style="display: flex; justify-content: space-between; gap: 4%;">
                 <!-- Password Field -->
                 <div style="width: 48%; position: relative;">
                     <label for="password">Password</label>
-                    <input type="password" asp-for="Password" id="password" placeholder="Create your password"
-                           style="width: 100%; padding-right: 40px;" required>
+                    <input type="password" asp-for="Password" id="password"
+                           placeholder="Create your password"
+                           style="width: 100%; padding-right: 40px;"
+                           oninput="updatePasswordLengthCounter('password', 'passwordCounter')"
+                           required>
+                    <!-- Password length counter -->
+                    <span id="passwordCounter"
+                          style="position: absolute; top: 10px; right: 10px; font-size: 12px; color: gray;">
+                        0/64
+                    </span>
                     <span class="toggle-password" onclick="togglePasswordVisibility('password', this)"
                           title="Show/Hide Password"
                           style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
@@ -275,7 +285,15 @@
                 <div style="width: 48%; position: relative;">
                     <label for="confirm-password">Confirm Password</label>
                     <input type="password" asp-for="ConfirmPassword" id="confirm-password"
-                           placeholder="Confirm your password" style="width: 100%; padding-right: 40px;" required>
+                           placeholder="Confirm your password"
+                           style="width: 100%; padding-right: 40px;"
+                           oninput="updateConfirmPasswordLengthCounter('confirm-password', 'confirmPasswordCounter')"
+                           required>
+                    <!-- Confirm Password length counter -->
+                    <span id="confirmPasswordCounter"
+                          style="position: absolute; top: 10px; right: 10px; font-size: 12px; color: gray;">
+                        0/64
+                    </span>
                     <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password', this)"
                           title="Show/Hide Password"
                           style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
@@ -283,6 +301,48 @@
                     </span>
                 </div>
             </div>
+
+            <!-- Password Mismatch Warning -->
+            <p id="passwordMatchMessage" style="color: red; font-size: 12px; display: none;">
+                Passwords do not match!
+            </p>
+
+
+            @* <!-- Password and Confirm Password Fields --> *@
+            @* <div class="form-group" style="display: flex; justify-content: space-between; gap: 4%;"> *@
+            @*     <!-- Password Field --> *@
+            @*     <div style="width: 48%; position: relative;"> *@
+            @*         <label for="password">Password</label> *@
+            @*         <input type="password" asp-for="Password" id="password" placeholder="Create your password" *@
+            @*                style="width: 100%; padding-right: 40px;" required> *@
+            @*         <!-- Password length counter --> *@
+            @*         <span id="passwordLengthCounter" *@
+            @*               style="position: absolute; top: 10px; right: 10px; font-size: 12px; color: gray;"> *@
+            @*             0/64 *@
+            @*         </span> *@
+            @*         <span class="toggle-password" onclick="togglePasswordVisibility('password', this)" *@
+            @*               title="Show/Hide Password" *@
+            @*               style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;"> *@
+            @*             <i class="bx bx-hide"></i> *@
+            @*         </span> *@
+            @*     </div> *@
+
+            @*     <!-- Confirm Password Field --> *@
+            @*     <div style="width: 48%; position: relative;"> *@
+            @*         <label for="confirm-password">Confirm Password</label> *@
+            @*         <input type="password" asp-for="ConfirmPassword" id="confirm-password" *@
+            @*                placeholder="Confirm your password" style="width: 100%; padding-right: 40px;" required> *@
+            @*         <span id="passwordLengthCounter" *@
+            @*               style="position: absolute; top: 10px; right: 10px; font-size: 12px; color: gray;"> *@
+            @*             0/64 *@
+            @*         </span> *@
+            @*         <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password', this)" *@
+            @*               title="Show/Hide Password" *@
+            @*               style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;"> *@
+            @*             <i class="bx bx-hide"></i> *@
+            @*         </span> *@
+            @*     </div> *@
+            @* </div> *@
 
             <!-- Terms and Conditions -->
             <div class="form-group" style="margin:10px" >
@@ -305,7 +365,7 @@
             <!-- Submit Button -->
             <button type="submit" class="signup-btn">Sign Up</button>
 
-            <p>Already a member? <a asp-controller="Login" asp-action="Login" class="login">Log In</a></p>
+            <p>Already a member? <a asp-controller="Login" asp-action="Login" class="login" id="loginButton">Log In</a></p>
         </form>
     </div>
 
@@ -413,6 +473,34 @@
     </div>
 
     <script>
+        // const minLength = 15;
+        // const maxLength = 64;
+
+        // function updatePasswordLengthCounter(fieldId, counterId) {
+        //     Get field and counter elements
+        //     const field = document.getElementById(fieldId);
+        //     const counter = document.getElementById(counterId);
+
+        //     if (!field || !counter) {
+        //         console.error(`Field or counter not found: fieldId=${fieldId}, counterId=${counterId}`);
+        //         return;
+        //     }
+
+        //     const length = field.value.length;
+
+        //     Update the counter display
+        //     counter.textContent = `${length}/${maxLength}`;
+
+        //     Change counter color based on length
+        //     if (length < minLength) {
+        //         counter.style.color = "red"; Too short
+        //     } else if (length > maxLength) {
+        //         counter.style.color = "red"; Exceeds max length
+        //     } else {
+        //         counter.style.color = "green"; Valid length
+        //     }
+        // }
+
         // Get the modals
         var termsModal = document.getElementById("termsModal");
         var privacyModal = document.getElementById("privacyModal");
@@ -452,6 +540,73 @@
             }
         }
 
+        //    const minLength = 15;
+        // const maxLength = 64;
+
+        // function updatePasswordLengthCounter(fieldId, counterId) {
+        //     const field = document.getElementById(fieldId);
+        //     const counter = document.getElementById(counterId);
+        //     const length = field.value.length;
+
+        //     Update the counter display
+        //     counter.textContent = `${length}/${maxLength}`;
+
+        //     Change counter color based on length
+        //     counter.className = length < minLength || length > maxLength ? "text-danger" : "text-success";
+
+        //     Check if passwords match
+        //     if (fieldId === "confirm-password" || fieldId === "password") {
+        //         checkPasswordMatch();
+        //     }
+        // }
+
+        function checkPasswordMatch() {
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+            const message = document.getElementById("passwordMatchMessage");
+
+            if (password && confirmPassword) {
+                if (password !== confirmPassword) {
+                    message.textContent = "Passwords do not match.";
+                    message.style.display = "block"; // Show mismatch warning
+                } else {
+                    message.style.display = "none"; // Hide warning
+                }
+            } else {
+                message.style.display = "none"; // Hide warning if one field is empty
+            }
+        }
+
+        function togglePasswordVisibility(fieldId, iconElement) {
+            const field = document.getElementById(fieldId);
+            const isPasswordVisible = field.type === "text";
+
+            // Toggle password visibility
+            field.type = isPasswordVisible ? "password" : "text";
+
+            // Update icon (optional)
+            iconElement.innerHTML = isPasswordVisible
+                ? '<i class="bx bx-hide"></i>'
+                : '<i class="bx bx-show"></i>';
+        }
+
+
+
+        function togglePasswordVisibility(fieldId, iconElement) {
+            const field = document.getElementById(fieldId);
+            const isPasswordVisible = field.getAttribute("type") === "text";
+
+            // Toggle password visibility
+            field.setAttribute("type", isPasswordVisible ? "password" : "text");
+
+            // Toggle icon (optional)
+            if (isPasswordVisible) {
+                iconElement.innerHTML = '<i class="bx bx-hide"></i>';
+            } else {
+                iconElement.innerHTML = '<i class="bx bx-show"></i>';
+            }
+        }
+
 
                 // Show/Hide Password
                 function togglePasswordVisibility(fieldId, toggleIcon) {
@@ -468,6 +623,61 @@
                     }
                 }
 
+                //PasswordLengthCounter
+          function updatePasswordLengthCounter() {
+            const passwordField = document.getElementById("password");
+            const counter = document.getElementById("passwordCounter");
+            const loginButton = document.getElementById("loginButton");
+
+            const minLength = 15; // Minimum length
+            const maxLength = 64; // Maximum length
+
+            // Get current password length
+            const length = passwordField.value.length;
+
+            // Update counter display
+            counter.textContent = `${length}/${maxLength}`;
+
+            // Change counter color based on length
+            if (length < minLength) {
+                counter.style.color = "red"; // Too short
+                loginButton.disabled = true; // Disable login button
+            } else if (length > maxLength) {
+                counter.style.color = "red"; // Exceeds max length
+                loginButton.disabled = true; // Disable login button
+            } else {
+                counter.style.color = "green"; // Valid length
+                loginButton.disabled = false; // Enable login button
+            }
+        }
+
+          //PasswordLengthCounter
+          function updateConfirmPasswordLengthCounter() {
+            const passwordField = document.getElementById("confirm-password");
+            const counter = document.getElementById("confirmPasswordCounter");
+            const loginButton = document.getElementById("loginButton");
+
+            const minLength = 15; // Minimum length
+            const maxLength = 64; // Maximum length
+
+            // Get current password length
+            const length = passwordField.value.length;
+
+            // Update counter display
+            counter.textContent = `${length}/${maxLength}`;
+
+            // Change counter color based on length
+            if (length < minLength) {
+                counter.style.color = "red"; // Too short
+                loginButton.disabled = true; // Disable login button
+            } else if (length > maxLength) {
+                counter.style.color = "red"; // Exceeds max length
+                loginButton.disabled = true; // Disable login button
+            } else {
+                counter.style.color = "green"; // Valid length
+                loginButton.disabled = false; // Enable login button
+            }
+        }
     </script>
 </body>
 </html>

@@ -167,10 +167,26 @@
                 <input type="file" id="file" name="file">
             </div>
             <div class="buttons">
-                <button type="button" class="cancel">Cancel</button>
-                <button type="submit" class="save">Save Changes</button>
+                <button type="button" class="cancel" onclick="confirmAction('cancel')">Cancel</button>
+                <button type="submit" class="save" onclick="return confirmAction('save')">Save Changes</button>
                 @* <button type="submit" class="log out">Log Out</button> *@
             </div>
         </div>
     </form>
 </main>
+
+
+<script>
+    function confirmAction(actionType) {
+        let message = "";
+
+        if (actionType === "cancel") {
+            message = "Are you sure you want to cancel? Unsaved changes will be lost.";
+        } else if (actionType === "save") {
+            message = "Are you sure you want to save these changes?";
+        }
+
+        // Show confirmation dialog
+        return confirm(message);
+    }
+</script>

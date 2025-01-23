@@ -191,44 +191,77 @@
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
+            @* <div class="form-group"> *@
+            @*     <!-- Password Field --> *@
+            @*     <div style="width: 100%; position: relative;"> *@
+            @*         <label for="password">Password</label> *@
+            @*         <input type="password" id="password" name="password" placeholder="Enter your password" required> *@
+            @*         <span class="toggle-password" onclick="togglePasswordVisibility('password', this)" *@
+            @*               title="Show/Hide Password" *@
+            @*               style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;"> *@
+            @*             <i class="bx bx-hide"></i> *@
+            @*         </span> *@
+            @*     </div> *@
+            @*   </div> *@
             <div class="form-group">
-                <!-- Password Field -->
+                <!-- Password Field with Counter -->
                 <div style="width: 100%; position: relative;">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter your password"
+                           oninput="updatePasswordLengthCounter()" required>
+                    <!-- Password length counter -->
+                    <span id="passwordLengthCounter"
+                          style="position: absolute; top: 10px; right: 10px; font-size: 12px; color: gray;">
+                        0/64
+                    </span>
                     <span class="toggle-password" onclick="togglePasswordVisibility('password', this)"
                           title="Show/Hide Password"
                           style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
                         <i class="bx bx-hide"></i>
                     </span>
                 </div>
-              </div>
-            @* <div class="form-group" style="position: relative;"> *@
-            @*     <label for="password">Password</label> *@
-            @*     <input type="password" id="password" name="password" placeholder="Enter your password" required> *@
-            @*     <span class="toggle-password" onclick="togglePasswordVisibility('password', this)" *@
-            @*           title="Show/Hide Password" *@
-            @*           style="position: absolute; top: 38px; right: 15px; margin-right: 10px; cursor: pointer;"> *@
-            @*         <i class="bx bx-hide"></i> *@
-            @*     </span> *@
-            @* </div> *@
-            @* <div class="form-group">
-            <label>
-            <input type="checkbox"> Remember Me
-            </label>
-            </div> *@
-            <a asp-controller="Login" asp-action="ForgotPass" class="forgot-password">Forgot Password?</a>
+            </div>
+            <br>
+            @* <a asp-controller="Login" asp-action="ForgotPass" class="forgot-password">Forgot Password?</a> *@
             <!-- <a asp-controller="Home" asp-action="Index" class="login-btn">  </a>-->
             <button type="submit" class="login-btn">Log In</button>
 
 
             <p>
-                New member here? <a asp-controller="Login" asp-action="Register" class="register">Register Now</a>
+                New user here? <a asp-controller="Login" asp-action="Register" class="register">Register Now</a>
             </p>
         </form>
     </div>
     <script>
-        // Show/Hide Password
+        //PasswordLengthCounter
+          function updatePasswordLengthCounter() {
+            const passwordField = document.getElementById("password");
+            const counter = document.getElementById("passwordLengthCounter");
+            const loginButton = document.getElementById("loginButton");
+
+            const minLength = 15; // Minimum length
+            const maxLength = 64; // Maximum length
+
+            // Get current password length
+            const length = passwordField.value.length;
+
+            // Update counter display
+            counter.textContent = `${length}/${maxLength}`;
+
+            // Change counter color based on length
+            if (length < minLength) {
+                counter.style.color = "red"; // Too short
+                loginButton.disabled = true; // Disable login button
+            } else if (length > maxLength) {
+                counter.style.color = "red"; // Exceeds max length
+                loginButton.disabled = true; // Disable login button
+            } else {
+                counter.style.color = "green"; // Valid length
+                loginButton.disabled = false; // Enable login button
+            }
+        }
+
+            // Show/Hide Password
         function togglePasswordVisibility(fieldId, toggleIcon) {
             const passwordField = document.getElementById(fieldId);
             const icon = toggleIcon.querySelector("i");

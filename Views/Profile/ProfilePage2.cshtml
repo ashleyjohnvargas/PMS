@@ -12,6 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozy Homes: Profile</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -145,18 +147,18 @@
     <section class="profile-page">      
         @* @TempData["ErrorMessage"] *@
 
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-danger">
-                @TempData["ErrorMessage"]
-            </div>
-        }
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success">
-                @TempData["SuccessMessage"]
-            </div>
-        }
+        @* @if (TempData["ErrorMessage"] != null) *@
+        @* { *@
+        @*     <div class="alert alert-danger"> *@
+        @*         @TempData["ErrorMessage"] *@
+        @*     </div> *@
+        @* } *@
+        @* @if (TempData["SuccessMessage"] != null) *@
+        @* { *@
+        @*     <div class="alert alert-success"> *@
+        @*         @TempData["SuccessMessage"] *@
+        @*     </div> *@
+        @* } *@
 
         <!-- Profile Card -->
         <div class="profile-card">
@@ -173,17 +175,18 @@
                 var successMessage = TempData["SuccessMessage"];
                 var errorMessage = TempData["ErrorMessage"];
             }
-            @if (ViewData["ErrorMessage"] != null)
+
+            @if (successMessage != null)
             {
-                <div class="alert alert-danger mt-3 text-center">
-                    @ViewData["ErrorMessage"]
+                <div class="alert alert-success">
+                    @successMessage
                 </div>
             }
 
-            @if (ViewData["SuccessMessage"] != null)
+            @if (errorMessage != null)
             {
-                <div class="alert alert-success mt-3 text-center">
-                    @ViewData["SuccessMessage"]
+                <div class="alert alert-danger">
+                    @errorMessage
                 </div>
             }
 

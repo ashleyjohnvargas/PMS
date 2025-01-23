@@ -243,19 +243,37 @@
                     <input type="text" id="Address" name="Address" placeholder="@Model.Address">
 
                 <!-- Submit Button -- Add modal to confirm: listing the changes? -->
-                <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-success" onclick="confirmAction('btn-success')">
                         <i class="fa-solid fa-check-circle me-2"></i>
                         Save Changes
                     </button>
 
                 <!-- Cancel Button -- Add Confirm Yes no -->
-                    <a asp-action="ProfilePage2" class="btn btn-cancel">
+                    <a asp-action="ProfilePage2" class="btn btn-cancel" onclick="confirmAction('btn-cancel')">
                         <i class="fa-solid fa-times-circle me-2"></i> 
                         Cancel
                     </a>
             </form>
         </div>
     </section>
+
+
+    <script>
+        function confirmAction(actionType) {
+            let message = "";
+
+            if (actionType === "btn-cancel") {
+                message = "Are you sure you want to cancel? Unsaved changes will be lost.";
+            } else if (actionType === "btn-success") {
+                message = "Are you sure you want to save these changes?";
+            }
+
+            // Show confirmation dialog
+            return confirm(message);
+        }
+    </script>
 </body>
+
+
 </html>
 

@@ -16,6 +16,9 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
 
     <!-- Include Flatpickr Month Select Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
@@ -85,7 +88,7 @@
                         </a>
 
                         <div class="sdropdown-content">
-                            <a asp-controller="Profile" asp-action="ProfilePage2">Profile</a>
+                            <a asp-controller="Staff" asp-action="SProfilePage">Profile</a>
                             <a asp-controller="Login" asp-action="Logout" class="logout" onclick="return confirmLogout(event);">Log Out</a>
                         </div>
                     </li>
