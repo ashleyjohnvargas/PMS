@@ -110,13 +110,13 @@
                     <ul class="sub-tabs" >
                         <!-- Add a nested unordered list for sub-tabs -->
                         <li>
-                            <a asp-controller="PropertyManager" asp-action="PMLeasePending" class="nav-link" >
+                            <a asp-controller="PropertyManager" asp-action="PMManageLease" class="nav-link" >
                                 <i class="fas fa-hourglass-half"></i>
                                 <span class="link-text">Pending</span>
                             </a>
                         </li>
                         <li>
-                            <a asp-controller="PropertyManager" asp-action="PMLeaseActive" class="nav-link">
+                            <a asp-controller="PropertyManager" asp-action="PMActiveLease" class="nav-link">
                                 <i class="fas fa-file-alt"></i>
                                 <span class="link-text">Active</span>
                             </a>
@@ -126,7 +126,7 @@
                     
                 </li>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMPayments" class="nav-link">
+                    <a asp-controller="PropertyManager" asp-action="PMPaymentsOrig" class="nav-link">
                         <i class="fas fa-receipt"></i>
                         <span class="link-text">Payments</span>
                     </a>
@@ -138,7 +138,7 @@
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMAssignMaintenance" class="nav-link">
+                    <a asp-controller="PropertyManager" asp-action="PMStaff" class="nav-link">
                         <i class="fas fa-wrench"></i>
                         <span class="link-text">Staff</span>
                     </a>

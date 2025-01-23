@@ -1,13 +1,10 @@
-﻿@using Microsoft.AspNetCore.Http
-
+﻿
 @{
     //Layout = null; // Disable the layout for this view
     ViewData["Title"] = "Cozy Homes - Unit Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutATenant.cshtml";
 
 }
-
-@using Microsoft.AspNetCore.Http
 
 <!DOCTYPE html>
 <html>
@@ -104,12 +101,12 @@
         /* Home Details Page */
         .home-details {
             /* margin-left: auto;
-                        margin-right: auto;
-                        gap: 16px;
-                        display: flex;
-                        align-self: stretch;
-                        max-width: 15254px;
-                        width: 100%; */
+                margin-right: auto;
+                gap: 16px;
+                display: flex;
+                align-self: stretch;
+                max-width: 15254px;
+                width: 100%; */
             padding: 40px 10px;
             background-color: #e7e1d3;
         }
@@ -253,7 +250,7 @@
 <body>
 
     <!-- Home Details Section -->
-    <section class="home-details" style="min-width: 100vh; min-height: 100%; padding: 50px 40px;">
+    <section class="home-details" style="min-width: 100vh; min-height: 100vh; padding: 50px 40px;">
         <div class="det-container" style="min-width: 100vh; min-height: 100%; padding: 20px 15px;">
             <div class="col-1">
                 <!-- Main image -->
@@ -309,22 +306,14 @@
                         </div>
                     </div>
 
-
-                    @if (Context.Session.GetInt32("UserId") == null)
-                    {
-                        <a asp-controller="Login" asp-action="Login">
-                            <button class="btn">Book This Unit Now</button>
-                        </a>
-                    }
-                    else
-                    {
-                        <!-- Button to trigger AJAX request -->
-                        <button id="bookUnitBtn" class="btn" data-unit-id="@Model.UnitId">Book This Unit Now</button>
-                    }
+                    <!-- Button to trigger AJAX request -->
+                    <button id="bookUnitBtn" class="btn" data-unit-id="@Model.UnitId">Book This Unit Now</button>
                 </div>
             </div>
         </div>
     </section>
+
+
 
     <script>
         document.getElementById("bookUnitBtn").addEventListener("click", function (event) {
@@ -336,7 +325,7 @@
 
             // Use AJAX to send the unit ID to the ATenantApply action
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/PTenant/PTenantApply?unitId=" + unitId, true); // URL of the ATenantApply action
+            xhr.open("GET", "/ATenant/ATenantApply?unitId=" + unitId, true); // URL of the ATenantApply action
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
             xhr.onload = function () {
@@ -344,14 +333,14 @@
                     // Handle the success response (you can update the page or navigate to another page if needed)
                     console.log("Unit applied successfully: " + xhr.responseText);
                     // Optionally redirect or display a success message
-                    window.location.href = "/PTenant/PTenantApply?unitId=" + unitId; // Redirect to the apply page with unitId
+                    window.location.href = "/ATenant/ATenantApply?unitId=" + unitId; // Redirect to the apply page with unitId
                 } else {
                     console.error("Error applying for unit: " + xhr.statusText);
                 }
             };
 
             xhr.onerror = function () {
-                console.error("Request failed");
+                console.error("Request failed");    
             };
 
             // Send the request

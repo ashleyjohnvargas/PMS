@@ -19,16 +19,87 @@ namespace PMS.Controllers
         }
         public IActionResult PMManageLease()
         {
-            return View();
+            // Assuming _context is your DbContext instance
+            var leases = _context.Leases
+                .Include(l => l.Unit) // Include the related Unit entity
+                .Include(l => l.LeaseDetails) // Include the related LeaseDetail entity
+                .Where(l => l.LeaseStatus == "Pending") // Filter leases with LeaseStatus of 'Pending'
+                .Select(l => new LeaseViewModel
+                {
+                    LeaseID = l.LeaseID,
+                    TenantName = l.LeaseDetails.FullName, // Tenant's FullName from LeaseDetail
+                    UnitName = l.Unit.UnitName, // UnitName from Unit
+                    MonthlyRent = l.Unit.PricePerMonth, // MonthlyRent from Unit
+                    LeaseStartDate = l.LeaseStartDate,
+                    LeaseEndDate = l.LeaseEndDate,
+                    LeaseStatus = l.LeaseStatus
+                })
+                .ToList();
+
+            return View(leases);
         }
-        public IActionResult PMLeasePending()
+        public IActionResult PMActiveLease()
         {
-            return View();
+            // Assuming _context is your DbContext instance
+            var leases = _context.Leases
+                .Include(l => l.Unit) // Include the related Unit entity
+                .Include(l => l.LeaseDetails) // Include the related LeaseDetail entity
+                .Where(l => l.LeaseStatus == "Active") // Filter leases with LeaseStatus of 'Pending'
+                .Select(l => new LeaseViewModel
+                {
+                    LeaseID = l.LeaseID,
+                    TenantName = l.LeaseDetails.FullName, // Tenant's FullName from LeaseDetail
+                    UnitName = l.Unit.UnitName, // UnitName from Unit
+                    MonthlyRent = l.Unit.PricePerMonth, // MonthlyRent from Unit
+                    LeaseStartDate = l.LeaseStartDate,
+                    LeaseEndDate = l.LeaseEndDate,
+                    LeaseStatus = l.LeaseStatus
+                })
+                .ToList();
+
+            return View(leases);
         }
-        public IActionResult PMLeaseActive()
+
+        public IActionResult DownloadLeaseAgreement(int id)
         {
-            return View();
+            // Retrieve the lease using the LeaseID
+            var lease = _context.Leases.FirstOrDefault(l => l.LeaseID == id);
+
+            if (lease == null || string.IsNullOrEmpty(lease.LeaseAgreementFilePath))
+            {
+                // If no lease found or file path is missing, return an error message
+                TempData["ErrorMessage"] = "Lease agreement not found.";
+                return RedirectToAction("PMManageLease"); // Redirect to a relevant page
+            }
+
+            // Combine the base path (wwwroot) and the relative file path stored in the database
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", lease.LeaseAgreementFilePath.TrimStart('/'));
+
+            // Check if the file exists
+            if (!System.IO.File.Exists(filePath))
+            {
+                TempData["ErrorMessage"] = "Lease agreement file not found.";
+                return RedirectToAction("PMManageLease"); // Redirect to a relevant page
+            }
+
+            // Get the file content
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+
+            // Return the file for download with appropriate content type and filename
+            return File(fileBytes, "application/pdf", Path.GetFileName(filePath));
         }
+
+
+
+
+        //public IActionResult PMLeasePending()
+        //{
+        //    return View();
+        //}
+        //public IActionResult PMLeaseActive()
+        //{
+        //    return View();
+        //}
         public IActionResult PMAssignMaintenance()
         {
             return View();
@@ -60,10 +131,206 @@ namespace PMS.Controllers
                 return View(new List<UnitViewModel>()); // Return an empty list in case of error
             }
         }
-        public IActionResult PMPayments()
+        //public async Task<IActionResult> PMManageUnits()
+        //{
+        //    try
+        //    {
+        //        // Fetch data from the Units table
+        //        var units = await _context.Units
+        //            .Where(u => u.UnitStatus == "Active") // Filter for active units
+        //            .Select(u => new UnitViewModel
+        //            {
+        //                UnitId = u.UnitID,
+        //                UnitName = u.UnitName,
+        //                PricePerMonth = u.PricePerMonth,
+        //                UnitStatus = u.UnitStatus
+        //            })
+        //            .ToListAsync();
+
+        //        // Pass the list of units to the view
+        //        return View(units);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["ErrorMessage"] = $"Error loading units: {ex.Message}";
+        //        return View(new List<UnitViewModel>()); // Return an empty list in case of error
+        //    }
+        //}
+
+
+        [HttpPost]
+        public IActionResult UpdateLeaseStatus(LeaseValidationModel model)
         {
-            return View();
+            // Check if at least two valid IDs are selected
+            if (model.ValidIDs.Count < 2)
+            {
+                TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                TempData["PopupMessage"] = "Please select at least two valid IDs.";
+                TempData["PopupTitle"] = "Insufficient ID!";  // Set the custom title
+                TempData["PopupIcon"] = "warning";  // Set the icon dynamically (can be success, error, info, warning)
+                ModelState.AddModelError("", "At least two valid IDs must be selected.");
+                return RedirectToAction("PMManageLease"); // Return the view with validation errors
+            }
+
+            // Check if all selected IDs are valid
+            foreach (var id in model.ValidIDs)
+            {
+                if (!model.IDValidationResults.TryGetValue(id, out bool isValid) || !isValid)
+                {
+                    TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                    TempData["PopupMessage"] = "Selected IDs must be valid to proceed.";
+                    TempData["PopupTitle"] = "Invalid requirement!";  // Set the custom title
+                    TempData["PopupIcon"] = "warning";  // Set the icon dynamically (can be success, error, info, warning)
+                    ModelState.AddModelError("", "At least two valid IDs must be selected.");
+                    ModelState.AddModelError("", $"The ID '{id}' is not valid.");
+                    return RedirectToAction("PMManageLease");
+                }
+            }
+
+            // Check if the lease agreement and security deposit are confirmed
+            if (!model.LeaseAgreement || !model.SecurityDeposit)
+            {
+                TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                TempData["PopupMessage"] = "Applicant must have signed the lease and paid the security deposit.";
+                TempData["PopupTitle"] = "Missing requirement!";  // Set the custom title
+                TempData["PopupIcon"] = "warning";  // Set the icon dynamically (can be success, error, info, warning)
+                ModelState.AddModelError("", "At least two valid IDs must be selected.");
+                ModelState.AddModelError("", "Lease agreement and security deposit must be confirmed.");
+                return RedirectToAction("PMManageLease");
+            }
+
+            // Check if a payment method is selected
+            if (string.IsNullOrWhiteSpace(model.PaymentMethod))
+            {
+                TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                TempData["PopupMessage"] = "Please select the payment method used by the applicant.";
+                TempData["PopupTitle"] = "Missing requirement!";  // Set the custom title
+                TempData["PopupIcon"] = "warning";  // Set the icon dynamically (can be success, error, info, warning)
+                ModelState.AddModelError("", "A payment method must be selected.");
+                return RedirectToAction("PMManageLease");
+            }
+
+            if (model.LeaseAgreementFile == null)
+            {
+                TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                TempData["PopupMessage"] = "Please upload the contract.";
+                TempData["PopupTitle"] = "Missing requirement!";  // Set the custom title
+                TempData["PopupIcon"] = "warning";  // Set the icon dynamically (can be success, error, info, warning)
+                return RedirectToAction("PMManageLease");
+            }
+
+
+            // Process the uploaded lease agreement PDF file
+            if (model.LeaseAgreementFile != null && model.LeaseAgreementFile.Length > 0)
+            {
+                // Define the path to save the file in wwwroot/contracts
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "contracts");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath); // Create the directory if it does not exist
+                }
+
+                var filePath = Path.Combine(folderPath, model.LeaseAgreementFile.FileName);
+
+                // Save the file to the defined path
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.LeaseAgreementFile.CopyTo(stream);
+                }
+
+                // Update the LeaseAgreementFilePath in the Lease model
+                var currentLease = _context.Leases.FirstOrDefault(l => l.LeaseID == model.LeaseID);
+                if (currentLease != null)
+                {
+                    currentLease.LeaseAgreementFilePath = "/contracts/" + model.LeaseAgreementFile.FileName; // Store relative file path
+                    _context.SaveChanges();
+                }
+            }
+
+
+
+            // All validations passed, update the lease status
+            // Update the LeaseStatus in the database (pseudo code)
+            var lease = _context.Leases.Find(model.LeaseID);
+            lease.LeaseStatus = "Active";
+
+            var tenant = _context.Tenants.FirstOrDefault(t => t.TenantID == lease.TenantID);
+            tenant.IsActualTenant = true; // Set the tenant as the actual tenant
+            _context.SaveChanges();
+
+            TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+            TempData["PopupMessage"] = "Lease application has been successfully confirmed";
+            TempData["PopupTitle"] = "Tenant Confirmed";  // Set the custom title
+            TempData["PopupIcon"] = "success";  // Set the icon dynamically (can be success, error, info, warning)
+            return RedirectToAction("PMActiveLease"); // Redirect to a relevant page
         }
+
+
+
+
+        public IActionResult PMPaymentsOrig()
+        {
+            // Fetch payments and related data from the database
+            var payments = _context.Payments
+                .Include(p => p.Lease) // Include the Lease navigation property
+                .ThenInclude(l => l.LeaseDetails) // Include LeaseDetails for tenant's full name
+                .Include(p => p.Lease.Unit) // Include Unit for unit name and monthly rent
+                .Select(p => new ManagerPaymentDisplayModel
+                {
+                    PaymentId = p.PaymentID,
+                    TenantFullName = p.Lease.LeaseDetails.FullName, // Tenant full name from LeaseDetails
+                    Amount = p.Amount, // Amount from Payments
+                    UnitName = p.Lease.Unit.UnitName, // Unit name from Units table
+                    MonthlyRent = p.Lease.Unit.PricePerMonth, // Monthly rent from Units table
+                    PaymentDate = p.PaymentDate.HasValue ? p.PaymentDate.Value.ToString("MM/dd/yyyy") : "N/A",
+                    PaymentMethod = p.PaymentMethod // Payment method from Payments table
+                })
+                .ToList();
+
+            return View(payments); // Pass the list of PaymentDisplayModel to the view
+        }
+
+
+        public IActionResult ManagerPreviewInvoice(int id)
+        {
+            // Retrieve the Payment record based on PaymentID (id)
+            var payment = _context.Payments
+                                  .Include(p => p.Lease)
+                                      .ThenInclude(l => l.Unit)
+                                  .Include(p => p.Lease)
+                                      .ThenInclude(l => l.LeaseDetails)
+                                  .FirstOrDefault(p => p.PaymentID == id);
+
+            if (payment == null)
+            {
+                return NotFound(); // Handle the case where the payment record doesn't exist
+            }
+
+            // Get Lease and Tenant Details
+            var lease = payment.Lease;
+            var tenantName = lease?.LeaseDetails?.FullName;
+
+            // Get Unit Name
+            var unitName = lease?.Unit?.UnitName;
+
+            // Prepare the Invoice Preview Model
+            var invoicePreviewModel = new InvoicePreviewModel
+            {
+                PaymentId = payment.PaymentID,
+                LeaseNumber = lease?.LeaseID.ToString() ?? "N/A",
+                UnitName = unitName ?? "N/A",
+                MonthlyRent = payment.Amount ?? 0,
+                TenantName = tenantName ?? "N/A",
+                PaymentDate = payment.PaymentDate?.Date ?? DateTime.Now.Date,
+                PaymentTime = payment.PaymentDate?.ToString("hh:mm tt") ?? "N/A",
+                PaymentMethod = payment.PaymentMethod ?? "N/A",
+                PaymentStatus = payment.PaymentStatus
+            };
+
+            // Pass the model to the view
+            return View(invoicePreviewModel);
+        }
+
 
         public IActionResult PMRequest()
         {
@@ -127,7 +394,7 @@ namespace PMS.Controllers
             }
         }
 
-      
+
 
         public IActionResult AddUnitPage()
         {
@@ -149,7 +416,7 @@ namespace PMS.Controllers
 
                 // Fetch images
                 var images = _context.UnitImages.Where(i => i.UnitId == id).ToList();
-                unit.Images = images; 
+                unit.Images = images;
 
                 return View(unit);
             }
@@ -159,6 +426,7 @@ namespace PMS.Controllers
                 return RedirectToAction("PMManageUnits");
             }
         }
+
 
 
         // Action for adding units
@@ -252,7 +520,6 @@ namespace PMS.Controllers
                 return RedirectToAction("AddUnitPage");
             }
         }
-
 
         // POST: EditUnit
         [HttpPost]
@@ -418,11 +685,38 @@ namespace PMS.Controllers
             return Json(filteredUnits); // Return filtered units as JSON
         }
 
-        //public IActionResult PMEditProfile()
-        //{
-        //    return View();
-        //}
+        public IActionResult PMStaff()
+        {
+            // Retrieve all staff from the database, including related User information
+            var staffList = _context.Staffs
+                .Select(staff => new
+                {
+                    StaffID = staff.StaffID,
+                    StaffName = staff.UserId != null ? staff.User.FirstName + " " + staff.User.LastName : "Unknown",
+                    StaffRole = staff.StaffRole,
+                    Shift = (staff.ShiftStartTime.HasValue && staff.ShiftEndTime.HasValue)
+                        ? (staff.ShiftStartTime.Value.Hour == 6 && staff.ShiftEndTime.Value.Hour == 14 ? "First"
+                        : staff.ShiftStartTime.Value.Hour == 14 && staff.ShiftEndTime.Value.Hour == 22 ? "Second"
+                        : staff.ShiftStartTime.Value.Hour == 22 || staff.ShiftStartTime.Value.Hour == 0 ? "Third"
+                        : "Unknown")
+                        : "Unknown",
+                    Availability = staff.IsVacant ? "Vacant" : "Occupied"
+                })
+                .ToList()
+                .Select(staff => new StaffViewModel
+                {
+                    StaffID = staff.StaffID,
+                    StaffName = staff.StaffName,
+                    StaffRole = staff.StaffRole,
+                    Shift = staff.Shift,
+                    Availability = staff.Availability
+                })
+                .ToList();
 
+            return View(staffList);
+        }
+
+        //Profile
         public IActionResult PMProfilePage()
         {
             //var model = new Profile(); // Ensure it's initialized

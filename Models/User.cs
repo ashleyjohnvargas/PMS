@@ -20,7 +20,15 @@ namespace PMS.Models
         public string? Role { get; set; } // Role (Property Manager, Staff, Tenant)
                                             // Set default value for IsActive in the constructor
         public bool IsActive { get; set; } = true; // Default value is true
-        public DateTime DateCreated { get; set; } // DateTime Created
+        public DateTime DateCreated { get; set; } //addedDateTime Created 
+
+        //public string? PhoneNumber { get; set; }
+        // Set default value for IsActive in the constructor
+        public virtual ICollection<Tenant> Tenants { get; set; } // Navigation property
+
+        //public virtual Tenant? Tenant { get; set; } // Navigation property
+        public virtual PropertyManager? PropertyManager { get; set; }
+        public virtual Staff? Staff { get; set; }
 
     }
 }

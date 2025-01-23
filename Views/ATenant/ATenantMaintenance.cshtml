@@ -3,41 +3,230 @@
     Layout = "~/Views/Shared/_LayoutATenant.cshtml";
 }
 
-<!-- Maintenance Request Content -->
-<section class="maintenance">
-    <div class="maintenance-container">
-        <h2>Make a Maintenance Request</h2>
-        <form>
-            <div class="form-group">
-                <label for="issue-type">Issue Type</label>
-                <select id="issue-type">
-                    <option value="plumbing">Plumbing</option>
-                    <option value="electrical">Electrical</option>
-                    <option value="general-repairs">General Repairs</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" placeholder="Describe the issue..."></textarea>
-            </div>
-            <div class="form-group">
-                <label for="upload">Upload Photo (optional)</label>
-                <input type="file" id="upload">
-            </div>
-            <div class="form-group">
-                <button type="submit">Submit Request</button>
-            </div>
-        </form>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+    * {
+        font-family: "Poppins", serif;
+    }
 
-        <div class="request-list">
-            <h3>Ongoing Requests</h3>
-            <div class="request-item">
-                <h4>Broken Heater</h4>
-                <p><strong>Status:</strong> In Progress</p>
-                <p><strong>Submitted On:</strong> Jan 1, 2025</p>
-            </div>
+    .header {
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+    }
+
+        .header h1 {
+            color: black;
+            margin: 0;
+        }
+
+        .header .add-unit {
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    .units-list-header {
+        background-color: #B0836E;
+        color: white;
+        text-align: left;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .search-bar {
+        margin: 20px;
+        text-align: right;
+    }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #B0836E;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+    .pagination {
+        text-align: right;
+        margin: 20px 0;
+    }
+
+        .pagination button {
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    .action-icons i {
+        cursor: pointer;
+        margin: 0 5px;
+    }
+
+        .action-icons i.edit {
+            color: #007bff;
+        }
+
+        .action-icons i.delete {
+            color: #dc3545;
+        }
+
+    #manage-units-body {
+    }
+</style>
+
+
+<div class="requests-mother-container" style="display: flex; justify-content: center;min-width: 100vh;min-height: 100vh;padding: 0 20px;">
+    <div id="manage-units-body" style="flex: 1;">
+        @if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
+        {
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@TempData["PopupMessage"]',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            </script>
+        }
+
+        <div class="header" style="margin-top: 50px; padding: 10px 0;">
+
+            @* <h1 style="color: #B0836E;">Leases</h1> *@
+            @*         <a asp-action="AddUnitPage" style="text-decoration: none;background-color: #B0836E;color: white;padding: 10px 20px;border-radius: 10px;">Add Lease</a>
+            *@
         </div>
+
+        <div class="units-list-header">
+            <h2>Requests</h2>
+            <a asp-action="MakeRequest" style="color: #B0836E; background-color: white; padding: 7px 15px;">Send Request</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tenant Name</th>
+                    <th>Unit</th>
+                    <th>Request Date</th>
+                    <th>Issue</th>
+                    <th>Assigned Staff</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int index = 1;
+                    foreach (var request in Model)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td>John Doe</td>
+                            <td>Unit 101</td>
+                            <td>2024-01-05</td>
+                            <td>Electrical</td>
+                            <td>Michael James</td>
+                            <td>Pending</td>
+                        </tr>
+                        index++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" style="text-align:center;">No requests found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
     </div>
-</section>
+
+</div>
+
+
+
+@* <!-- Maintenance Request Content --> *@
+@* <section class="maintenance"> *@
+@*     <div class="maintenance-container"> *@
+@*         <h2>Make a Maintenance Request</h2> *@
+@*         <form> *@
+@*             <div class="form-group"> *@
+@*                 <label for="issue-type">Issue Type</label> *@
+@*                 <select id="issue-type"> *@
+@*                     <option value="plumbing">Plumbing</option> *@
+@*                     <option value="electrical">Electrical</option> *@
+@*                     <option value="general-repairs">General Repairs</option> *@
+@*                     <option value="other">Other</option> *@
+@*                 </select> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label for="description">Description</label> *@
+@*                 <textarea id="description" placeholder="Describe the issue..."></textarea> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <label for="upload">Upload Photo (optional)</label> *@
+@*                 <input type="file" id="upload"> *@
+@*             </div> *@
+@*             <div class="form-group"> *@
+@*                 <button type="submit">Submit Request</button> *@
+@*             </div> *@
+@*         </form> *@
+
+@*         <div class="request-list"> *@
+@*             <h3>Ongoing Requests</h3> *@
+@*             <div class="request-item"> *@
+@*                 <h4>Broken Heater</h4> *@
+@*                 <p><strong>Status:</strong> In Progress</p> *@
+@*                 <p><strong>Submitted On:</strong> Jan 1, 2025</p> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </section> *@
 

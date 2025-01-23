@@ -1,0 +1,17 @@
+﻿@model dynamic
+
+<div class="unit-details">
+    <h2>@Model.UnitNAME</h2>
+    <p><strong>Description:</strong> @Model.Desc</p>
+    <p><strong>Bedrooms:</strong> @Model.NumberOfBedrooms</p>
+    <p><strong>Bathrooms:</strong> @Model.NumberOfBathrooms</p>
+    <p><strong>Monthly Rent:</strong> @Model.MonthlyRent</p>
+    <p><strong>Address:</strong> @Model.PropertyAddress</p>
+    <img src="@Model.MainImage" alt="Main Image" style="max-width: 100%; height: auto;">
+    <div class="gallery">
+        @foreach (var image in Model.GalleryImages)
+        {
+            <img src="@image" alt="Gallery Image" style="max-width: 100%; height: auto; padding: 10px;">
+        }
+    </div>
+</div>

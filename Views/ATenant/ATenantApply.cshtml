@@ -1,7 +1,7 @@
 ﻿@{
     //Layout = null; // Disable the layout for this view
     ViewData["Title"] = "Cozy Homes - Apply for Leasing";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutATenant.cshtml";
 
 }
 
@@ -129,14 +129,14 @@
 <!-- Home Details Section -->
 <section class="apply-leasing">
     @* <div class="cancel-button">
-    <a asp-controller="PTenant" asp-action="PTenantHomePage" style="text-decoration: none; display: flex; gap:5px; font-size:25px; align-items: center; color: #333;">
-    <i class="fa-solid fa-arrow-left-long"></i> Cancel
-    </a>
+        <a asp-controller="PTenant" asp-action="PTenantHomePage" style="text-decoration: none; display: flex; gap:5px; font-size:25px; align-items: center; color: #333;">
+            <i class="fa-solid fa-arrow-left-long"></i> Cancel
+        </a>
     </div> *@
     <div class="form-container">
         <h1>Apply for Leasing</h1>
         <form asp-action="ApplyForLease" method="post" style="display: flex;flex-direction: column;gap: 40px;">
-
+            
 
             <!-- Personal Information Section -->
             <fieldset>

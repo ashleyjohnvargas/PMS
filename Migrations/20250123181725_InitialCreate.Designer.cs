@@ -12,8 +12,8 @@ using PMS.Models;
 namespace PMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250110024934_CreateTablesInDB")]
-    partial class CreateTablesInDB
+    [Migration("20250123181725_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,9 @@ namespace PMS.Migrations
                     b.Property<string>("LeaseAgreementFilePath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LeaseDuration")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("LeaseEndDate")
                         .HasColumnType("datetime2");
 
@@ -43,13 +46,15 @@ namespace PMS.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LeaseStatus")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("Active");
+                        .HasDefaultValue("Pending");
 
                     b.Property<int?>("TenantID")
                         .HasColumnType("int");
+
+                    b.Property<bool?>("TermsAndConditions")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("UnitId")
                         .HasColumnType("int");
@@ -61,6 +66,50 @@ namespace PMS.Migrations
                     b.HasIndex("UnitId");
 
                     b.ToTable("Leases");
+                });
+
+            modelBuilder.Entity("PMS.Models.LeaseDetails", b =>
+                {
+                    b.Property<int>("LeaseDetailsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LeaseDetailsId"));
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ContactNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CurrentAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmployerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmploymentStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("LeaseID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("MonthlyIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("LeaseDetailsId");
+
+                    b.HasIndex("LeaseID")
+                        .IsUnique()
+                        .HasFilter("[LeaseID] IS NOT NULL");
+
+                    b.ToTable("LeaseDetails");
                 });
 
             modelBuilder.Entity("PMS.Models.MaintenanceRequest", b =>
@@ -132,14 +181,39 @@ namespace PMS.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Pending");
 
-                    b.Property<string>("TransactionReference")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("PaymentID");
 
                     b.HasIndex("LeaseID");
 
                     b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("PMS.Models.Profile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserProfiles");
                 });
 
             modelBuilder.Entity("PMS.Models.PropertyManager", b =>
@@ -150,17 +224,60 @@ namespace PMS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ManagerID"));
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("ManagerID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("PropertyManagers");
+                });
+
+            modelBuilder.Entity("PMS.Models.Request", b =>
+                {
+                    b.Property<int>("RequestID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestID"));
+
+                    b.Property<DateTime?>("CompletedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RequestDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RequestDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RequestStartDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RequestStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Pending");
+
+                    b.Property<string>("RequestType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StaffID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TenantID")
+                        .HasColumnType("int");
+
+                    b.HasKey("RequestID");
+
+                    b.HasIndex("StaffID");
+
+                    b.HasIndex("TenantID");
+
+                    b.ToTable("Requests");
                 });
 
             modelBuilder.Entity("PMS.Models.Staff", b =>
@@ -171,8 +288,16 @@ namespace PMS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffID"));
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsVacant")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<TimeOnly?>("ShiftEndTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeOnly?>("ShiftStartTime")
+                        .HasColumnType("time");
 
                     b.Property<string>("StaffRole")
                         .HasColumnType("nvarchar(max)");
@@ -182,7 +307,9 @@ namespace PMS.Migrations
 
                     b.HasKey("StaffID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Staffs");
                 });
@@ -195,6 +322,11 @@ namespace PMS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TenantID"));
 
+                    b.Property<bool>("IsActualTenant")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -206,7 +338,9 @@ namespace PMS.Migrations
 
                     b.HasKey("TenantID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Tenants");
                 });
@@ -218,6 +352,12 @@ namespace PMS.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UnitID"));
+
+                    b.Property<string>("AvailabilityStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Available");
 
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
@@ -310,6 +450,12 @@ namespace PMS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
+                    b.Property<string>("ConfirmPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -325,10 +471,15 @@ namespace PMS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("TermsAndConditions")
+                        .HasColumnType("bit");
 
                     b.HasKey("UserID");
 
@@ -348,6 +499,13 @@ namespace PMS.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("PMS.Models.LeaseDetails", b =>
+                {
+                    b.HasOne("PMS.Models.Lease", null)
+                        .WithOne("LeaseDetails")
+                        .HasForeignKey("PMS.Models.LeaseDetails", "LeaseID");
                 });
 
             modelBuilder.Entity("PMS.Models.MaintenanceRequest", b =>
@@ -383,17 +541,32 @@ namespace PMS.Migrations
             modelBuilder.Entity("PMS.Models.PropertyManager", b =>
                 {
                     b.HasOne("PMS.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne("PropertyManager")
+                        .HasForeignKey("PMS.Models.PropertyManager", "UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PMS.Models.Request", b =>
+                {
+                    b.HasOne("PMS.Models.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffID");
+
+                    b.HasOne("PMS.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantID");
+
+                    b.Navigation("Staff");
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("PMS.Models.Staff", b =>
                 {
                     b.HasOne("PMS.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne("Staff")
+                        .HasForeignKey("PMS.Models.Staff", "UserId");
 
                     b.Navigation("User");
                 });
@@ -401,8 +574,8 @@ namespace PMS.Migrations
             modelBuilder.Entity("PMS.Models.Tenant", b =>
                 {
                     b.HasOne("PMS.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne("Tenant")
+                        .HasForeignKey("PMS.Models.Tenant", "UserId");
 
                     b.Navigation("User");
                 });
@@ -416,6 +589,11 @@ namespace PMS.Migrations
                     b.Navigation("Unit");
                 });
 
+            modelBuilder.Entity("PMS.Models.Lease", b =>
+                {
+                    b.Navigation("LeaseDetails");
+                });
+
             modelBuilder.Entity("PMS.Models.Staff", b =>
                 {
                     b.Navigation("MaintenanceRequests");
@@ -424,6 +602,15 @@ namespace PMS.Migrations
             modelBuilder.Entity("PMS.Models.Unit", b =>
                 {
                     b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("PMS.Models.User", b =>
+                {
+                    b.Navigation("PropertyManager");
+
+                    b.Navigation("Staff");
+
+                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }

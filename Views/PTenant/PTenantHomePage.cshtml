@@ -13,12 +13,24 @@
 
     <!-- <link rel="stylesheet" href="~/RMS.styles.css" asp-append-version="true" /> -->
 </head>
-
+@if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: 'Success!',
+                text: '@TempData["PopupMessage"]',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
 
 <!-- Banner Section -->
 <section class="banner">
     <img src="~/images/bg.png" alt="Banner Image" class="banner-image">
-    <!--   <div class="centered"> <span>Experience the warmth of nature and the simplicity of life. </span></div> -->
+    <div class="centered"> <span>Experience the warmth of nature and the simplicity of life. </span></div> 
 </section>
 
 <!-- Categories Section -->
@@ -70,9 +82,12 @@
                     <br>property located in the vibrant city of Miami, Florida.
                     <br>Situated along the pristine shores of the Atlantic Ocean...
                 </div>
-                <a asp-controller="Login" asp-action="Register">
+                <a asp-controller="PTenant" asp-action="PTenantApply">
                     <button>Sign Up & Book This Unit Now</button>
                 </a>
+                @* <a asp-controller="Login" asp-action="Register"> *@
+                @*     <button>Sign Up & Book This Unit Now</button> *@
+                @* </a> *@
             </div>
         </div>
     </div>

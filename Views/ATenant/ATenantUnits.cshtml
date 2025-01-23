@@ -1,7 +1,19 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+
+@{
     //Layout = null; // Disable the layout for this view
     ViewData["Title"] = "Cozy Homes - Units";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutATenant.cshtml";
+    
+
+    // @if (Context.Session.GetInt32("UserId") == null)
+    // {
+    //     Layout = "~/Views/Shared/_Layout.cshtml";
+    // }
+    // else
+    // {
+    //     Layout = "~/Views/Shared/_LayoutATenant.cshtml";
+    // }
     int descriptionLength = 210; // Set the desired length for the description
 }
 
@@ -49,13 +61,13 @@
 
             // Perform an AJAX GET request to the ATenantDetails action
             $.ajax({
-                url: '/PTenant/PTenantDetails',  // Your controller and action
+                url: '/ATenant/ATenantDetails',  // Your controller and action
                 type: 'GET',
                 data: { id: unitId },  // Send the unit ID as a query parameter
                 success: function (response) {
                     // Optionally, you can update the page with the response data here
                     // For example, navigate to a new page with the received data or update the view dynamically
-                    window.location.href = '/PTenant/PTenantDetails?id=' + unitId; // Redirect to the ATenantDetails page
+                    window.location.href = '/ATenant/ATenantDetails?id=' + unitId; // Redirect to the ATenantDetails page
                 },
                 error: function () {
                     alert('An error occurred while processing the request.');

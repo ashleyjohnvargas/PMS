@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PMS.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateTablesInDB : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,11 +34,29 @@ namespace PMS.Migrations
                     NumberOfBathrooms = table.Column<int>(type: "int", nullable: true),
                     NumberOfGarages = table.Column<int>(type: "int", nullable: true),
                     NumberOfFloors = table.Column<int>(type: "int", nullable: true),
-                    UnitStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Active")
+                    UnitStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Active"),
+                    AvailabilityStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Available")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Units", x => x.UnitID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,9 +68,12 @@ namespace PMS.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    ConfirmPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TermsAndConditions = table.Column<bool>(type: "bit", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,8 +105,7 @@ namespace PMS.Migrations
                 {
                     ManagerID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -104,8 +124,10 @@ namespace PMS.Migrations
                     StaffID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StaffRole = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    StaffRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShiftStartTime = table.Column<TimeOnly>(type: "time", nullable: true),
+                    ShiftEndTime = table.Column<TimeOnly>(type: "time", nullable: true),
+                    IsVacant = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -124,8 +146,9 @@ namespace PMS.Migrations
                     TenantID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProfilePicturePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ProfilePicturePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActualTenant = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -146,9 +169,11 @@ namespace PMS.Migrations
                     TenantID = table.Column<int>(type: "int", nullable: true),
                     UnitId = table.Column<int>(type: "int", nullable: true),
                     LeaseStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LeaseDuration = table.Column<int>(type: "int", nullable: true),
                     LeaseEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LeaseAgreementFilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LeaseStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Active")
+                    LeaseStatus = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "Pending"),
+                    TermsAndConditions = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -200,6 +225,62 @@ namespace PMS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Requests",
+                columns: table => new
+                {
+                    RequestID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TenantID = table.Column<int>(type: "int", nullable: true),
+                    StaffID = table.Column<int>(type: "int", nullable: true),
+                    RequestType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RequestDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RequestDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RequestStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Pending"),
+                    RequestStartDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CompletedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Requests", x => x.RequestID);
+                    table.ForeignKey(
+                        name: "FK_Requests_Staffs_StaffID",
+                        column: x => x.StaffID,
+                        principalTable: "Staffs",
+                        principalColumn: "StaffID");
+                    table.ForeignKey(
+                        name: "FK_Requests_Tenants_TenantID",
+                        column: x => x.TenantID,
+                        principalTable: "Tenants",
+                        principalColumn: "TenantID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LeaseDetails",
+                columns: table => new
+                {
+                    LeaseDetailsId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LeaseID = table.Column<int>(type: "int", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ContactNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CurrentAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmploymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmployerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MonthlyIncome = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LeaseDetails", x => x.LeaseDetailsId);
+                    table.ForeignKey(
+                        name: "FK_LeaseDetails_Leases_LeaseID",
+                        column: x => x.LeaseID,
+                        principalTable: "Leases",
+                        principalColumn: "LeaseID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -209,8 +290,7 @@ namespace PMS.Migrations
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Pending"),
-                    TransactionReference = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Pending")
                 },
                 constraints: table =>
                 {
@@ -221,6 +301,13 @@ namespace PMS.Migrations
                         principalTable: "Leases",
                         principalColumn: "LeaseID");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeaseDetails_LeaseID",
+                table: "LeaseDetails",
+                column: "LeaseID",
+                unique: true,
+                filter: "[LeaseID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Leases_TenantID",
@@ -255,17 +342,33 @@ namespace PMS.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PropertyManagers_UserId",
                 table: "PropertyManagers",
-                column: "UserId");
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Requests_StaffID",
+                table: "Requests",
+                column: "StaffID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Requests_TenantID",
+                table: "Requests",
+                column: "TenantID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Staffs_UserId",
                 table: "Staffs",
-                column: "UserId");
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tenants_UserId",
                 table: "Tenants",
-                column: "UserId");
+                column: "UserId",
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UnitImages_UnitId",
@@ -277,6 +380,9 @@ namespace PMS.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "LeaseDetails");
+
+            migrationBuilder.DropTable(
                 name: "MaintenanceRequests");
 
             migrationBuilder.DropTable(
@@ -286,13 +392,19 @@ namespace PMS.Migrations
                 name: "PropertyManagers");
 
             migrationBuilder.DropTable(
+                name: "Requests");
+
+            migrationBuilder.DropTable(
                 name: "UnitImages");
 
             migrationBuilder.DropTable(
-                name: "Staffs");
+                name: "UserProfiles");
 
             migrationBuilder.DropTable(
                 name: "Leases");
+
+            migrationBuilder.DropTable(
+                name: "Staffs");
 
             migrationBuilder.DropTable(
                 name: "Tenants");

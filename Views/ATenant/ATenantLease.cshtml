@@ -2,119 +2,123 @@
     ViewData["Title"] = "Cozy Homes - Lease";
     Layout = "~/Views/Shared/_LayoutATenant.cshtml";
 }
+
+@model TenantLeaseViewModel
+<!--insert head if needed-->
+
+
+@if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: '@TempData["PopupTitle"]',  // Set the title dynamically
+                text: '@TempData["PopupMessage"]', // Set the message dynamically
+                icon: '@TempData["PopupIcon"]',    // Set the icon dynamically (success, error, warning, info)
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
+
+
     <!-- Home Details Section -->
     <section class="lease" id="content">
         <div class="lease-container">
             <h1>Lease Details</h1>
 
-            <!-- Lease Information Section -->
-            <div class="lease-info">
-                <h2>Property Information</h2>
-                <p><strong>Property Name:</strong> Sunset Villas Apartment</p>
-                <p><strong>Address:</strong> 123 Main Street, Springfield</p>
-                <p><strong>Unit:</strong> 2B</p>
-                <p><strong>ID:</strong> L12345</p>
-            </div>
-
-            <div class="lease-info">
-                <h2>Lease Details</h2>
-                <p><strong>Lease Type:</strong> Fixed-TermStart</p>
-                <p><strong>Start Date:</strong> January 1, 2025</p>
-                <p><strong>End Date:</strong> December 31, 2025</p>
-                <p><strong>Monthly Rent:</strong> $12,200</p>
-                <p><strong>Security Deposit:</strong> $11,200</p>
-                <p><strong>Renewal Terms:</strong> Automatically renews month-to-month</p>
-                <p><strong>Payment Due Date:</strong> 1st of every month</p>
-                <p><strong>Status:</strong> Active</p>
-            </div>
-
-            <div class="lease-info">
-                <h2>Tenant Information</h2>
-                <p><strong>Tenant Name:</strong> John Doe</p>
-                <p><strong>Contact:</strong> john.doe@example.com</p>
-                <p><strong>Phone:</strong> +1 234 567 890</p>
-            </div>
-
-            <div class="lease-info">
-                <h2>Lease Documents</h2>
-                <ul>
-                    <li><a href="#" download>Lease Agreement</a></li>
-                    <li><a href="#" download>Move-in Checklist</a></li>
-                </ul>
-            </div>
-
-            <!-- Actions -->
-            <div class="lease-actions">
-                <!-- Pay Rent Button -->
-                <button class="button" onclick="openPopup('pay-rent-popup')">Pay Rent</button>
-
-                <!-- Print Lease Button -->
-                <button class="button print" id="generatePdfButton">Download PDF</button>
-
-                <!-- Terminate Lease Button -->
-                <button class="button danger" onclick="download">Terminate Lease</button>
-            </div>
+        <!-- Lease Information Section -->
+        <div class="lease-info">
+            <h2>Property Information</h2>
+            <p><strong>Property Name:</strong> @Model.PropertyName</p>
+            <p><strong>Address:</strong> @Model.Address</p>
         </div>
 
-        <script>
-            document.getElementById('generatePdfButton').addEventListener('click', function () {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF();
-                const content = document.getElementById('content').innerText;
-                pdf.text(content, 10, 10);
-                pdf.save('Lease.pdf');
-            });
-        </script>
+        <div class="lease-info">
+            <h2>Lease Details</h2>
+            <p><strong>Start Date:</strong> @Model.StartDate</p>
+            <p><strong>End Date:</strong> @Model.EndDate</p>
+            <p><strong>Monthly Rent:</strong>@String.Format("{0:C}", Model.MonthlyRent).Replace("$", "₱")</p>
+            <p><strong>Security Deposit:</strong> @Model.SecurityDeposit</p>
+            <p><strong>Renewal Terms:</strong> Automatically renews month-to-month</p>
+            <p><strong>Payment Due Date:</strong> 1st of every month</p>
+            <p><strong>Status:</strong> @Model.Status</p>
+        </div>
 
-    </section>
+        <div class="lease-info">
+            <h2>Tenant Information</h2>
+            <p><strong>Tenant Name:</strong> @Model.TenantName</p>
+            <p><strong>Contact:</strong> @Model.Contact</p>
+            <p><strong>Phone:</strong> @Model.Phone</p>
+        </div>
 
-    <!-- Pay Rent Pop-Up -->
-    <div id="pay-rent-popup" class="lease-popup">
-        <div class="popup-content">
-            <span class="atlease-close" onclick="closePopup('pay-rent-popup')">&times;</span>
-            <h2>Pay Rent</h2>
-            <p>Please enter your payment details to complete the transaction.</p>
-            <form onsubmit="event.preventDefault(); handlePayRent();">
-                <label for="amount">Amount:</label>
-                <input type="number" id="amount" name="amount" required>
+        <div class="lease-info">
+            <h2>Lease Documents</h2>
+            <ul>
+                <li><a href="#" download>Lease Agreement</a></li>
+                <li><a href="#" download>Move-in Checklist</a></li>
+            </ul>
+        </div>
 
-                <label for="payment-method">Payment Method:</label>
-                <select id="payment-method" name="payment-method" required>
-                    <option value="credit-card">Credit Card</option>
-                    <option value="paypal">PayPal</option>
-                    <option value="bank-transfer">Bank Transfer</option>
-                </select>
+        <!-- Actions -->
+        <div class="actions">
+            <!-- Pay Rent Button -->
+            <button class="button" onclick="openPopup('pay-rent-popup')">Pay Rent</button>
 
-                <button type="submit" class="button">Submit Payment</button>
-            </form>
+            <!-- Terminate Lease Button -->
+            <button class="button danger" onclick="openPopup('terminate-lease-popup')">Terminate Lease</button>
         </div>
     </div>
+</section>
 
-    <!-- Terminate Lease Pop-Up -->
-    <div id="terminate-lease-popup" class="lease-popup">
-        <div class="popup-content">
-            <span class="atlease-close" onclick="closePopup('terminate-lease-popup')">&times;</span>
-            <h2>Terminate Lease</h2>
-            <p>Please provide a reason for terminating the lease:</p>
-            <form onsubmit="event.preventDefault(); handleTerminateLease();">
-                <label for="termination-reason">Reason:</label>
-                <textarea id="termination-reason" name="termination-reason" rows="4" required></textarea>
+<!-- Pay Rent Pop-Up -->
+<div id="pay-rent-popup" class="popup">
+    <div class="popup-content">
+        <h2>Pay Rent</h2>
+        <p>Please enter your payment details to complete the transaction.</p>
+        <h4>Property Name: @Model.PropertyName</h4>
+        <h4>Amount Due: @String.Format("{0:C}", Model.MonthlyRent).Replace("$", "₱")</h4>
+        <h4>Due Date: @Model.DueDate</h4>
+        <form asp-action="PayLease" method="post">
+            <input type="hidden" name="LeaseId" value="@Model.LeaseID" />
+            <input type="hidden" name="MonthlyRent" value="@Model.MonthlyRent" />
+            <label for="Amount">Amount:</label>
+            <input type="number" id="Amount" name="Amount" required>
 
-                <button type="submit" class="button danger">Submit Request</button>
-            </form>
-        </div>
+            <label for="PaymentMethod">Payment Method:</label>
+            <select id="PaymentMethod" name="PaymentMethod" required>
+                <option value="Card">Card</option>
+                <option value="EWallet">E-Wallet</option>
+                <option value="OverTheCounter">Over-the-Counter</option>
+            </select>
+
+            <button type="submit" class="button">Submit Payment</button>
+        </form>
     </div>
+</div>
 
-    <!-- Message Box -->
-    <div id="message-box" class="lease-message">
-        <div class="lease-msg-content">
-            <p id="message-text"></p>
-            <button onclick="closeMessageBox()">Close</button>
-        </div>
+<!-- Terminate Lease Pop-Up -->
+<div id="terminate-lease-popup" class="popup">
+    <div class="popup-content">
+        <span class="close-btn" onclick="closePopup('terminate-lease-popup')">&times;</span>
+        <h2>Terminate Lease</h2>
+        <p>Please provide a reason for terminating the lease:</p>
+        <form onsubmit="event.preventDefault(); handleTerminateLease();">
+            <label for="termination-reason">Reason:</label>
+            <textarea id="termination-reason" name="termination-reason" rows="4" required></textarea>
+
+            <button type="submit" class="button danger">Submit Request</button>
+        </form>
     </div>
+</div>
 
-
-  
+<!-- Message Box -->
+<div id="message-box" class="message-box">
+    <div class="message-content">
+        <p id="message-text"></p>
+        <button onclick="closeMessageBox()">Close</button>
+    </div>
+</div>
 
 
 <script>

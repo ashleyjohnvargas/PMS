@@ -11,7 +11,7 @@ namespace PMS.Models
         public string? UnitOwner { get; set; }
         public string? Description { get; set; }
         public decimal? PricePerMonth { get; set; } // Rent or price per month
-        public decimal? SecurityDeposit { get; set; } 
+        public decimal? SecurityDeposit { get; set; }
         public string? Town { get; set; }
         public string? Location { get; set; }
         public string? Country { get; set; }
@@ -24,6 +24,7 @@ namespace PMS.Models
         public int? NumberOfGarages { get; set; }
         public int? NumberOfFloors { get; set; }
         public string UnitStatus { get; set; } = "Active";
+        public string AvailabilityStatus { get; set; }
         public virtual ICollection<UnitImage>? Images { get; set; }
     }
 }

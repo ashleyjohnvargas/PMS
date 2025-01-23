@@ -1,0 +1,227 @@
+﻿@{
+    ViewData["Title"] = "Cozy Homes - Payments";
+    Layout = "~/Views/Shared/_LayoutPM.cshtml";
+}
+@model List<ManagerPaymentDisplayModel> 
+<!-- Replace with actual namespace -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Units Page</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: "Poppins", serif;
+        }
+
+        body {
+            font-family: "Poppins", serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .header {
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .header h1 {
+            color: black;
+            margin: 0;
+        }
+
+        .header .add-unit {
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .units-list-header {
+            background-color: #B0836E;
+            color: white;
+            text-align: left;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-bar {
+            margin: 20px;
+            text-align: right;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #B0836E;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .pagination {
+            text-align: right;
+            margin: 20px 0;
+        }
+
+        .pagination button {
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .action-icons i {
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .action-icons i.edit {
+            color: #007bff;
+        }
+
+        .action-icons i.delete {
+            color: #dc3545;
+        }
+
+        #manage-units-body {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body id="manage-units-body">
+    @if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["PopupMessage"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+    }
+    <div class="header" style="margin-top: 50px; padding: 10px 0;">
+
+        @* <h1 style="color: #B0836E;">Leases</h1> *@
+        @*         <a asp-action="AddUnitPage" style="text-decoration: none;background-color: #B0836E;color: white;padding: 10px 20px;border-radius: 10px;">Add Lease</a>
+        *@
+    </div>
+
+    <div class="units-list-header">
+        @* <a asp-action="PMManageLease">
+        <i class="fas fa-arrow-left" style="font-size: 24px; color: white;"></i>
+        </a>
+        *@
+        <h2>Payments</h2>
+    </div>
+
+    <div class="search-bar" style="margin: 20px 0;">
+        <input type="text" placeholder="Search payments..." id="searchInput">
+        <button class="search-unit-button">Search</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Tenant</th>
+                <th>Amount</th>
+                <th>Unit</th>
+                <th>Monthly Rent</th>
+                <th>Date</th>
+                <th>Payment Method</th>
+                <th>View Invoice</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int index = 1;
+                foreach (var payment in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@payment.TenantFullName</td>
+                        <td>@String.Format("{0:C}", payment.Amount).Replace("$", "₱")</td>
+                        <td>@payment.UnitName</td>
+                        <td>@String.Format("{0:C}", payment.MonthlyRent).Replace("$", "₱")</td>
+                        <td>@payment.PaymentDate</td>
+                        <td>@payment.PaymentMethod</td>
+                        <td>
+                            <a asp-action="ManagerPreviewInvoice" asp-route-id="@payment.PaymentId" style="padding: 5px 12px;background-color: #B0836E;color: white;border-radius: 5px; cursor: pointer; text-decoration: none;">
+                                Receipt
+                            </a>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="9" style="text-align:center;">No leases found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pagination" style="margin: 20px 0 200px;">
+        <button>Previous</button>
+        <button style="margin: 0 0 0 5px;">Next</button>
+    </div>
+
+
+
+</body>
+</html>
+
+

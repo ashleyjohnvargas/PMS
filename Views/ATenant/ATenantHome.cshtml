@@ -262,6 +262,21 @@
 </head>
 <body>
 
+    @if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    title: 'Success!',
+                    text: '@TempData["PopupMessage"]',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+    }
+
+
     <!-- Banner Section -->
     <section class="banner">
         <img src="~/images/bg.png" alt="Banner Image" class="banner-image">

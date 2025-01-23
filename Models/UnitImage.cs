@@ -8,8 +8,8 @@ namespace PMS.Models
         [Key]
         public int ImageId { get; set; } // Primary key
 
-        [ForeignKey(nameof(Unit))] 
-        public int? UnitId { get; set; } 
+        [ForeignKey(nameof(Unit))]
+        public int? UnitId { get; set; }
 
         public string? FilePath { get; set; } // Path of the uploaded image
 

@@ -170,11 +170,8 @@ namespace PMS.Controllers
             //});
         }
 
-        // RegisterUser action to handle form submission and save user data
-        // [HttpPost]
-        // RegisterUser action to handle form submission and save user data
         [HttpPost]
-        public IActionResult RegisterUser(User user)
+        public async Task<IActionResult> RegisterUser(User user)
         {
             // Check if email already exists
             var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
@@ -236,50 +233,179 @@ namespace PMS.Controllers
 
             // Add the new user to the Users table
             _context.Users.Add(newUser);
-            _context.SaveChanges();  // Save the user to generate the UserID
-
-            // After saving, newUser.UserID will be populated with the generated value
-            var existingProfile = _context.UserProfiles.FirstOrDefault(p => p.Id == newUser.UserID);
-            if (existingProfile == null)
-            {
-                // Create a new profile using the generated UserID
-                var newProfile = new Profile
-                {
-                    Id = newUser.UserID, // Use the generated UserID
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email
-                };
-                _context.UserProfiles.Add(newProfile);
-                _context.SaveChanges();  // Save the profile
-            }
+            await _context.SaveChangesAsync();  // Save the user to generate the UserID
 
             // Store user information in the session
-            HttpContext.Session.SetString("UserId", user.UserID.ToString());
-
-           // HttpContext.Session.SetInt32("UserId", newUser.UserID);
+            HttpContext.Session.SetString("UserId", newUser.UserID.ToString());
             HttpContext.Session.SetString("FirstName", newUser.FirstName);
             HttpContext.Session.SetString("LastName", newUser.LastName);
             HttpContext.Session.SetString("UserEmail", newUser.Email);
             HttpContext.Session.SetString("UserRole", newUser.Role);
 
-            // Redirect based on the user's role
+            // Role-specific logic
             if (newUser.Role == "Property Manager")
             {
+                // Add a record to the PropertyManager table
+                var propertyManager = new PropertyManager
+                {
+                    UserId = newUser.UserID, // Link to the User table
+                    //Department = "Property Management" // Example field
+                };
+                _context.PropertyManagers.Add(propertyManager);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction("PMDashboard", "PropertyManager");
             }
             else if (newUser.Role == "Staff")
             {
+                // Add a record to the Staff table
+                var staff = new Staff
+                {
+                    UserId = newUser.UserID, // Link to the User table
+                    StaffRole = "Staff Member", // Example field
+                    //Department = "Support" // Example field
+                };
+                _context.Staffs.Add(staff);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction("SHomePage", "Staff");
             }
             else if (newUser.Role == "Tenant")
             {
+                try
+                {
+                    // Add a record to the Tenant table
+                    var tenant = new Tenant
+                    {
+                        UserId = newUser.UserID, // Link to the User table
+                       // PhoneNumber = user.PhoneNumber, // Ensure this is passed in the User model
+                       // UnitID = user.UnitID // Ensure this is passed in the User model
+                    };
+                    _context.Tenants.Add(tenant);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Error creating tenant: {ex.Message}";
+                    return RedirectToAction("Register"); // Fallback to registration page
+                }
+
                 return RedirectToAction("ATenantHome", "ATenant");
             }
 
             // If none of the conditions match, return to the Register action (or another appropriate action)
             return RedirectToAction("Register"); // This is the fallback action, should never be reached
         }
+
+        // RegisterUser action to handle form submission and save user data
+        // [HttpPost]
+        // RegisterUser action to handle form submission and save user data
+        //[HttpPost]
+        //public IActionResult RegisterUser(User user)
+        //{
+        //    // Check if email already exists
+        //    var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+        //    if (existingUser != null)
+        //    {
+        //        ModelState.AddModelError("", "An account with this email already exists.");
+        //        return View("Register", user); // Return to the Register page
+        //    }
+
+        //    // Validate password length
+        //    if (user.Password.Length < 15 || user.Password.Length > 64)
+        //    {
+        //        ModelState.AddModelError("", "Password must be between 15 and 64 characters long.");
+        //        return View("Register", user); // Return to the Register page
+        //    }
+
+        //    // Check if passwords match
+        //    if (user.Password != user.ConfirmPassword)
+        //    {
+        //        ModelState.AddModelError("", "Password and Confirm Password do not match.");
+        //        return View("Register", user); // Return to the Register page
+        //    }
+
+        //    // Check if Terms and Conditions are accepted
+        //    if (user.TermsAndConditions.HasValue && !user.TermsAndConditions.Value)
+        //    {
+        //        ModelState.AddModelError("", "You must agree to the terms and conditions.");
+        //        return View("Register", user); // Return to the Register page
+        //    }
+
+        //    // Set the Role based on the email domain
+        //    if (user.Email.Contains("@manager"))
+        //    {
+        //        user.Role = "Property Manager";
+        //    }
+        //    else if (user.Email.Contains("@staff"))
+        //    {
+        //        user.Role = "Staff";
+        //    }
+        //    else
+        //    {
+        //        user.Role = "Tenant"; // Default role if the email doesn't match above criteria
+        //    }
+
+        //    // Hash the password using bcrypt
+        //    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
+
+        //    // Create a new User object and populate it with data
+        //    var newUser = new User
+        //    {
+        //        FirstName = user.FirstName,
+        //        LastName = user.LastName,
+        //        Email = user.Email,
+        //        Password = hashedPassword, // Store hashed password
+        //        Role = user.Role,
+        //        TermsAndConditions = user.TermsAndConditions,
+        //        DateCreated = DateTime.Now,
+        //    };
+
+        //    // Add the new user to the Users table
+        //    _context.Users.Add(newUser);
+        //    _context.SaveChanges();  // Save the user to generate the UserID
+
+        //    // After saving, newUser.UserID will be populated with the generated value
+        //    var existingProfile = _context.UserProfiles.FirstOrDefault(p => p.Id == newUser.UserID);
+        //    if (existingProfile == null)
+        //    {
+        //        // Create a new profile, letting SQL Server generate the Id (identity column)
+        //        var newProfile = new Profile
+        //        {
+        //            FirstName = user.FirstName,
+        //            LastName = user.LastName,
+        //            Email = user.Email
+        //        };
+        //        _context.UserProfiles.Add(newProfile);
+        //        _context.SaveChanges();  // Save the profile
+        //    }
+
+        //    // Store user information in the session
+        //    HttpContext.Session.SetString("UserId", user.UserID.ToString());
+
+        //   // HttpContext.Session.SetInt32("UserId", newUser.UserID);
+        //    HttpContext.Session.SetString("FirstName", newUser.FirstName);
+        //    HttpContext.Session.SetString("LastName", newUser.LastName);
+        //    HttpContext.Session.SetString("UserEmail", newUser.Email);
+        //    HttpContext.Session.SetString("UserRole", newUser.Role);
+
+        //    // Redirect based on the user's role
+        //    if (newUser.Role == "Property Manager")
+        //    {
+        //        return RedirectToAction("PMDashboard", "PropertyManager");
+        //    }
+        //    else if (newUser.Role == "Staff")
+        //    {
+        //        return RedirectToAction("SHomePage", "Staff");
+        //    }
+        //    else if (newUser.Role == "Tenant")
+        //    {
+        //        return RedirectToAction("ATenantHome", "ATenant");
+        //    }
+
+        //    // If none of the conditions match, return to the Register action (or another appropriate action)
+        //    return RedirectToAction("Register"); // This is the fallback action, should never be reached
+        //}
 
 
         public IActionResult Logout()

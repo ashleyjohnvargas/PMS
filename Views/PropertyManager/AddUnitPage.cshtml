@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 
-<div style="margin: 50px 20px 140px;">
+<div class="container mt-5" style="margin: 50px 20px 140px;">
     <div class="card fade-in shadow" style="min-width: 100vh; min-height: 100vh;">
         <div class="card-body" style="min-width: 100vh; min-height: 100vh;">
             <h2 class="fw-semibold mb-4 text-left" style="text-align: left; background-color: #B0836E; padding: 10px; color: white;">Add Unit</h2>
@@ -29,7 +29,7 @@
                                 <!-- Unit Name -->
                                 <div class="col-md-6 mb-3">
                                     <label for="UnitName" class="form-label">Unit Name</label>
-                                    <input asp-for="UnitName" class="form-control" placeholder="Enter unit name" required/>
+                                    <input asp-for="UnitName" class="form-control" placeholder="Enter unit name" required />
                                 </div>
                                 <!-- Unit Type -->
                                 <div class="col-md-6 mb-3">
@@ -60,7 +60,7 @@
                                 <!-- Unit Owner -->
                                 <div class="col-md-6 mb-3">
                                     <label for="UnitOwner" class="form-label">Unit Owner</label>
-                                    <input asp-for="UnitOwner" class="form-control" placeholder="Enter unit owner" />
+                                    <input asp-for="UnitOwner" class="form-control" placeholder="Enter unit owner" required />
                                 </div>
                                 <!-- Description -->
                                 <div class="col-md-6 mb-3">
@@ -161,7 +161,7 @@
                         </div>
                     </div>
                 </div>
-            
+
 
                 <!--IMAGE CONTAINER-->
                 <div class="image-container">
@@ -181,11 +181,12 @@
                 </div>
 
 
-                
+
 
                 <!-- Hidden Properties -->
                 <input type="hidden" name="UnitID" asp-for="UnitID" />
                 <input type="hidden" name="Images" asp-for="Images" />
+                <input type="hidden" name="AvailabilityStatus" asp-for="AvailabilityStatus" />
 
 
                 <div class="text-end" style="background-color: #B0836E; padding: 10px; cursor: pointer;">
