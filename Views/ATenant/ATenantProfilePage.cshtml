@@ -1,8 +1,8 @@
-﻿   
-
-@{
-    ViewData["Title"] = "My Profile";
+﻿@{
+    ViewData["Title"] = "Cozy Homes - Tenant Profile Page";
+    Layout = "~/Views/Shared/_LayoutATenant.cshtml";
 }
+
 
  @model PMS.Models.Profile
 <!DOCTYPE html>
@@ -142,7 +142,7 @@
 </head>
 <body>
     <!-- Page Header -->
-    <section class="profile-page">      
+    <section class="profile-page">
         @* @TempData["ErrorMessage"] *@
 
         @if (TempData["ErrorMessage"] != null)
@@ -207,15 +207,15 @@
 
             <!-- Action Buttons -->
             <div class="actions-container">
-                <a asp-controller="Profile" asp-action="EditProfile2">
+                <a asp-controller="Profile" asp-action="ATenantEditProfile2">
                     <button class="btn btn-primary">
                         <i class="fa-solid fa-user-edit"></i> Edit Profile
                     </button>
                 </a>
-                <a asp-controller="Profile" asp-action="ChangePassword"> 
-                <button  class="btn btn-secondary">
-                    <i class="fa-solid fa-key"></i> Change Password
-                </button>
+                <a asp-controller="Profile" asp-action="ATenantChangePassword">
+                    <button class="btn btn-secondary">
+                        <i class="fa-solid fa-key"></i> Change Password
+                    </button>
                 </a>
             </div>
         </div>

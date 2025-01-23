@@ -1,10 +1,10 @@
-﻿   
+﻿@model PMS.Models.Profile
 
 @{
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = "Cozy Homes - Property Manager Profile Page";
+    Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
 
- @model PMS.Models.Profile
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -207,12 +207,12 @@
 
             <!-- Action Buttons -->
             <div class="actions-container">
-                <a asp-controller="Profile" asp-action="EditProfile2">
+                <a asp-controller="PropertyManager" asp-action="PMEditProfile2">
                     <button class="btn btn-primary">
                         <i class="fa-solid fa-user-edit"></i> Edit Profile
                     </button>
                 </a>
-                <a asp-controller="Profile" asp-action="ChangePassword"> 
+                <a asp-controller="PropertyManager" asp-action="PMChangePassword"> 
                 <button  class="btn btn-secondary">
                     <i class="fa-solid fa-key"></i> Change Password
                 </button>

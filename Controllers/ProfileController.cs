@@ -74,7 +74,7 @@ namespace PMS.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("EditProfile", model);
+                return View("EditProfile2", model);
             }
 
             // Retrieve the logged-in user's ID from session (as string) and convert to int
@@ -115,12 +115,12 @@ namespace PMS.Controllers
             return RedirectToAction("ProfilePage2");
         }
 
-
-
+        // Display the EditPasswordPage
         public IActionResult ChangePassword()
         {
             return View();
         }
+
 
         // Display the profile page
         public IActionResult ProfilePage()

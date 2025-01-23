@@ -64,12 +64,14 @@
                             @* <img src="~/images/user-pic.png" alt="logo"> *@
                             @* @Context.Session.GetString("FirstName")  *@
                             @* @Context.Session.GetString("LastName") *@
+                            @* @Context.Session.GetString("FirstName") @Context.Session.GetString("LastName") *@
 
                         </a>
+
                         <div class="dropdown-content">
                             
                             <!--edit as row instead of column-->
-                            <a asp-controller="PropertyManager" asp-action="PMEditProfile">Profile</a>
+                            <a asp-controller="PropertyManager" asp-action="PMProfilePage">Profile</a>
                             <a asp-controller="Login" asp-action="Logout" class="logout" onclick="return confirmLogout(event);">Log Out</a>
                         </div>
                     </li>
