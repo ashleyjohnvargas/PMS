@@ -3,57 +3,192 @@
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
 
-<div class="main-content">
-    <header>
-        <h1>Dashboard</h1>
-        <div class="user-info">
-     
-        </div>
-    </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozy Homes: Dashboard</title>
 
-    <div class="stats">
-        <div class="card">
-            <h3>Total Units</h3>
+    <meta name="theme-color" content="#000000" />
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" asp-append-version="true">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="~/css/pmanager.css" asp-append-version="true">
+</head>
+
+<section class="pm-dashboard">
+    <div class="header-container">
+        <h2>DASHBOARD</h2>
+        <button class="report">Generate Reports</button>
+    </div>
+
+    <div class="date-picker-container">
+        <label for="date-picker">
+            <i class="fa-solid fa-calendar-days"></i>
+            Select Date Range
+        </label>
+        <input type="text" id="date-picker" placeholder="Choose date">
+    </div>
+
+    <div class="dashboard-container">
+        <div class="dashboard-card">
+            <h4>Total Units</h4>
             <p>100</p>
         </div>
-        <div class="card">
-            <h3>Total Tenants</h3>
+        <div class="dashboard-card">
+            <h4>Total Tenants</h4>
             <p>65</p>
         </div>
-        <div class="card">
-            <h3>Occupancy Rate</h3>
+        <div class="dashboard-card">
+            <h4>Occupancy Rate</h4>
             <p>65%</p>
         </div>
-        <div class="card">
-            <h3>Total Income of This Month</h3>
-            <p>156,456.00</p>
-        </div>
-        <div class="card">
-            <h3>Total Expense of This Month</h3>
-            <p>26,456.00</p>
-        </div>
-        <div class="card">
-            <h3>Units Available</h3>
+        <div class="dashboard-card">
+            <h4>Units Available</h4>
             <p>22</p>
         </div>
     </div>
-
-    <div class="charts">
-        <div class="chart">
-            <h3>Payment Status</h3>
-            <canvas id="paymentStatusChart"></canvas>
+    <div class="total-container">
+        <div class="main-card">
+            <h4>Total Income This Month</h4>
+            <p>300,000.00</p>
         </div>
-        <div class="chart">
-            <h3>Maintenance Status</h3>
-            <canvas id="maintenanceStatusChart"></canvas>
-        </div>
-        <div class="chart">
-            <h3>Top Rented Units</h3>
-            <canvas id="topRentedUnitsChart"></canvas>
-        </div>
-        <div class="chart">
-            <h3>Most Picked Unit Type</h3>
-            <canvas id="mostPickedUnitTypeChart"></canvas>
+        <div class="main-card">
+            <h4>Total Expense This Month</h4>
+            <p>150,000.00</p>
         </div>
     </div>
-</div>
+
+    <div class="charts-container">
+        <div class="chart-card">
+            <h4>Payment Status</h4>
+            <canvas id="paymentStatusChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h4>Maintenance Status</h4>
+            <canvas id="maintenanceStatusChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h4>Top Rented Units</h4>
+            <canvas id="topRentedChart"></canvas>
+        </div>
+    </div>
+</section>
+
+
+
+<script>
+    $(function () {
+        $("#date-picker").datepicker({
+            dateFormat: "mm/dd/yy",
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+        });
+    });
+
+
+    // Payment Status Chart
+    const paymentStatusCtx = document.getElementById('paymentStatusChart').getContext('2d');
+    new Chart(paymentStatusCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Paid', 'Unpaid', 'Overdue'],
+            datasets: [{
+                data: [50, 30, 20],
+                backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
+            }]
+        },
+    });
+
+    // Maintenance Status Chart
+    const maintenanceStatusCtx = document.getElementById('maintenanceStatusChart').getContext('2d');
+    new Chart(maintenanceStatusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Pending', 'In Progress'],
+            datasets: [{
+                data: [40, 30, 30],
+                backgroundColor: ['#4caf50', '#ffeb3b', '#2196f3'],
+            }]
+        },
+    });
+
+    // Top Rented Unit Categories
+    const topRentedCtx = document.getElementById('topRentedChart').getContext('2d');
+    new Chart(topRentedCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Condominium', 'Duplex', 'Bungalow', 'Beach House'],
+            datasets: [{
+                label: 'Units Rented',
+                data: [30, 20, 25, 15],
+                backgroundColor: ['#3f51b5', '#ff9800', '#009688', '#e91e63'],
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+</script>
+@* <div class="main-content"> *@
+@*     <header> *@
+@*         <h1>Dashboard</h1> *@
+@*         <div class="user-info"> *@
+     
+@*         </div> *@
+@*     </header> *@
+
+@*     <div class="stats"> *@
+@*         <div class="card"> *@
+@*             <h3>Total Units</h3> *@
+@*             <p>100</p> *@
+@*         </div> *@
+@*         <div class="card"> *@
+@*             <h3>Total Tenants</h3> *@
+@*             <p>65</p> *@
+@*         </div> *@
+@*         <div class="card"> *@
+@*             <h3>Occupancy Rate</h3> *@
+@*             <p>65%</p> *@
+@*         </div> *@
+@*         <div class="card"> *@
+@*             <h3>Total Income of This Month</h3> *@
+@*             <p>156,456.00</p> *@
+@*         </div> *@
+@*         <div class="card"> *@
+@*             <h3>Total Expense of This Month</h3> *@
+@*             <p>26,456.00</p> *@
+@*         </div> *@
+@*         <div class="card"> *@
+@*             <h3>Units Available</h3> *@
+@*             <p>22</p> *@
+@*         </div> *@
+@*     </div> *@
+
+@*     <div class="charts"> *@
+@*         <div class="chart"> *@
+@*             <h3>Payment Status</h3> *@
+@*             <canvas id="paymentStatusChart"></canvas> *@
+@*         </div> *@
+@*         <div class="chart"> *@
+@*             <h3>Maintenance Status</h3> *@
+@*             <canvas id="maintenanceStatusChart"></canvas> *@
+@*         </div> *@
+@*         <div class="chart"> *@
+@*             <h3>Top Rented Units</h3> *@
+@*             <canvas id="topRentedUnitsChart"></canvas> *@
+@*         </div> *@
+@*         <div class="chart"> *@
+@*             <h3>Most Picked Unit Type</h3> *@
+@*             <canvas id="mostPickedUnitTypeChart"></canvas> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@

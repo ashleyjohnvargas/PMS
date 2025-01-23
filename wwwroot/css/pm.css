@@ -701,3 +701,174 @@ li:hover > .sub-tabs {
         margin: 0; /* Ensure no extra margin between sub-tab items */
         padding: 5px 0; /* Add some spacing for better readability */
     }
+
+
+
+/* --------------------------------------- DASHBOARD --------------------------------------------- */
+.pm-dashboard {
+    padding: 0;
+    padding-top: 5px;
+    padding-bottom: 40px;
+    background-color: #e7e1d3;
+    margin-left: 20%;
+}
+
+.header-container {
+    width: 97%;
+    margin: 0 auto;
+    padding: 0px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f6f6f6;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pm-dashboard h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: left;
+    font-weight: 500;
+    position: relative;
+    margin-left: 30px;
+    font-weight: 600;
+    display: inline-flex;
+}
+
+/* h2 {
+    margin-bottom: 20px;
+} */
+
+.report {
+    display: inline-block;
+    background-color: #B0836E;
+    color: #fff;
+    padding: 10px 15px;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    margin: 0 10px;
+    width: 20%;
+    font-family: 'Poppins';
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 57%;
+    transition: ease 0.3s;
+}
+
+    .report:hover {
+        background-color: #7d5847;
+    }
+
+.date-picker-container {
+    margin: 20px;
+    background-color: #B0836E;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    padding: 10px 10px;
+    width: 32%;
+}
+
+    .date-picker-container i {
+        color: #fff;
+        font-size: 15px;
+        padding-right: 5px;
+    }
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.total-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 10px;
+    padding: 20px;
+}
+
+.dashboard-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.main-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 90%;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.main-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.dashboard-card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #B0836E;
+}
+
+.main-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.main-card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #B0836E;
+}
+
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.chart-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .chart-card h4 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .chart-card canvas {
+        width: 100% !important;
+        max-width: 400px;
+        height: auto !important;
+        margin: 0 auto;
+    }
+
