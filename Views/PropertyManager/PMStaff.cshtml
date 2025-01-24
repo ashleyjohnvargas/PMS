@@ -101,6 +101,68 @@
                 background-color: #f9f9f9;
             }
 
+
+
+            /* Styling for dropdown filters */
+            #staffList thead select {
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 4px 8px;
+                font-size: 14px;
+                color: #333;
+                background-color: #f9f9f9;
+                cursor: pointer;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* Highlight dropdown on hover or focus */
+            #staffList thead select:hover,
+            #staffList thead select:focus {
+                border-color: #007bff;
+                outline: none;
+                background-color: #eef7ff;
+            }
+
+/* Style for text and icon (grouped together) */
+th span {
+    display: flex;
+    align-items: center; /* Keep icon aligned with text */
+}
+
+/* Sort icon placement and styles */
+th i {
+    margin-left: auto; /* Push the icon to the far right */
+    font-size: 0.9em;
+    color: #aaa;
+    padding-left: 4px;
+    transition: color 0.2s ease;
+}
+
+/* Dropdown styling */
+th select {
+    margin-left: 10px; /* Space between the icon and the dropdown */
+    padding: 4px 6px;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+/* Hover effect for headers */
+th:hover i {
+    color: #555; /* Darker color for sort icon on hover */
+}
+
+/* Active sorting icon colors */
+.fas.fa-sort-up {
+    color: #2c89d9; /* Blue for ascending */
+}
+
+.fas.fa-sort-down {
+    color: #d9534f; /* Red for descending */
+}
+
         .pagination {
             text-align: right;
             margin: 20px 0;
@@ -115,7 +177,10 @@
                 border-radius: 5px;
                 cursor: pointer;
             }
-
+             .pagination button.active {
+            background-color: #B0836E;
+            color: white;
+        }
         .action-icons i {
             cursor: pointer;
             margin: 0 5px;
@@ -150,7 +215,7 @@
         </script>
     }
 
-    <div class="header" style="margin-top: 50px; padding: 10px 0;">
+    <div class="header" style="margin-top: 20px; padding: 10px 0;">
 
         @* <h1 style="color: #B0836E;">Leases</h1> *@
         @*         <a asp-action="AddUnitPage" style="text-decoration: none;background-color: #B0836E;color: white;padding: 10px 20px;border-radius: 10px;">Add Lease</a>
@@ -162,46 +227,34 @@
         <a id="addStaffBtn" style="text-decoration: none;background-color: white;color: #B0836E;padding: 10px 20px;border-radius: 10px; font-weight: 600; cursor: pointer;">Add Staff</a>
     </div>
 
-    <div class="search-bar" style="margin: 20px 0;">
-        <input type="text" placeholder="Search staff..." id="searchStaffInput">
-        <button class="search-unit-button" onclick="searchStaff()">Search</button>
+    <div class="search-bar" style="margin: 20px 0; display: flex; justify-content: flex-start; align-items: center;">
+    <!-- Export buttons aligned to the left -->
+    <div class="search-container" style="display: flex; gap: 10px;">
+        <button class="search-button" onclick="exportToPDF()">Export to PDF</button>
+        <button class="search-button" onclick="exportToCSV()">Export to CSV</button>
     </div>
-    <div>
-    <label for="filterRole">Role:</label>
-    <select id="filterRole" onchange="filterStaff()">
-        <option value="">All</option>
-        <option value="IT Technician">IT Technician</option>
-        <option value="Plumber">Plumber</option>
-        <option value="Carpenter">Carpenter</option>
-        <option value="Electrician">Electrician</option>
 
-        <!-- Add more roles as needed -->
-    </select>
+    <!-- Spacer between buttons and search input -->
+    <div style="flex-grow: 1;"></div>
 
-    <label for="filterShift">Shift:</label>
-    <select id="filterShift" onchange="filterStaff()">
-        <option value="">All</option>
-        <option value="First">Morning</option>
-        <option value="Second">Afternoon</option>
-        <option value="Third">Night</option>
-        <!-- Add more shifts as needed -->
-    </select>
-
-    <label for="filterAvailability">Availability:</label>
-    <select id="filterAvailability" onchange="filterStaff()">
-        <option value="">All</option>
-        <option value="Available">Available</option>
-        <option value="Occupied">Occupied</option>
-        <!-- Add more availability statuses as needed -->
-    </select>
+    <!-- Search input and search button (aligned to the right) -->
+    <input type="text" placeholder="Search tenant..." id="searchTenantInput" style="margin-right: 10px;">
+        <button class="search-unit-button" onclick="searchStaff()"><i class="fas fa-search"></i></button>
 </div>
-<table id="staffList">
+
+   
+  
+  
+<table id="staffList" class="staff-table" data-sort-column="" data-sort-order="">
     <thead>
         <tr>
-            <th>#</th>
-            <th>Staff</th>
-            <th>
-                Role
+            <th onclick="sortTable(0)">#</th>
+            <th  onclick="sortTable(1)">    
+                <span>Staff<i class="fas fa-sort"></i></span>
+            </th>
+            <th onclick="sortTable(2)">
+                
+                <span>Role
                 <select id="filterRole" onchange="filterStaff()">
                     <option value="">All</option>
                     <option value="Technician">Technician</option>
@@ -209,24 +262,26 @@
                     <option value="Plumber">Plumber</option>
                     <option value="Carpenter">Carpenter</option>
                     <option value="IT Technician">IT Technician</option>
-                </select>
+                </select>  <i class="fas fa-sort"></i></span>
+
             </th>
-            <th>
-                Shift
+            <th onclick="sortTable(3)">
+                <span>Shift
                 <select id="filterShift" onchange="filterStaff()">
                     <option value="">All</option>
-                    <option value="First">Morning</option>
-                    <option value="Second">Afternoon</option>
-                    <option value="Third">Night</option>
-                </select>
+                    <option value="First">First</option>
+                    <option value="Second">Second</option>
+                    <option value="Third">Third</option>
+                </select>  <i class="fas fa-sort"></i> </span>
             </th>
-            <th>
-                Availability
+            <th onclick="sortTable(4)">
+                <span>Availability
                 <select id="filterAvailability" onchange="filterStaff()">
                     <option value="">All</option>
                     <option value="Available">Available</option>
                     <option value="Occupied">Occupied</option>
                 </select>
+                <i class="fas fa-sort"></i> </span>
             </th>
             <th>Action</th>
         </tr>
@@ -260,6 +315,9 @@
         }
     </tbody>
 </table>
+
+
+
 <script>
     function filterStaff() {
         const roleFilter = document.getElementById("filterRole").value.toLowerCase();
@@ -270,9 +328,9 @@
 
         // Map shifts for display
         const shiftMap = {
-            "first": "morning",
-            "second": "afternoon",
-            "third": "night"
+            "first": "first",
+            "second": "second",
+            "third": "third"
         };
 
         rows.forEach(row => {
@@ -294,55 +352,159 @@
             }
         });
     }
+    
+    document.getElementById("searchStaffInput").addEventListener("keyup", searchStaff);
+
+    function searchStaff() {
+
+    // Get the search input value
+    const searchInput = document.getElementById("searchStaffInput").value.toLowerCase();
+
+    // Get all staff table rows
+    const staffRows = document.querySelectorAll("#staffList tbody tr.staff-item");
+
+    // Loop through each row and check if it matches the search input
+    staffRows.forEach((row) => {
+        const staffName = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+        if (staffName.includes(searchInput)) {
+            row.style.display = ""; // Show row if it matches
+        } else {
+            row.style.display = "none"; // Hide row if it doesn't match
+        }
+    });
+}
+
+//sort table
+function sortTable(columnIndex) {
+    const table = document.getElementById("staffList");
+    const rows = Array.from(table.tBodies[0].rows); // Get rows from tbody
+    let ascending = true; // Initial sort order
+
+    // Toggle ascending/descending if already sorted
+    if (table.dataset.sortColumn == columnIndex) {
+        ascending = table.dataset.sortOrder === "asc" ? false : true;
+    }
+
+    // Store the current sort column and order
+    table.dataset.sortColumn = columnIndex;
+    table.dataset.sortOrder = ascending ? "asc" : "desc";
+
+    // Sort rows
+    rows.sort((rowA, rowB) => {
+        const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+        const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+
+        if (cellA < cellB) return ascending ? -1 : 1;
+        if (cellA > cellB) return ascending ? 1 : -1;
+        return 0;
+    });
+
+    // Re-append sorted rows to tbody
+    const tbody = table.tBodies[0];
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
+}
+
 </script>
+        
 
-@*
 
-    <table id="staffList">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Staff</th>
-                <th>Role</th>
-                <th>Shift</th>
-                <th>Availability</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Any())
-            {
-                int index = 1;
-                foreach (var staff in Model)
-                {
-                    <tr class="staff-item" data-name="@staff.StaffName">
-                        <td>@index</td>
-                        <td>@staff.StaffName</td>
-                        <td>@staff.StaffRole</td>
-                        <td>@staff.Shift</td>
-                        <td>@staff.Availability</td>
-                        <td class="action-icons">
-                            <a asp-action="DeleteStaff" asp-route-id="@staff.StaffID" onclick="return confirmDelete(@staff.StaffID)">
-                                <i class="fas fa-trash delete"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    index++;
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="9" style="text-align:center;">No staff found.</td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
 
     <div class="pagination" style="margin: 20px 0 200px;">
         <button>Previous</button>
         <button style="margin: 0 0 0 5px;">Next</button>
     </div>
+    
+
+    <script>
+       
+        // Search function
+        function searchStaff() {
+            const searchInput = document.getElementById("searchStaffInput").value.toLowerCase();
+            const rows = document.querySelectorAll("#staffList tbody tr.staff-item");
+            rows.forEach((row) => {
+                const staffName = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                row.style.display = staffName.includes(searchInput) ? "" : "none";
+            });
+            paginate(); // Re-paginate after search
+        }
+
+        // Filter function
+        function filterStaff() {
+            const role = document.getElementById("filterRole").value;
+            const shift = document.getElementById("filterShift").value;
+            const availability = document.getElementById("filterAvailability").value;
+
+            const rows = document.querySelectorAll("#staffList tbody tr.staff-item");
+            rows.forEach((row) => {
+                const rowRole = row.getAttribute("data-role");
+                const rowShift = row.getAttribute("data-shift");
+                const rowAvailability = row.getAttribute("data-availability");
+
+                const matches = 
+                    (role === "" || role === rowRole) &&
+                    (shift === "" || shift === rowShift) &&
+                    (availability === "" || availability === rowAvailability);
+
+                row.style.display = matches ? "" : "none";
+            });
+        }
+
+        
+
+        // Export to CSV
+        function exportToCSV() {
+            const rows = Array.from(document.querySelectorAll("#staffList tbody tr.staff-item"));
+            const csvData = [["#", "Staff", "Role", "Shift", "Availability"]];
+
+            rows.forEach((row) => {
+                if (row.style.display !== "none") {
+                    const cells = Array.from(row.querySelectorAll("td")).map(td => td.textContent.trim());
+                    csvData.push(cells);
+                }
+            });
+
+            const csvContent = csvData.map(row => row.join(",")).join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "staff_list.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Export to PDF Functionality
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const table = document.querySelector('#staffList');
+
+        const rows = Array.from(table.rows).map(row => {
+            return Array.from(row.cells).map(cell => cell.innerText);
+        });
+
+        const headers = rows.shift(); // Remove the header row
+
+        doc.autoTable({
+            head: [headers],
+            body: rows,
+            startY: 20,
+            margin: { horizontal: 10 },
+        });
+
+        doc.save('staff.pdf');
+    }
+
+
+        // Initialize
+        document.addEventListener("DOMContentLoaded", () => {
+            paginate();
+        });
+    </script>
+
+
 
 
     <!-- Add Staff Modal -->
@@ -461,70 +623,10 @@
         });
     </script>
 
-@*     <script> *@
-@*     function filterStaff() { *@
-@*         const roleFilter = document.getElementById("filterRole").value.toLowerCase(); *@
-@*         const shiftFilter = document.getElementById("filterShift").value.toLowerCase(); *@
-@*         const availabilityFilter = document.getElementById("filterAvailability").value.toLowerCase(); *@
-
-@*         const rows = document.querySelectorAll("#staffList tbody tr.staff-item"); *@
-
-@*         // Map shifts for display *@
-@*         const shiftMap = { *@
-@*             "first": "morning", *@
-@*             "second": "afternoon", *@
-@*             "third": "night" *@
-@*         }; *@
-
-@*         rows.forEach(row => { *@
-@*             const role = row.getAttribute("data-role").toLowerCase(); *@
-@*             const shift = row.getAttribute("data-shift").toLowerCase(); *@
-@*             const availability = row.getAttribute("data-availability").toLowerCase(); *@
-
-@*             // Match the shift filter using the mapped display value *@
-@*             const mappedShift = shiftMap[shift] || shift; *@
-
-@*             if ( *@
-@*                 (roleFilter === "" || role.includes(roleFilter)) && *@
-@*                 (shiftFilter === "" || mappedShift.includes(shiftFilter)) && *@
-@*                 (availabilityFilter === "" || availability.includes(availabilityFilter)) *@
-@*             ) { *@
-@*                 row.style.display = ""; // Show the row *@
-@*             } else { *@
-@*                 row.style.display = "none"; // Hide the row *@
-@*             } *@
-@*         }); *@
-@*     } *@
-@* </script> *@
-
-@*     <script> *@
-@*     function filterStaff() { *@
-@*         const roleFilter = document.getElementById("filterRole").value.toLowerCase(); *@
-@*         const shiftFilter = document.getElementById("filterShift").value.toLowerCase(); *@
-@*         const availabilityFilter = document.getElementById("filterAvailability").value.toLowerCase(); *@
-
-@*         const rows = document.querySelectorAll("#staffList tbody tr.staff-item"); *@
-
-@*         rows.forEach(row => { *@
-@*             const role = row.getAttribute("data-role").toLowerCase(); *@
-@*             const shift = row.getAttribute("data-shift").toLowerCase(); *@
-@*             const availability = row.getAttribute("data-availability").toLowerCase(); *@
-
-@*             if ( *@
-@*                 (roleFilter === "" || role.includes(roleFilter)) && *@
-@*                 (shiftFilter === "" || shift.includes(shiftFilter)) && *@
-@*                 (availabilityFilter === "" || availability.includes(availabilityFilter)) *@
-@*             ) { *@
-@*                 row.style.display = ""; // Show the row *@
-@*             } else { *@
-@*                 row.style.display = "none"; // Hide the row *@
-@*             } *@
-@*         }); *@
-@*     } *@
-@* </script> *@
-
-</body>
+    </body>
 </html>
+
+
 
 
 

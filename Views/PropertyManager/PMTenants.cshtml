@@ -4,6 +4,178 @@
 }
 @model List<PMS.Models.TenantViewModel>
 
+<style>
+    * {
+        font-family: "Poppins", serif;
+    }
+
+    body {
+        font-family: "Poppins", serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .header {
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+    }
+
+        .header h1 {
+            color: black;
+            margin: 0;
+        }
+
+        .header .add-unit {
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    .units-list-header {
+        background-color: #B0836E;
+        color: white;
+        text-align: left;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .search-bar {
+        margin: 20px;
+        text-align: right;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .search-bar .left-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar .right-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #B0836E;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+
+
+
+    /* Style for text and icon (grouped together) */
+    th span {
+        display: flex;
+        align-items: center; /* Keep icon aligned with text */
+    }
+
+    /* Sort icon placement and styles */
+    th i {
+        margin-left: auto; /* Push the icon to the far right */
+        font-size: 0.9em;
+        color: #aaa;
+        padding-left: 4px;
+        transition: color 0.2s ease;
+    }
+
+
+    /* Hover effect for headers */
+    th:hover i {
+        color: #555; /* Darker color for sort icon on hover */
+    }
+
+    /* Active sorting icon colors */
+    .fas.fa-sort-up {
+        color: #2c89d9; /* Blue for ascending */
+    }
+
+    .fas.fa-sort-down {
+        color: #d9534f; /* Red for descending */
+    }
+
+    .pagination {
+        text-align: right;
+        margin: 20px 0;
+    }
+
+        .pagination button {
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .pagination button.active {
+                background-color: #B0836E;
+                color: white;
+            }
+
+    .action-icons i {
+        cursor: pointer;
+        margin: 0 5px;
+    }
+
+        .action-icons i.edit {
+            color: #007bff;
+        }
+
+        .action-icons i.delete {
+            color: #dc3545;
+        }
+
+    #manage-units-body {
+        margin-right: 15px;
+    }
+</style>
+
 @if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
 {
     <script>
@@ -17,46 +189,36 @@
         });
     </script>
 }
+<div class="header" style="margin-top: 20px; padding: 10px 0;">
+</div>
 
 <div class="tenants-page">
-    <h1>Tenants Management</h1>
-    @* <button asp-controller="PropertyManager" asp-action="AddTenant" class="pay-button">Add New Tenant</button> *@
-    @* <button class="button" onclick="exportToCSV()">Export to CSV</button> *@
-    @* <button class="pay-button" onclick="exportToPDF()">Export to PDF</button> *@
     <div class="units-list-header">
         <h2>Tenants</h2>
-        @* <a id="addTenantBtn" style="text-decoration: none;background-color: white;color: #B0836E;padding: 10px 20px;border-radius: 10px; font-weight: 600; cursor: pointer;">Add Tenant</a> *@
     </div>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search...">
-        <button class="search-button" onclick="searchTable()"><i class="fas fa-search"></i></button>
-        <button class="search-button" onclick="exportToPDF()">Export to PDF</button>
-        <button class="search-button" onclick="exportToCSV()">Export to CSV</button>
+    <div class="search-bar">
+        <div class="left-buttons">
+            <button class="search-button" onclick="exportToPDF()">Export to PDF</button>
+            <button class="search-button" onclick="exportToCSV()">Export to CSV</button>
+        </div>
 
+        <div class="right-search">
+            <input type="text" placeholder="Search tenant..." id="searchTenantInput" style="margin-right: 10px;">
+            <button class="search-unit-button" onclick="searchTenant()"><i class="fas fa-search"></i></button>
+        </div>
     </div>
 
-
-    <table class="tenants-table">
+    <table id="tenants-table" class="tenants-table" data-sort-column="" data-sort-order="">
         <thead>
             <tr>
-                <th>#</th>
-                <th>Tenant Name</th>
-                @* <th>Unit</th> *@
-                <th>Email</th>
-                @* <th>Lease Status</th> *@
-                @* <th>Payment Status</th> *@
-
-                @* <th>Lease Start Date</th> *@
-                @* <th>Lease End Date</th> *@
-                @* <th>Monthly Rent</th> *@
-                @* <th>Outstanding Balance</th> *@
-                @* <th>Status</th> *@
+                <th onclick="sortTable(0)">#</th>
+                <th onclick="sortTable(1)"><span>Tenant Name<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(2)"><span>Email<i class="fas fa-sort"></i></span></th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-
             @if (Model != null && Model.Any())
             {
                 int index = 1;
@@ -65,21 +227,8 @@
                     <tr>
                         <td>@index</td>
                         <td>@tenant.TenantName</td>
-                        @* <td>@tenant.UnitName</td> *@
-                        <td>@tenant.Email</td><!--tenant.PhoneNumber --> 
-                        @* <td>@tenant.LeaseStatus</td> *@
-                        @* <td>@tenant.PaymentStatus</td> *@
-
-                        @* <td> *@
-                        @*     @tenant.IsActive *@
-                        @*     <select> *@
-                        @*         <option value="active">Active</option> *@
-                        @*         <option value="inactive">Inactive</option> *@
-                        @*     </select> *@
-                        @* </td> *@
+                        <td>@tenant.Email</td>
                         <td class="action-icons">
-                            @* <a asp-action="UpdateTenant" asp-route-id="@tenant.TenantID" title="Edit" style="font-size: 20px;"><i class="fas fa-edit edit"></i></a> *@
-                            <!-- Form for deleting the unit -->
                             <form asp-action="DeleteTenant" asp-route-id="@tenant.TenantID" method="post" style="display:inline;">
                                 <button type="submit" title="Delete" style="background: none; border: none; padding: 0; width: fit-content; height: fit-content;">
                                     <i class="fas fa-trash delete" style="font-size: 20px;"></i>
@@ -96,8 +245,6 @@
                     <td colspan="5" style="text-align:center;">No tenants found.</td>
                 </tr>
             }
-            @* <tr> *@
-           
         </tbody>
     </table>
 </div>
@@ -106,122 +253,37 @@
     <button style="margin: 0 0 0 5px;">Next</button>
 </div>
 
-
-<!-- Modal structure -->
-<div class="modal" id="tenantModal" tabindex="-1" aria-labelledby="tenantModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="tenantModalLabel">Tenant Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="tenantDetails">Loading...</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-    <!-- Confirmation Modal for Deletion -->
-<div id="confirmationModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
-    <div style="background-color: white; padding: 20px; border-radius: 10px; width: 400px; text-align: center;">
-        <h3>Are you sure you want to delete this tenant?</h3>
-        <button id="confirmDeleteBtn" style="background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px;">Yes</button>
-        <button onclick="document.getElementById('confirmationModal').style.display='none'" style="background-color: #f44336; color: white; padding: 10px 20px; border-radius: 5px; margin-left: 10px;">No</button>
-    </div>
-</div>
-
 <script>
-   
+    document.getElementById("searchTenantInput").addEventListener("keyup", searchTenant);
 
-     // Search Functionality
-    function searchTable() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('.tenants-table tbody tr');
+    function searchTenant() {
+        const searchTerm = document.getElementById("searchTenantInput").value.toLowerCase();
+        const tenantRows = document.querySelectorAll("#tenants-table tbody tr");
 
-        rows.forEach(row => {
-            const tenantName = row.cells[1].innerText.toLowerCase(); // Assuming name is in the second column
+        tenantRows.forEach(function(row) {
+            const tenantName = row.cells[1].textContent.toLowerCase();
             if (tenantName.includes(searchTerm)) {
-                row.style.display = '';
+                row.style.display = "table-row";
             } else {
-                row.style.display = 'none';
+                row.style.display = "none";
             }
         });
     }
 
-    // Export to CSV Functionality
-    function exportToCSV() {
-        const table = document.querySelector('.tenants-table');
-        const rows = Array.from(table.rows);
+    function sortTable(columnIndex) {
+        const table = document.getElementById("tenants-table");
+        const rows = Array.from(table.tBodies[0].rows);
+        const ascending = table.getAttribute('data-sort-order') !== 'asc';
 
-        const csvContent = rows.map(row => {
-            const cells = Array.from(row.cells).map(cell => cell.innerText);
-            return cells.join(',');
-        }).join('\n');
-
-        const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const downloadLink = document.createElement('a');
-        downloadLink.href = URL.createObjectURL(csvBlob);
-        downloadLink.download = 'tenants.csv';
-        downloadLink.click();
-    }
-
-    // Export to PDF Functionality
-    function exportToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const table = document.querySelector('.tenants-table');
-
-        const rows = Array.from(table.rows).map(row => {
-            return Array.from(row.cells).map(cell => cell.innerText);
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.cells[columnIndex].textContent.trim();
+            const cellB = rowB.cells[columnIndex].textContent.trim();
+            return ascending
+                ? (cellA > cellB ? 1 : -1)
+                : (cellA < cellB ? 1 : -1);
         });
 
-        const headers = rows.shift(); // Remove the header row
-
-        doc.autoTable({
-            head: [headers],
-            body: rows,
-            startY: 20,
-            margin: { horizontal: 10 },
-        });
-
-        doc.save('tenants.pdf');
+        rows.forEach(row => table.tBodies[0].appendChild(row));
+        table.setAttribute('data-sort-order', ascending ? 'asc' : 'desc');
     }
-
-    // Event listener for 'Enter' key to trigger search
-    document.getElementById('searchInput').addEventListener('keyup', searchTable);
-
 </script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
-@* <!-- Script to load tenant details --> *@
-@* <script> *@
-@*     function viewTenantDetails(tenantId) { *@
-@*         fetch(`/PropertyManager/ViewTenantDetails/${tenantId}`) *@
-@*             .then(response => response.json()) *@
-@*             .then(data => { *@
-@*                 const details = ` *@
-@*                     <strong>Name:</strong> ${data.name}<br> *@
-@*                     <strong>Unit:</strong> ${data.unit}<br> *@
-@*                     <strong>Lease Start:</strong> ${data.leaseStartDate}<br> *@
-@*                     <strong>Lease End:</strong> ${data.leaseEndDate}<br> *@
-@*                     <strong>Status:</strong> ${data.status} *@
-@*                 `; *@
-@*                 document.getElementById('tenantDetails').innerHTML = details; *@
-@*                 const modal = new bootstrap.Modal(document.getElementById('tenantModal')); *@
-@*                 modal.show(); *@
-@*             }) *@
-@*             .catch(error => console.error('Error loading tenant details:', error)); *@
-@*     } *@
-@* </script> *@
-
-

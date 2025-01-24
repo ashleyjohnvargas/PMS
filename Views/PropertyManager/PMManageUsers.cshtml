@@ -2,12 +2,163 @@
     ViewData["Title"] = "Cozy Homes - Users";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
-@* @model List<UserViewModel> *@
-    @model List<PMS.Models.ManagerViewModel>
+@model List<PMS.Models.ManagerViewModel>
+<style>
+        * {
+            font-family: "Poppins", serif;
+        }
+
+        body {
+            font-family: "Poppins", serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .header {
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+            .header h1 {
+                color: black;
+                margin: 0;
+            }
+
+            .header .add-unit {
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+        .units-list-header {
+            background-color: #B0836E;
+            color: white;
+            text-align: left;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-bar {
+            margin: 20px;
+            text-align: right;
+        }
+
+            .search-bar input[type="text"] {
+                padding: 10px;
+                width: 200px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            .search-bar button {
+                padding: 10px 15px;
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+            table th, table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+            }
+
+            table th {
+                background-color: #B0836E;
+                color: white;
+            }
+
+            table tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
 
 
-@* <h1>User Management</h1> *@
- <div class="header" style="margin-top: 50px; padding: 10px 0;">
+
+
+/* Style for text and icon (grouped together) */
+th span {
+    display: flex;
+    align-items: center; /* Keep icon aligned with text */
+}
+
+/* Sort icon placement and styles */
+th i {
+    margin-left: auto; /* Push the icon to the far right */
+    font-size: 0.9em;
+    color: #aaa;
+    padding-left: 4px;
+    transition: color 0.2s ease;
+}
+
+
+/* Hover effect for headers */
+th:hover i {
+    color: #555; /* Darker color for sort icon on hover */
+}
+
+/* Active sorting icon colors */
+.fas.fa-sort-up {
+    color: #2c89d9; /* Blue for ascending */
+}
+
+.fas.fa-sort-down {
+    color: #d9534f; /* Red for descending */
+}
+
+        .pagination {
+            text-align: right;
+            margin: 20px 0;
+        }
+
+            .pagination button {
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                margin: 0 5px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+             .pagination button.active {
+            background-color: #B0836E;
+            color: white;
+        }
+        .action-icons i {
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+            .action-icons i.edit {
+                color: #007bff;
+            }
+
+            .action-icons i.delete {
+                color: #dc3545;
+            }
+
+        #manage-units-body {
+            margin-right: 15px;
+        }
+    </style>
+
+ <div class="header" style="margin-top: 20px; padding: 10px 0;">
 
         @* <h1 style="color: #B0836E;">Leases</h1> *@
         @*         <a asp-action="AddUnitPage" style="text-decoration: none;background-color: #B0836E;color: white;padding: 10px 20px;border-radius: 10px;">Add Lease</a>
@@ -21,15 +172,15 @@
 
     <div class="search-bar" style="margin: 20px 0;">
         <input type="text" placeholder="Search manager..." id="searchInput">
-        <button class="search-unit-button" onclick="searchManager()">Search</button>
+        <button class="search-unit-button" onclick="searchManager()"><i class="fas fa-search"></i></button>
     </div>
 
-<table id="managerList">
+<table id="managerList" data-sort-column="" data-sort-order="">
     <thead>
         <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
+            <th onclick="sortTable(0)">#</th>
+            <th onclick="sortTable(1)"><span>Name<i class="fas fa-sort"></i></span></th>
+            <th onclick="sortTable(2)"> <span>Email <i class="fas fa-sort"></i></span></th>
             @* <th>Role</th> *@
             @* <th>IsActive</th> *@
             <th>Actions</th>
@@ -132,6 +283,7 @@
 
 
     <script>
+            document.getElementById("searchInput").addEventListener("keyup", searchManager);
 
        // Function to search managers
     function searchManager() {
@@ -162,6 +314,36 @@
             searchManager();
         }
     });
+
+    function sortTable(columnIndex) {
+    const table = document.getElementById("managerList");
+    const rows = Array.from(table.tBodies[0].rows); // Get rows from tbody
+    let ascending = true; // Initial sort order
+
+    // Toggle ascending/descending if already sorted
+    if (table.dataset.sortColumn == columnIndex) {
+        ascending = table.dataset.sortOrder === "asc" ? false : true;
+    }
+
+    // Store the current sort column and order
+    table.dataset.sortColumn = columnIndex;
+    table.dataset.sortOrder = ascending ? "asc" : "desc";
+
+    // Sort rows
+    rows.sort((rowA, rowB) => {
+        const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+        const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+
+        if (cellA < cellB) return ascending ? -1 : 1;
+        if (cellA > cellB) return ascending ? 1 : -1;
+        return 0;
+    });
+
+    // Re-append sorted rows to tbody
+    const tbody = table.tBodies[0];
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
+}
 
     // JavaScript function to handle the delete confirmation using a modal
     function confirmDelete(managerId) {
