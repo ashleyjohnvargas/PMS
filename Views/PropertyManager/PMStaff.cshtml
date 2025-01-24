@@ -163,11 +163,11 @@
     </div>
 
     <div class="search-bar" style="margin: 20px 0;">
-        <input type="text" placeholder="Search staff..." id="searchInput">
-        <button class="search-unit-button">Search</button>
+        <input type="text" placeholder="Search staff..." id="searchStaffInput">
+        <button class="search-unit-button" onclick="searchStaff()">Search</button>
     </div>
 
-    <table>
+    <table id="staffList">
         <thead>
             <tr>
                 <th>#</th>
@@ -184,14 +184,14 @@
                 int index = 1;
                 foreach (var staff in Model)
                 {
-                    <tr>
+                    <tr class="staff-item" data-name="@staff.StaffName">
                         <td>@index</td>
                         <td>@staff.StaffName</td>
                         <td>@staff.StaffRole</td>
                         <td>@staff.Shift</td>
                         <td>@staff.Availability</td>
-                        <td>
-                            <a asp-action="DeleteStaff" asp-route-id="@staff.StaffID">
+                        <td class="action-icons">
+                            <a asp-action="DeleteStaff" asp-route-id="@staff.StaffID" onclick="return confirmDelete(@staff.StaffID)">
                                 <i class="fas fa-trash delete"></i>
                             </a>
                         </td>
@@ -262,6 +262,41 @@
     </div>
 
     <script>
+
+         // Function to search staff
+    function searchStaff() {
+        // Get the search term
+        const searchTerm = document.getElementById("searchStaffInput").value.toLowerCase();
+        
+        // Get all staff rows
+        const staffRows = document.querySelectorAll("#staffList .staff-item");
+
+        // Loop through each staff row
+        staffRows.forEach(function(row) {
+            // Get the staff's name from the data-name attribute
+            const staffName = row.getAttribute("data-name").toLowerCase();
+            
+            if (staffName.includes(searchTerm)) {
+                // If it matches, show the row
+                row.style.display = "table-row";
+            } else {
+                // Otherwise, hide it
+                row.style.display = "none";
+            }
+        });
+    }
+
+    // Optional: Enable search on "Enter" key press
+    document.getElementById("searchStaffInput").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            searchStaff();
+        }
+    });
+        // JavaScript function to handle the delete confirmation
+    function confirmDelete(managerId) {
+        // Show a confirmation dialog
+        return confirm("Are you sure you want to delete this manager?");
+    }
         // Show the modal
         document.getElementById("addStaffBtn").addEventListener("click", function () {
             document.getElementById("addStaffModal").style.display = "flex";

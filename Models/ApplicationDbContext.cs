@@ -55,7 +55,7 @@ namespace PMS.Models
             modelBuilder.Entity<Tenant>()
                 .Property(t => t.IsActualTenant)
                 .HasDefaultValue(false);
-           
+
             modelBuilder.Entity<Tenant>()
                 .HasOne(t => t.User)
                 .WithMany(u => u.Tenants)
@@ -68,6 +68,30 @@ namespace PMS.Models
             modelBuilder.Entity<Request>()
                 .Property(r => r.RequestStatus)
                 .HasDefaultValue("Pending");
+
+            //addd
+
+            //// Tenant to Unit relationship
+            //modelBuilder.Entity<Tenant>()
+            //    .HasOne(t => t.Unit)
+            //    .WithMany(u => u.Tenants)
+            //    .HasForeignKey(t => t.UnitID);
+
+            // Tenant to Lease relationship
+            //modelBuilder.Entity<Tenant>()
+            //    .HasOne(t => t.Lease)
+            //    .WithMany(l => l.Tenants)
+            //    .HasForeignKey(t => t.LeaseID);
+
+            // Define one-to-one relationship between User and Profile
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Profile)
+                .WithOne(p => p.User)
+                .HasForeignKey<Profile>(p => p.UserID);
+
+            
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

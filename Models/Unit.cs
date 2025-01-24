@@ -26,5 +26,8 @@ namespace PMS.Models
         public string UnitStatus { get; set; } = "Active";
         public string AvailabilityStatus { get; set; }
         public virtual ICollection<UnitImage>? Images { get; set; }
+
+        public ICollection<Tenant> Tenants { get; set; }
+
     }
 }

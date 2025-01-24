@@ -15,5 +15,12 @@ namespace PMS.Models
         public virtual User? User { get; set; }
         public string? PhoneNumber { get; set; }
 
+        //public int UnitID { get; set; }
+        public Unit Unit { get; set; } // Relationship to Unit
+
+        //public int LeaseID { get; set; }
+        //public Lease Lease { get; set; } // Relationship to Lease
+
+
     }
 }

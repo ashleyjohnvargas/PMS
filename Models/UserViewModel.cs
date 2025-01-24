@@ -4,6 +4,7 @@ namespace PMS.Models
     public class UserViewModel
     {
         public int UserID { get; set; } // Primary Key
+        public string ManagerName { get; set; }
         public string? FirstName { get; set; } // User's first name
         public string? LastName { get; set; } // User's last name
         public int? UnitId { get; set; }

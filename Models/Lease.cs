@@ -24,5 +24,7 @@ namespace PMS.Models
         public virtual Unit? Unit { get; set; }
         public virtual LeaseDetails? LeaseDetails { get; set; }
 
+        public ICollection<Tenant> Tenants { get; set; }
+
     }
 }

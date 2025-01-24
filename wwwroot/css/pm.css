@@ -201,10 +201,11 @@ body, ul {
 
     .sidebar ul {
         list-style: none;
-        margin-top: 40%;
+        margin-top: 50%;
     }
 
         .sidebar ul li {
+            margin-top: 50px;
             margin: 10px 0;
         }
 

@@ -5,25 +5,35 @@ namespace PMS.Models
 {
     public class TenantViewModel
     {
-        public int TenantID { get; set; } // Primary Key
-        
-        [ForeignKey(nameof(User))]
-        public int? UserId { get; set; }
-        public string? FirstName { get; set; } // User's first name
-        public string? LastName { get; set; } // User's last name
+        public int TenantID { get; set; }
+        public string TenantName { get; set; } // Full name of the staff
+        //public string FullName => $"{FirstName} {LastName}";
+
+        public string Email { get; set; }
+        //public int TenantID { get; set; } // Primary Key
+
+        //[ForeignKey(nameof(User))]
+        //public int? UserId { get; set; }
+        //public string? TenantName { get; set; } // User's last name
+
 
         public string? PhoneNumber { get; set; }
-        public string? Email { get; set; }
-        //public string? ProfilePicturePath { get; set; } // File path for the profile picture
-        public virtual User? User { get; set; }
-        //public string? FirstName { get; set; } // User's first name
-        //public string? LastName { get; set; } // User's last name
-        //[ForeignKey(nameof(Unit))] // Foreign key for Unit
-        public int? UnitID { get; set; }
-        public virtual Unit? Unit { get; set; } // Navigation property for Unit
-        //public string? Email { get; set; } // User's email
-        //public string? PhoneNumber { get; set; }
-        //public string? Role { get; set; }
-        public bool IsActive { get; set; } = true; // Default value is true
+        //public string? Email { get; set; }
+        //public string UnitNumber { get; set; } // New property for Unit Number
+
+        public string UnitName { get; set; } // Name of the Unit
+        public string LeaseStatus { get; set; } // Status of the Lease (e.g., Active, Expired)
+        public string PaymentStatus { get; set; }
+        ////public string? ProfilePicturePath { get; set; } // File path for the profile picture
+        //public virtual User? User { get; set; }
+        ////public string? FirstName { get; set; } // User's first name
+        ////public string? LastName { get; set; } // User's last name
+        ////[ForeignKey(nameof(Unit))] // Foreign key for Unit
+        //public int? UnitID { get; set; }
+        //public virtual Unit? Unit { get; set; } // Navigation property for Unit
+        ////public string? Email { get; set; } // User's email
+        ////public string? PhoneNumber { get; set; }
+        ////public string? Role { get; set; }
+        //public bool IsActive { get; set; } = true; // Default value is true
     }
 }

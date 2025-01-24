@@ -14,6 +14,9 @@ namespace PMS.Models
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
+        // Foreign Key and Navigation Property
+       // public int UserID { get; set; }
+        //public User User { get; set; }
         public virtual User? User { get; set; } // Navigation property
 
     }

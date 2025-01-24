@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BCrypt.Net;
 using PMS.Models;
 
 namespace PMS.Controllers
@@ -338,72 +339,295 @@ namespace PMS.Controllers
         {
             return View();
         }
+
+        //public async Task<IActionResult> PMTenants()
+        //{
+        //    try
+        //    {
+        //        // Fetch the list of tenants with the required details
+        //        var tenantList = await _context.Tenants
+        //         .Include(t => t.Unit) // Example for relationships
+        //         .Include(t => t.Lease) // Include the Lease entity to get lease status
+        //         .Where(tenant => tenant.UserId != null && tenant.User.IsActive && tenant.IsActualTenant)
+        //         .Select(tenant => new TenantViewModel
+        //         {
+        //             TenantID = tenant.TenantID,
+        //             TenantName = tenant.User.FirstName + " " + tenant.User.LastName,
+        //             Email = tenant.User.Email,
+        //             UnitName = tenant.Unit.UnitName,
+        //             LeaseStatus = tenant.Lease.LeaseStatus,
+        //             //PaymentStatus = tenant.payment.PaymentStatus
+        //         })
+        //         .ToListAsync();
+        //        // Pass the list of tenants to the view
+        //        return View(tenantList);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["ErrorMessage"] = $"Error loading tenants: {ex.Message}";
+        //        return View(new List<TenantViewModel>()); // Return an empty list in case of error
+        //    }
+        //}
+        //revert
         public async Task<IActionResult> PMTenants()
         {
             try
             {
-                // Fetch data from the Tenants table
-                var tenants = await _context.Tenants
-                    .Include(t => t.User) // Include User data
-                    .ThenInclude(u => u.Profile)  // Include Profile for PhoneNumber
-                                                 // .Include(t => t.Unit) // Include Unit data
-                    .Select(t => new TenantViewModel
+                // Fetch the list of property managers with email
+                var tenantList = await _context.Tenants
+                    .Where(tenant => tenant.UserId != null && tenant.User.IsActive && tenant.IsActualTenant) // Filter by active users
+                    .Select(tenant => new TenantViewModel
                     {
-                        TenantID = t.TenantID,
-                        UserId = t.UserId,
-                        PhoneNumber = t.User.Profile.PhoneNumber,
-                        FirstName = t.User.FirstName, // Fetch FirstName from User
-                        LastName = t.User.LastName,   // Fetch LastName from User
-                        //PhoneNumber = t.User.Profile.PhoneNumber, //From Profile
-                        Email = t.User.Email,
-                        //UnitID = t.UnitID,
-                        IsActive = t.User.IsActive,
-                        //UnitID = t.UnitID,
-                        User = t.User, // Optional: Pass the User object if needed
-                        //Unit = t.Unit  // Optional: Pass the Unit object if needed
+                        TenantID = tenant.TenantID,
+                        TenantName = tenant.User.FirstName + " " + tenant.User.LastName, // Combine FirstName and LastName
+                        Email = tenant.User.Email, // Get the Email of the User related to the Manager
                     })
                     .ToListAsync();
 
-                // Pass the list of tenants to the view
-                return View(tenants);
+                // Pass the list of managers to the view
+                return View(tenantList);
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error loading tenants: {ex.Message}";
+                TempData["ErrorMessage"] = $"Error loading managers: {ex.Message}";
                 return View(new List<TenantViewModel>()); // Return an empty list in case of error
             }
         }
+        //public async Task<IActionResult> PMTenants()
+        //{
+        //    try
+        //    {
+        //        // Fetch the list of tenants along with related user, profile, unit, and lease status
+        //        var tenantList = await _context.Tenants
+        //            .Where(tenant => tenant.UserId != null && tenant.User.IsActive && tenant.IsActualTenant) // Filter by active users
+        //            .Include(t => t.User) // Include the related User entity
+        //            .ThenInclude(u => u.Profile) // Include the Profile associated with the User
+        //            //.Include(t => t.Unit) // Include the related Unit entity
+        //            //.Include(t => t.Lease) // Include the Lease entity to get lease status
+        //            .Select(tenant => new TenantViewModel
+        //            {
+        //                TenantID = tenant.TenantID,
+        //                TenantName = tenant.User.FirstName + " " + tenant.User.LastName, // Combine FirstName and LastName
+        //                Email = tenant.User.Email, // Get the Email of the User related to the Tenant
+        //                PhoneNumber = tenant.User.Profile.PhoneNumber, // Access the PhoneNumber from Profile
+        //                //UnitName = tenant.Unit.UnitName, // Access the Unit's name
+        //                //LeaseStatus = tenant.Lease.LeaseStatus, // Access the lease status (e.g., Active, Expired)
+        //                IsActive = tenant.User.IsActive
+        //            })
+        //            .ToListAsync();
+
+        //        // Pass the list of tenants to the view
+        //        return View(tenantList);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["ErrorMessage"] = $"Error loading tenants: {ex.Message}";
+        //        return View(new List<TenantViewModel>()); // Return an empty list in case of error
+        //    }
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> AddTenant(AddTenantViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest("All fields are required.");
+        //    }
+
+        //    try
+        //    {
+        //        // Hash the password using BCrypt
+        //        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+        //        // Create instance of the Users table
+        //        var newUser = new User
+        //        {
+        //            FirstName = model.FirstName,
+        //            LastName = model.LastName,
+        //            Email = model.Email,
+        //            Password = hashedPassword, // hashed password
+        //            Role = "Tenant", // Default role for all tenants
+        //            TermsAndConditions = true // Default value
+        //        };
+
+        //        _context.Users.Add(newUser);
+        //        await _context.SaveChangesAsync();
+
+        //        // Get the generated UserId
+        //        int userId = newUser.UserID;
+
+
+        //        // Create instance of the Staffs table
+        //        var newTenant = new Tenant
+        //        {
+        //            UserId = userId,
+        //            IsActualTenant = true,
+        //            //Email = model.Email,
+        //            //ManagerID = ManagerID,
+
+        //        };
+
+        //        _context.Tenants.Add(newTenant);
+        //        await _context.SaveChangesAsync();
+
+        //        TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+        //        TempData["PopupMessage"] = "Tenant added successfully!";
+        //        TempData["PopupTitle"] = "Success!";  // Set the custom title
+        //        TempData["PopupIcon"] = "success";  // Set the icon dynamically (can be success, error, info, warning)
+
+        //        return RedirectToAction("PMTenants");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        [HttpPost]
+        public IActionResult DeleteTenant(int id)
+        {
+            // Find the PropertyManager record using the provided Manager ID
+            var tenant = _context.Tenants.FirstOrDefault(t => t.TenantID == id);
+            if (tenant == null)
+            {
+                return NotFound("Tenant not found.");
+            }
+
+            // Find the associated user using the UserId from the PropertyManager record
+            var user = _context.Users.FirstOrDefault(u => u.UserID == tenant.UserId);
+            if (user == null)
+            {
+                return NotFound("Associated user not found.");
+            }
+
+            // Set the IsActive field to false (soft delete)
+            user.IsActive = false;
+
+            // Save changes to the database
+            _context.SaveChanges();
+
+            // Set TempData for the popup
+            TempData["ShowPopup"] = true;
+            TempData["PopupMessage"] = "Tenant deleted successfully!";
+            TempData["PopupTitle"] = "Success!";
+            TempData["PopupIcon"] = "success"; // Set the icon dynamically (success, error, info, warning)
+
+            return RedirectToAction("PMTenants");
+        }
+
 
         public async Task<IActionResult> PMManageUsers()
         {
             try
             {
-                // Fetch data from the users table
-                var users = await _context.Users
-                    .Where(u => u.Role != "Tenant")
-                    .Select(u => new UserViewModel
+                // Fetch the list of property managers with email
+                var managerList = await _context.PropertyManagers
+                    .Where(manager => manager.UserId != null && manager.User.IsActive) // Filter by active users
+                    .Select(manager => new ManagerViewModel
                     {
-                        UserID = u.UserID,
-                        FirstName = u.FirstName,
-                        LastName = u.LastName,
-                        Email = u.Email,
-                        Role = u.Role,
-                        IsActive = u.IsActive,
-
+                        ManagerID = manager.ManagerID,
+                        ManagerName = manager.User.FirstName + " " + manager.User.LastName, // Combine FirstName and LastName
+                        Email = manager.User.Email, // Get the Email of the User related to the Manager
                     })
                     .ToListAsync();
 
-                // Pass the list of users to the view
-                return View(users);
+                // Pass the list of managers to the view
+                return View(managerList);
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error loading users: {ex.Message}";
-                return View(new List<UserViewModel>()); // Return an empty list in case of error
+                TempData["ErrorMessage"] = $"Error loading managers: {ex.Message}";
+                return View(new List<ManagerViewModel>()); // Return an empty list in case of error
             }
         }
 
 
+
+        [HttpPost]
+        public async Task<IActionResult> AddManager(AddManagerViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("All fields are required.");
+            }
+
+            try
+            {
+                // Hash the password using BCrypt
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                // Create instance of the Users table
+                var newUser = new User
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Password = hashedPassword, // hashed password
+                    Role = "Property Manager", // Default role for all property manager
+                    TermsAndConditions = true // Default value
+                };
+
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+
+                // Get the generated UserId
+                int userId = newUser.UserID;
+
+              
+                // Create instance of the Staffs table
+                var newManager = new PropertyManager
+                {
+                    UserId = userId,
+                    //Email = model.Email,
+                    //ManagerID = ManagerID,
+
+                };
+
+                _context.PropertyManagers.Add(newManager);
+                await _context.SaveChangesAsync();
+
+                TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                TempData["PopupMessage"] = "Manager added successfully!";
+                TempData["PopupTitle"] = "Success!";  // Set the custom title
+                TempData["PopupIcon"] = "success";  // Set the icon dynamically (can be success, error, info, warning)
+
+                return RedirectToAction("PMManageUsers");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteManager(int id)
+        {
+            // Find the PropertyManager record using the provided Manager ID
+            var manager = _context.PropertyManagers.FirstOrDefault(m => m.ManagerID == id);
+            if (manager == null)
+            {
+                return NotFound("Property Manager not found.");
+            }
+
+            // Find the associated user using the UserId from the PropertyManager record
+            var user = _context.Users.FirstOrDefault(u => u.UserID == manager.UserId);
+            if (user == null)
+            {
+                return NotFound("Associated user not found.");
+            }
+
+            // Set the IsActive field to false (soft delete)
+            user.IsActive = false;
+
+            // Save changes to the database
+            _context.SaveChanges();
+
+            // Set TempData for the popup
+            TempData["ShowPopup"] = true;
+            TempData["PopupMessage"] = "Property Manager deleted successfully!";
+            TempData["PopupTitle"] = "Success!";
+            TempData["PopupIcon"] = "success"; // Set the icon dynamically (success, error, info, warning)
+
+            return RedirectToAction("PMManageUsers");
+        }
 
         public IActionResult AddUnitPage()
         {
@@ -737,13 +961,15 @@ namespace PMS.Controllers
 
             try
             {
+                // Hash the password using BCrypt
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
                 // Create instance of the Users table
                 var newUser = new User
                 {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Email = model.Email,
-                    Password = model.Password, // Consider hashing the password
+                    Password = hashedPassword, // hashedpassword
                     Role = "Staff", // Default role for all staff
                     TermsAndConditions = true // Default value
                 };

@@ -16,5 +16,7 @@ namespace PMS.Models
         public string PaymentStatus { get; set; } = "Pending"; // E.g., Paid, Pending, Failed
         //public string? TransactionReference { get; set; } // Unique transaction identifier for tracking
         public virtual Lease? Lease { get; set; } // Navigation property
+        //public virtual Tenant? Tenant { get; set; } // Navigation property
+
     }
 }
