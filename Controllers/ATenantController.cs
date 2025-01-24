@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PMS.Models;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+
 namespace PMS.Controllers
 {
     public class ATenantController : Controller
@@ -377,6 +378,93 @@ namespace PMS.Controllers
         {
             return View();
         }
+
+
+        [HttpPost]
+        public IActionResult SendRequest(RequestFormModel form)
+        {
+            try
+            {
+                // Step 1: Retrieve the TenantID from the session
+                int? userId = HttpContext.Session.GetInt32("UserId");
+                if (userId == null)
+                {
+                    return BadRequest("User is not logged in.");
+                }
+
+                var tenant = _context.Tenants.FirstOrDefault(t => t.UserId == userId);
+                if (tenant == null)
+                {
+                    return NotFound("Tenant not found.");
+                }
+
+                // Step 2: Fetch Staffs based on RequestType
+                var staffRole = form.RequestType switch
+                {
+                    "Electrical" => "Electrician",
+                    "Plumbing" => "Plumber",
+                    "Structural" => "Carpenter",
+                    "Appliance" => "Technician",
+                    "Internet" => "IT Technician",
+                    _ => throw new Exception("Invalid Request Type")
+                };
+
+                // Get the current date and time
+                DateTime currentDateTime = DateTime.Now;
+
+                // Fetch staff with matching role and current shift
+                var availableStaff = _context.Staffs
+                    .Where(staff => staff.StaffRole == staffRole && staff.IsVacant)
+                    .AsEnumerable() // Switch to in-memory evaluation
+                    .Where(staff => staff.ShiftStartTime.HasValue &&
+                                    staff.ShiftEndTime.HasValue &&
+                                    currentDateTime.TimeOfDay >= staff.ShiftStartTime.Value.ToTimeSpan() &&
+                                    currentDateTime.TimeOfDay <= staff.ShiftEndTime.Value.ToTimeSpan())
+                    .OrderBy(staff => staff.StaffID) // Ensure consistent assignment
+                    .FirstOrDefault();
+
+
+
+                if (availableStaff == null)
+                {
+                    TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                    TempData["PopupMessage"] = "Cannot make a request now. No staff is available as of the moment.";
+                    TempData["PopupTitle"] = "Sorry";
+                    TempData["PopupIcon"] = "info";  // Set the icon dynamically (can be success, error, info, warning)
+                    return RedirectToAction("MakeRequest");
+                }
+
+                // Step 3: Create a new Request instance
+                var newRequest = new Request
+                {
+                    TenantID = tenant.TenantID,
+                    StaffID = availableStaff.StaffID,
+                    RequestType = form.RequestType,
+                    RequestDescription = form.RequestDescription,
+                    RequestDateTime = currentDateTime,
+                    RequestStatus = "Pending", // Default status
+                };
+
+                // Step 4: Update the staff's IsVacant field
+                availableStaff.IsVacant = false;
+
+                // Step 4: Save the new request to the database
+                _context.Requests.Add(newRequest);
+                _context.Staffs.Update(availableStaff);
+                _context.SaveChanges();
+
+                TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                TempData["PopupMessage"] = "Request has been successfully sent!";
+                TempData["PopupTitle"] = "Success!";
+                TempData["PopupIcon"] = "success";  // Set the icon dynamically (can be success, error, info, warning)
+                return RedirectToAction("ATenantMaintenance");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         public IActionResult ATenantMaintenance()
         {

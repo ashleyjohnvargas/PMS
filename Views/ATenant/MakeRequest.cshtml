@@ -3,27 +3,38 @@
     Layout = "~/Views/Shared/_LayoutATenant.cshtml";
 }
 
+@if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: '@TempData["PopupTitle"]',  // Set the title dynamically
+                text: '@TempData["PopupMessage"]', // Set the message dynamically
+                icon: '@TempData["PopupIcon"]',    // Set the icon dynamically (success, error, warning, info)
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
+
 <!-- Maintenance Request Content -->
-<section class="maintenance">
+<section class="maintenance" style="min-height: 100vh;">
     <div class="maintenance-container">
         <h2>Make a Maintenance Request</h2>
-        <form>
+        <form asp-action="SendRequest" method="post">
             <div class="form-group">
-                <label for="issue-type">Issue Type</label>
-                <select id="issue-type">
-                    <option value="plumbing">Plumbing</option>
-                    <option value="electrical">Electrical</option>
-                    <option value="general-repairs">General Repairs</option>
-                    <option value="other">Other</option>
+                <label for="RequestType">Issue Type</label>
+                <select id="RequestType" name="RequestType" required>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Structural">Structural</option>
+                    <option value="Electrical">Appliance</option>
+                    <option value="Internet">Internet</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" placeholder="Describe the issue..."></textarea>
-            </div>
-            <div class="form-group">
-                <label for="upload">Upload Photo (optional)</label>
-                <input type="file" id="upload">
+                <label for="RequestDescription">Description</label>
+                <textarea id="RequestDescription" name="RequestDescription" placeholder="Describe the issue..."></textarea>
             </div>
             <div class="form-group">
                 <button type="submit">Submit Request</button>

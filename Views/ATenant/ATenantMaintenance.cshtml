@@ -118,7 +118,6 @@
     }
 </style>
 
-
 <div class="requests-mother-container" style="display: flex; justify-content: center;min-width: 100vh;min-height: 100vh;padding: 0 20px;">
     <div id="manage-units-body" style="flex: 1;">
         @if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
@@ -136,15 +135,11 @@
         }
 
         <div class="header" style="margin-top: 50px; padding: 10px 0;">
-
-            @* <h1 style="color: #B0836E;">Leases</h1> *@
-            @*         <a asp-action="AddUnitPage" style="text-decoration: none;background-color: #B0836E;color: white;padding: 10px 20px;border-radius: 10px;">Add Lease</a>
-            *@
         </div>
 
         <div class="units-list-header">
             <h2>Requests</h2>
-            <a asp-action="MakeRequest" style="color: #B0836E; background-color: white; padding: 7px 15px;">Send Request</a>
+            <a asp-action="MakeRequest" style="color: #B0836E; background-color: white; padding: 7px 15px; text-decoration: none;">Send Request</a>
         </div>
         <table>
             <thead>
@@ -189,6 +184,9 @@
     </div>
 
 </div>
+
+
+
 
 
 

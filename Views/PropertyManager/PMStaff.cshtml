@@ -134,15 +134,16 @@
         }
     </style>
 </head>
+
 <body id="manage-units-body">
     @if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
     {
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
-                    title: 'Success!',
-                    text: '@TempData["PopupMessage"]',
-                    icon: 'success',
+                    title: '@TempData["PopupTitle"]',  // Set the title dynamically
+                    text: '@TempData["PopupMessage"]', // Set the message dynamically
+                    icon: '@TempData["PopupIcon"]',    // Set the icon dynamically (success, error, warning, info)
                     confirmButtonText: 'OK'
                 });
             });
@@ -158,7 +159,7 @@
 
     <div class="units-list-header">
         <h2>Staff</h2>
-        <a style="text-decoration: none;background-color: white;color: #B0836E;padding: 10px 20px;border-radius: 10px; font-weight: 600;">Add Staff</a>
+        <a id="addStaffBtn" style="text-decoration: none;background-color: white;color: #B0836E;padding: 10px 20px;border-radius: 10px; font-weight: 600; cursor: pointer;">Add Staff</a>
     </div>
 
     <div class="search-bar" style="margin: 20px 0;">
@@ -190,7 +191,7 @@
                         <td>@staff.Shift</td>
                         <td>@staff.Availability</td>
                         <td>
-                            <a asp-route-id="@staff.StaffID">
+                            <a asp-action="DeleteStaff" asp-route-id="@staff.StaffID">
                                 <i class="fas fa-trash delete"></i>
                             </a>
                         </td>
@@ -212,8 +213,91 @@
         <button style="margin: 0 0 0 5px;">Next</button>
     </div>
 
+
+    <!-- Add Staff Modal -->
+    <div id="addStaffModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background-color: white; padding: 20px; border-radius: 10px; width: 400px;">
+            <h3>Add Staff</h3>
+            <form asp-action="AddStaff" method="post" id="addStaffForm" >
+                <div style="display: flex;">
+                    <label for="firstName" style="flex:1;">First Name</label>
+                    <input type="text" id="firstName" name="FirstName" style="flex:1;" required>
+                </div>
+                <div style="display: flex;">
+                    <label for="lastName" style="flex:1;">Last Name</label>
+                    <input type="text" id="lastName" name="LastName" style="flex:1;" required>
+                </div style="display: flex;">
+                <div style="display: flex;">
+                    <label for="email" style="flex:1;">Email Address</label>
+                    <input type="email" id="email" name="Email" style="flex:1;" required>
+                </div>
+                <div style="display: flex;">
+                    <label for="password" style="flex:1;">Temporary Password</label>
+                    <input type="password" id="password" name="Password" style="flex:1;" required>
+                </div>
+                <div style="display: flex;">
+                    <label for="role" style="flex:1;">Role</label>
+                    <select id="role" name="Role" style="flex:1;" required>
+                        <option value="">Select Role</option>
+                        <option value="Electrician">Electrician</option>
+                        <option value="Technician">Technician</option>
+                        <option value="Plumber">Plumber</option>
+                        <option value="Carpenter">Carpenter</option>
+                        <option value="IT Technician">IT Technician</option>
+                    </select>
+                </div>
+                <div style="display: flex;">
+                    <label for="shift" style="flex:1;">Shift</label>
+                    <select id="shift" name="Shift" style="flex:1;" required>
+                        <option value="">Select Shift</option>
+                        <option value="First">First</option>
+                        <option value="Second">Second</option>
+                        <option value="Third">Third</option>
+                    </select>
+                </div>
+                <button type="submit" id="submitStaffBtn" style="margin-top: 10px;">Add Staff</button>
+                <button type="button" id="closeModalBtn" style="margin-top: 10px;">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Show the modal
+        document.getElementById("addStaffBtn").addEventListener("click", function () {
+            document.getElementById("addStaffModal").style.display = "flex";
+        });
+
+        // Close the modal
+        document.getElementById("closeModalBtn").addEventListener("click", function () {
+            document.getElementById("addStaffModal").style.display = "none";
+        });
+
+        // Form submission and validation
+        document.getElementById("submitStaffBtn").addEventListener("click", function () {
+            const firstName = document.getElementById("firstName").value.trim();
+            const lastName = document.getElementById("lastName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const role = document.getElementById("role").value;
+            const shift = document.getElementById("shift").value;
+
+            if (!firstName || !lastName || !email || !password || !role || !shift) {
+                alert("All fields are required!");
+                return;
+            }
+
+            // // Submit form data here (e.g., via AJAX or form submission)
+            // alert("Staff added successfully!");
+
+            // // Close the modal and reset form
+            // document.getElementById("addStaffModal").style.display = "none";
+            // document.getElementById("addStaffForm").reset();
+        });
+    </script>
+
 </body>
 </html>
+
 
 
 

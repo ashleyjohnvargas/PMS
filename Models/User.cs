@@ -25,6 +25,7 @@ namespace PMS.Models
         //public string? PhoneNumber { get; set; }
         // Set default value for IsActive in the constructor
         public virtual ICollection<Tenant> Tenants { get; set; } // Navigation property
+        public virtual Profile? Profile { get; set; } // Navigation to Profile
 
         //public virtual Tenant? Tenant { get; set; } // Navigation property
         public virtual PropertyManager? PropertyManager { get; set; }
