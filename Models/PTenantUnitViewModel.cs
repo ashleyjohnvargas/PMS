@@ -7,6 +7,8 @@
         public string? Description { get; set; }
         public int NumberOfUnits { get; set; }
         public int NumberOfRooms { get; set; }
+        public int NumberOfBathrooms { get; set; }
+
         public string? FirstImagePath { get; set; } // Path of the first image
     }
 }

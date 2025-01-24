@@ -1,4 +1,395 @@
 ﻿@{
-    ViewData["Title"] = "Cozy Homes - Dashboard";
+    ViewData["Title"] = "Cozy Homes - Users";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
+@model List<PMS.Models.ManagerViewModel>
+<style>
+        * {
+            font-family: "Poppins", serif;
+        }
+
+        body {
+            font-family: "Poppins", serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .header {
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+            .header h1 {
+                color: black;
+                margin: 0;
+            }
+
+            .header .add-unit {
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+        .units-list-header {
+            background-color: #B0836E;
+            color: white;
+            text-align: left;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-bar {
+            margin: 20px;
+            text-align: right;
+        }
+
+            .search-bar input[type="text"] {
+                padding: 10px;
+                width: 200px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            .search-bar button {
+                padding: 10px 15px;
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+            table th, table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+            }
+
+            table th {
+                background-color: #B0836E;
+                color: white;
+            }
+
+            table tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+
+
+
+
+/* Style for text and icon (grouped together) */
+th span {
+    display: flex;
+    align-items: center; /* Keep icon aligned with text */
+}
+
+/* Sort icon placement and styles */
+th i {
+    margin-left: auto; /* Push the icon to the far right */
+    font-size: 0.9em;
+    color: #aaa;
+    padding-left: 4px;
+    transition: color 0.2s ease;
+}
+
+
+/* Hover effect for headers */
+th:hover i {
+    color: #555; /* Darker color for sort icon on hover */
+}
+
+/* Active sorting icon colors */
+.fas.fa-sort-up {
+    color: #2c89d9; /* Blue for ascending */
+}
+
+.fas.fa-sort-down {
+    color: #d9534f; /* Red for descending */
+}
+
+        .pagination {
+            text-align: right;
+            margin: 20px 0;
+        }
+
+            .pagination button {
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                margin: 0 5px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+             .pagination button.active {
+            background-color: #B0836E;
+            color: white;
+        }
+        .action-icons i {
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+            .action-icons i.edit {
+                color: #007bff;
+            }
+
+            .action-icons i.delete {
+                color: #dc3545;
+            }
+
+        #manage-units-body {
+            margin-right: 15px;
+        }
+    </style>
+
+ <div class="header" style="margin-top: 20px; padding: 10px 0;">
+
+        @* <h1 style="color: #B0836E;">Leases</h1> *@
+        @*         <a asp-action="AddUnitPage" style="text-decoration: none;background-color: #B0836E;color: white;padding: 10px 20px;border-radius: 10px;">Add Lease</a>
+        *@
+    </div>
+
+    <div class="units-list-header">
+        <h2>Property Managers</h2>
+        <a id="addUserBtn" style="text-decoration: none;background-color: white;color: #B0836E;padding: 10px 20px;border-radius: 10px; font-weight: 600; cursor: pointer;">Add Manager</a>
+    </div>
+
+    <div class="search-bar" style="margin: 20px 0;">
+        <input type="text" placeholder="Search manager..." id="searchInput">
+        <button class="search-unit-button" onclick="searchManager()"><i class="fas fa-search"></i></button>
+    </div>
+
+<table id="managerList" data-sort-column="" data-sort-order="">
+    <thead>
+        <tr>
+            <th onclick="sortTable(0)">#</th>
+            <th onclick="sortTable(1)"><span>Name<i class="fas fa-sort"></i></span></th>
+            <th onclick="sortTable(2)"> <span>Email <i class="fas fa-sort"></i></span></th>
+            @* <th>Role</th> *@
+            @* <th>IsActive</th> *@
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int index = 1;
+            foreach (var manager in Model)
+            {
+                <tr class="manager-item" data-name="@manager.ManagerName">
+                    <td>@index</td>
+                    <td>@manager.ManagerName</td>
+                    <td>@manager.Email</td>
+                    @* <td>@manager.Role</td> 
+                    <td>
+                        @manager.IsActive
+                        @* <select> *@
+                        @*     <option value="active">Active</option> *@
+                        @*     <option value="inactive">Inactive</option> *@
+                        @* </select> 
+                    </td>*@
+                    <td class="action-icons">
+                        <form asp-action="DeleteManager" method="post" onsubmit="return confirm('Are you sure you want to delete this manager?');">
+                        <input type="hidden" name="id" value="@manager.ManagerID" />
+                        <button type="submit">
+                            <i class="fas fa-trash delete" title="Delete"></i>
+                        </button>
+                        </form>
+                            @*  <a asp-action="DeleteManager" asp-route-id="@manager.ManagerID" onclick="return confirmDelete(@manager.ManagerID)"> *@
+                            @*     <i class="fas fa-trash delete" title="Delete"></i> *@
+                            @* </a> *@
+                        
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" style="text-align:center;">No users found.</td>
+            </tr>
+        }
+
+        <!-- More rows as needed -->
+    </tbody>
+</table>
+
+ <!-- Add Manager Modal -->
+    <div id="addUserModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background-color: white; padding: 20px; border-radius: 10px; width: 400px;">
+            <h3>Add Manager</h3>
+
+
+            <form asp-action="AddManager" method="post" id="addUserForm" >
+                <div style="display: flex;">
+                    <label for="firstName" style="flex:1;">First Name</label>
+                    <input type="text" id="firstName" name="FirstName" style="flex:1;" required>
+                </div>
+                <div style="display: flex;">
+                    <label for="lastName" style="flex:1;">Last Name</label>
+                    <input type="text" id="lastName" name="LastName" style="flex:1;" required>
+                </div style="display: flex;">
+                <div style="display: flex;">
+                    <label for="email" style="flex:1;">Email Address</label>
+                    <input type="email" id="email" name="Email" style="flex:1;" required>
+                </div>
+                <div style="display: flex;">
+                    <label for="password" style="flex:1;">Temporary Password</label>
+                    <input type="password" id="password" name="Password" style="flex:1;" required>
+                </div>
+               
+                <button type="submit" id="submitUserBtn" style="margin-top: 10px;">Add Manager</button>
+                <button type="button" id="closeModalBtn" style="margin-top: 10px;">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Confirmation Modal for Deletion -->
+<div id="confirmationModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background-color: white; padding: 20px; border-radius: 10px; width: 400px; text-align: center;">
+        <h3>Are you sure you want to delete this manager?</h3>
+        <button id="confirmDeleteBtn" style="background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px;">Yes</button>
+        <button onclick="document.getElementById('confirmationModal').style.display='none'" style="background-color: #f44336; color: white; padding: 10px 20px; border-radius: 5px; margin-left: 10px;">No</button>
+    </div>
+</div>
+
+<!-- Add Manager Modal -->
+<div id="addUserModal" style="display: none;">
+    <!-- Modal content for adding manager (form) -->
+    <form id="addUserForm">
+        <!-- Your form fields here, e.g., First Name, Last Name, Email, etc. -->
+        <button type="button" id="submitUserBtn">Add Manager</button>
+        <button type="button" id="closeModalBtn">Cancel</button>
+    </form>
+</div>
+
+
+    <script>
+            document.getElementById("searchInput").addEventListener("keyup", searchManager);
+
+       // Function to search managers
+    function searchManager() {
+        // Get the search term
+        const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+        
+        // Get all manager rows
+        const managerRows = document.querySelectorAll("#managerList .manager-item");
+
+        // Loop through each manager row
+        managerRows.forEach(function(row) {
+            // Get the manager's name from the data-name attribute
+            const managerName = row.getAttribute("data-name").toLowerCase();
+            
+            if (managerName.includes(searchTerm)) {
+                // If it matches, show the row
+                row.style.display = "table-row";
+            } else {
+                // Otherwise, hide it
+                row.style.display = "none";
+            }
+        });
+    }
+
+    // Optional: Enable search on "Enter" key press
+    document.getElementById("searchInput").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            searchManager();
+        }
+    });
+
+    function sortTable(columnIndex) {
+    const table = document.getElementById("managerList");
+    const rows = Array.from(table.tBodies[0].rows); // Get rows from tbody
+    let ascending = true; // Initial sort order
+
+    // Toggle ascending/descending if already sorted
+    if (table.dataset.sortColumn == columnIndex) {
+        ascending = table.dataset.sortOrder === "asc" ? false : true;
+    }
+
+    // Store the current sort column and order
+    table.dataset.sortColumn = columnIndex;
+    table.dataset.sortOrder = ascending ? "asc" : "desc";
+
+    // Sort rows
+    rows.sort((rowA, rowB) => {
+        const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+        const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+
+        if (cellA < cellB) return ascending ? -1 : 1;
+        if (cellA > cellB) return ascending ? 1 : -1;
+        return 0;
+    });
+
+    // Re-append sorted rows to tbody
+    const tbody = table.tBodies[0];
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+    // JavaScript function to handle the delete confirmation using a modal
+    function confirmDelete(managerId) {
+        // Show the confirmation modal
+        document.getElementById("confirmationModal").style.display = "flex";
+        
+        // If "Yes" is clicked, delete the manager
+        document.getElementById("confirmDeleteBtn").onclick = function() {
+            // Redirect to delete manager action with the managerId
+            window.location.href = `/YourController/DeleteManager/${managerId}`;
+        };
+    }
+
+    // Show the modal when "Add Manager" button is clicked
+    document.getElementById("addUserBtn").addEventListener("click", function () {
+        document.getElementById("addUserModal").style.display = "flex";
+    });
+
+    // Close the modal when "Cancel" button is clicked
+    document.getElementById("closeModalBtn").addEventListener("click", function () {
+        document.getElementById("addUserModal").style.display = "none";
+    });
+
+    // Form validation and submission
+    document.getElementById("submitUserBtn").addEventListener("click", function () {
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!firstName || !lastName || !email || !password) {
+            alert("All fields are required!");
+            return;
+        }
+
+        // If everything is valid, you can submit the form here
+        document.getElementById("addUserForm").submit(); // Replace with actual form ID
+    });
+
+    // Optional: close modal when clicking outside of the modal
+    window.onclick = function(event) {
+        const modal = document.getElementById("addUserModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+
+

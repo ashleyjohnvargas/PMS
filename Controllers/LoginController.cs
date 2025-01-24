@@ -24,7 +24,7 @@ namespace PMS.Controllers
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
                 ModelState.AddModelError("", "Email and Password are required.");
-                return RedirectToAction("Login"); // Redirect back to the Login page
+                return View("Login"); // Render the Login view with errors // Redirect back to the Login page
             }
 
             // Find the user with the given email
@@ -36,73 +36,96 @@ namespace PMS.Controllers
                 return RedirectToAction("Login"); // Redirect back to the Login page
             }
 
-            // Check if the password matches
-            if (user.Password != password)
+            // Verify the password using BCrypt
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 ModelState.AddModelError("", "Invalid email or password.");
                 return RedirectToAction("Login"); // Redirect back to the Login page
             }
 
-            // If the credentials are correct, store user information in session (or claims)
-            HttpContext.Session.SetInt32("UserId", user.UserID);
-            HttpContext.Session.SetString("UserEmail", user.Email);
-            HttpContext.Session.SetString("FirstName", user.FirstName);
-            HttpContext.Session.SetString("LastName", user.LastName);
-            HttpContext.Session.SetString("UserRole", user.Role);
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))  // Compare the entered password with the hashed password
+            {
 
-            // Find the tenant through the UserID
-            var tenant = _context.Tenants.FirstOrDefault(t => t.UserId == user.UserID);
+                // Store user information in session
+                HttpContext.Session.SetString("UserId", user.UserID.ToString());
+                HttpContext.Session.SetString("UserEmail", user.Email);
+                HttpContext.Session.SetString("FirstName", user.FirstName);
+                HttpContext.Session.SetString("LastName", user.LastName);
+                HttpContext.Session.SetString("UserRole", user.Role);
 
-            // Redirect to the appropriate dashboard based on the user's role
-            if (user.Role == "Property Manager")
-            {
-                return RedirectToAction("PMDashboard", "PropertyManager");
-            }
-            else if (user.Role == "Staff")
-            {
-                return RedirectToAction("SHomePage", "Staff");
-            }
-            // If the user is an actual tenant with a value of true for "IsActualTenant" field, redirect to actual tenant site
-            else if (user.Role == "Tenant" && tenant.IsActualTenant)
-            {
-                return RedirectToAction("ATenantHome", "ATenant");
-            }
-            else
-            {
-                return RedirectToAction("PTenantHomePage", "PTenant");
-            }
+                // Find the tenant through the UserID (if applicable)
+                var tenant = _context.Tenants.FirstOrDefault(t => t.UserId == user.UserID);
 
-            //// Fallback redirect
-            //return RedirectToAction("Login");
+                // Redirect to the appropriate dashboard based on the user's role
+                switch (user.Role)
+                {
+                    case "Property Manager":
+                        return RedirectToAction("PMDashboard", "PropertyManager");
+
+                    case "Staff":
+                        return RedirectToAction("SHomePage", "Staff");
+
+                    case "Tenant":
+                        if (tenant != null && tenant.IsActualTenant) // Check if tenant exists and is an actual tenant
+                        {
+                            return RedirectToAction("ATenantHome", "ATenant");
+                        }
+                        return RedirectToAction("PTenantHomePage", "PTenant");
+
+                    default:
+                        // Handle unexpected roles
+                        ModelState.AddModelError("", "Invalid role. Please contact the administrator.");
+                        return RedirectToAction("Login");
+                }
+            }
+            // Fallback for any other cases (should not normally be reached)
+            ModelState.AddModelError("", "An unknown error occurred. Please try again.");
+            return View("Login"); // Render the Login view with errors
         }
 
 
-        public IActionResult ForgotPass()
-        {
-            return View();
-        }
+
+
+        //public IActionResult ForgotPass()
+        //{
+        //    return View();
+        //}
 
         public IActionResult Register()
         {
             return View();
         }
 
-        // RegisterUser action to handle form submission and save user data
         [HttpPost]
         public IActionResult RegisterUser(User user)
         {
+            // Check if email already exists
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("", "An account with this email already exists.");
+                return View("Register", user); // Return to the Register page
+            }
+
+            // Validate password length
+            if (user.Password.Length < 15 || user.Password.Length > 64)
+            {
+                ModelState.AddModelError("", "Password must be between 15 and 64 characters long.");
+                return View("Register", user); // Return to the Register page
+            }
+
             // Check if passwords match
             if (user.Password != user.ConfirmPassword)
             {
                 ModelState.AddModelError("", "Password and Confirm Password do not match.");
-                return RedirectToAction("Register"); // Redirect to the Register action
+                return View("Register", user); // Return to the Register page
             }
 
             // Check if Terms and Conditions are accepted
             if (user.TermsAndConditions.HasValue && !user.TermsAndConditions.Value)
             {
                 ModelState.AddModelError("", "You must agree to the terms and conditions.");
-                return RedirectToAction("Register"); // Redirect to the Register action
+                return View("Register", user); // Return to the Register page
             }
 
             // Set the Role based on the email domain
@@ -119,6 +142,8 @@ namespace PMS.Controllers
                 user.Role = "Tenant"; // Default role if the email doesn't match above criteria
             }
 
+            // Hash the password using bcrypt
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
             // Create a new User object and populate it with data
             var newUser = new User
@@ -126,17 +151,31 @@ namespace PMS.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Password = user.Password,
-                Role = user.Role, // Default or set role based on your requirement
+                Password = hashedPassword,
+                Role = user.Role,
                 TermsAndConditions = user.TermsAndConditions,
+                DateCreated = DateTime.Now,
             };
 
             // Save the new user to the database
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
+            var newProfile = new Profile
+            {
+                UserID = newUser.UserID, // Link to the User
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email,
+                PhoneNumber = user.PhoneNumber,
+                
+            };
+
+            _context.UserProfiles.Add(newProfile);
+            _context.SaveChanges();
+
             // Store user information in the session
-            HttpContext.Session.SetInt32("UserId", newUser.UserID);
+            HttpContext.Session.SetString("UserId", newUser.UserID.ToString());
             HttpContext.Session.SetString("FirstName", newUser.FirstName);
             HttpContext.Session.SetString("LastName", newUser.LastName);
             HttpContext.Session.SetString("UserEmail", newUser.Email);
@@ -145,48 +184,48 @@ namespace PMS.Controllers
             // Redirect based on the user's role
             if (newUser.Role == "Property Manager")
             {
-                // if the user is a property manager based on domain of email, create a PropertyManager object
                 var propertyManager = new PropertyManager
                 {
                     UserId = newUser.UserID,
                 };
                 _context.PropertyManagers.Add(propertyManager);
                 _context.SaveChanges();
+
                 return RedirectToAction("PMDashboard", "PropertyManager");
             }
             else if (newUser.Role == "Staff")
             {
-                // if the user is a staff based on domain of email, create a Staff object
                 var staff = new Staff
                 {
                     UserId = newUser.UserID,
                 };
                 _context.Staffs.Add(staff);
                 _context.SaveChanges();
+
                 return RedirectToAction("SHomePage", "Staff");
             }
             else if (newUser.Role == "Tenant")
             {
-                // If the user is a tenant based on domain of email, create a Tenant object
                 var tenant = new Tenant
                 {
                     UserId = newUser.UserID,
                 };
                 _context.Tenants.Add(tenant);
                 _context.SaveChanges();
+
                 return RedirectToAction("PTenantHomePage", "PTenant");
             }
 
-            // If none of the conditions match, return to the Register action (or another appropriate action)
-            return RedirectToAction("Register"); // This is the fallback action, should never be reached
-
+            // Fallback if none of the conditions match
+            return RedirectToAction("Register");
         }
 
 
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("PTenantHomePage", "PTenant");
+            //return RedirectToAction("Login");
         }
     }
 }

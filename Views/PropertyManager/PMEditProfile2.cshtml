@@ -1,0 +1,282 @@
+﻿@model PMS.Models.Profile
+
+@{
+    ViewData["Title"] = "Cozy Homes - Property Manager Edit Profile";
+    Layout = "~/Views/Shared/_LayoutPM.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozy Homes: Edit Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+        /* General Reset */
+        body, container {
+            background-color: #e7e1d3;
+            font-family: 'Poppins', sans-serif;
+            margin: 0; 
+            padding: 0;
+        }
+
+        .edit-profile {
+            background-color: #e7e1d3;
+            border-radius: 10px;
+            top: 5px;
+            bottom: 0;
+            left:0;
+            right:0;
+            padding: 40px 20px;
+            /* width: auto; */
+        }
+
+        .edit-card {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        /* h1 { */
+        /*     font-size: 2rem; */
+        /*     color: #333; */
+        /*     margin-bottom: 30px; */
+        /*     text-align: left; */
+        /* } */
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .cancel-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0px;
+            color: #B0836E;
+            justify-content: flex-start; /* Aligns the content to the left */
+            margin: 10px 0;
+            /* border: none; */
+            /* border-radius: 5px; */
+            /* justify-content: center; */
+            /* margin-left: 100px; */
+        }
+
+            .cancel-profile a {
+                /* margin: 10px auto; */
+                /* margin-left: 20px; */
+                width: 13%;
+                /* max-width: 800px; */
+                text-align: left; /* Align the button to the left */
+                text-decoration: none;
+                font-size: 20px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                color: #B0836E;
+                border: none;
+                border-radius: 5px;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+
+                .cancel-profile a:hover {
+                    color: #7d5847;
+                }
+
+            .cancel-profile:hover {
+                color: #7d5847;
+            }
+
+            .cancel-profile i {
+                font-size: 30px;
+                margin-left: 30px;
+                margin-right: 15px; /* Space between the arrow and text */
+            }
+
+        label {
+            display: block;
+            text-align: left; /* Align the button to the left */
+            margin-bottom: 2px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            border-color: #B0836E;
+            box-shadow: 0 0 5px rgba(176, 131, 110, 0.5);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 10px;
+            width: auto;
+        }
+
+        .btn-success {
+            background-color: #B0836E;
+            color: white;
+            border: 2px solid #B0836E;
+            font-family: 'Poppins';
+            margin-left: 1%;
+            margin-right: 15px;
+            width: auto;
+            transition: ease 0.3s;
+        }
+
+            .btn-success:hover {
+                background-color: #7c4e39;
+                border-color: #7c4e39;
+            }
+
+        .btn-cancel {
+            background-color: transparent;
+            border: 2px solid #B0836E;
+            color: #B0836E;
+            text-decoration: none;
+            width: auto;
+            transition: ease 0.3s;
+        }
+
+            .btn-cancel:hover {
+                background-color: #7c4e39;
+                color: #fff;
+                border-color: #7c4e39;
+            }
+
+        /* Flexbox styling for form-row */
+        .form-row {
+            display: flex; /* Enables flexbox */
+            gap: 50px; /* Adds space between columns */
+        }
+
+        .form-group {
+            flex: 1; /* Ensures equal width columns */
+        }
+        /* Align the Go Back button to the left */
+        .d-flex {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Aligns the content to the left */
+            margin: 10px 0;
+        }
+
+    </style>
+</head>
+@* <body> *@
+    <section class="edit-profile">
+        @TempData["ErrorMessage"]
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div class="alert alert-danger">
+                @error.ErrorMessage
+            </div>
+        }
+
+
+        <div class="edit-card">
+            <div class="cancel-profile" style="margin: 0 0 0 26px;">
+                <a href="javascript:history.back()" class="text-decoration-none" title="Go Back">
+                    <i class="fa-solid fa-arrow-left fs-3 text-light"></i>
+                </a>
+
+                <h1 class="mb-0 fw-bold" style="font-size: 1.8rem; color: #343a40;">Edit Profile</h1>
+            </div>
+            <div>
+                @* <h1>Edit Profile</h1> *@
+
+                <form asp-action="UpdateProfile2" method="post">
+
+                    <!-- Wrapper for First and Last Name -->
+                    <div class="form-row d-flex mb-4">
+                        <div class="form-group me-3" style="flex: 1;">
+                            <label for="FirstName">First Name</label>
+                            <input type="text" class="form-control form-control-lg" id="FirstName" name="FirstName" placeholder="@Model.FirstName">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="LastName">Last Name</label>
+                            <input type="text" class="form-control form-control-lg" id="LastName" name="LastName" placeholder="@Model.LastName">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <label for="Email">Email</label>
+                    <input type="email" id="Email" name="Email" placeholder="@Model.Email">
+
+                    <!-- Phone Number -->
+                    <label for="PhoneNumber">Phone Number</label>
+                    <input type="tel" id="PhoneNumber" name="PhoneNumber" placeholder="@Model.PhoneNumber">
+
+                    <!-- Address -->
+                    <label for="Address">Address</label>
+                    <input type="text" id="Address" name="Address" placeholder="@Model.Address">
+
+                    <!-- Submit Button -- Add modal to confirm: listing the changes? -->
+                <button type="submit" class="btn btn-success" onclick="return confirmAction('btn-success')">
+                        <i class="fa-solid fa-check-circle me-2"></i>
+                        Save Changes
+                    </button>
+
+                    <!-- Cancel Button -- Add Confirm Yes no -->
+                <a asp-action="PMProfilePage" class="btn btn-cancel" onclick="confirmAction('btn-cancel')">
+                        <i class="fa-solid fa-times-circle me-2"></i>
+                        Cancel
+                    </a>
+                </form>
+            </div>
+    </section>
+@* </body> *@
+
+
+
+</html>
+
+<script>
+    function confirmAction(actionType) {
+        let message = "";
+
+        if (actionType === "btn-cancel") {
+            message = "Are you sure you want to cancel? Unsaved changes will be lost.";
+        } else if (actionType === "btn-success") {
+            message = "Are you sure you want to save these changes?";
+        }
+
+        // Show confirmation dialog
+        return confirm(message);
+    }
+</script>

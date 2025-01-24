@@ -41,17 +41,45 @@
                         </a>
                     </li>
                     <!-- <li><a href="#">About</a></li> -->
-                    <li class="dropdown">
-                        <a href="#" class="dropbtn">
-                            <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px;">
-                            Profile
+                    <li class="at-dropdown">
+                        @* <a href="#" class="at-dropbtn" aria-label="User Profile"> *@
+                        @*     <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px; margin-right: 10px;"> *@
+                        @*         @Context.Session.GetString("FirstName")  *@
+                        @*         @Context.Session.GetString("LastName") *@
+                        @* </a> *@
+
+                        <a href="#" class="at-dropbtn" aria-label="User Profile">
+                            @if (Context.Session.GetString("ProfilePicture") != null)
+                            {
+                                <!-- Display Profile Picture -->
+                                <img src="@Url.Content($"~/images/{Context.Session.GetString("ProfilePicture")}")"
+                                     alt="Profile Picture"
+                                     style="height: 35px; width: 35px; border-radius: 50%; margin-right: 10px;">
+                            }
+                            else
+                            {
+                                <!-- Display Initials if No Profile Picture -->
+                                <div style="height: 35px; width: 35px; border-radius: 50%;
+                                    background-color: #555; display: inline-flex;
+                                    align-items: center; justify-content: center;
+                                    font-weight: bold; color: #fff; margin-right: 10px;">
+                                    @($"{Context.Session.GetString("FirstName")?.Substring(0, 1)}{Context.Session.GetString("LastName")?.Substring(0, 1)}")
+                                </div>
+                            }
+
+                            <!-- Display User Name -->
+                            @* @Context.Session.GetString("FirstName") @Context.Session.GetString("LastName") *@
                         </a>
-                        <div class="dropdown-content">
-                            <a asp-controller="ATenant" asp-action="ATenantEditProfile">Edit Profile</a>
+
+                        <div class="atdropdown-content">
+                            <a asp-controller="ATenant" asp-action="ATenantProfilePage">Profile</a>
+
                             <a asp-controller="Login" asp-action="Logout">Log Out</a>
                         </div>
+
+
                     </li>
-                </ul>   
+                </ul>
             </nav>
         </div>
     </header>
@@ -112,6 +140,8 @@
             closePopup('terminate-lease-popup'); // Close the Terminate Lease popup
             showMessage('Your lease has been successfully terminated.');
         }
+
+
     </script>
 </body>
 </html>

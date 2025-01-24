@@ -10,7 +10,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozy Homes Registration</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Include CSS files -->
+    <link rel="stylesheet" href="~/css/loginpage.css" asp-append-version="true" />
+
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
         body {
             font-family: 'Poppins', Arial, sans-serif;
@@ -29,6 +39,8 @@
         }
 
         .container {
+            margin-top: 30px;
+            margin-bottom: 30px;
             background-color: #fff;
             padding: 40px;
             border-radius: 5px;
@@ -54,12 +66,6 @@
             font-size: 20px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
 
         input[type="text"],
         input[type="email"],
@@ -83,6 +89,7 @@
             background-color: #B0836E;
             color: white;
             cursor: pointer;
+            margin-top: 10px;
             border-radius: 5px;
         }
 
@@ -157,11 +164,52 @@
             font-weight: bold;
             color: #B0836E;
         }
+
+        ul.validation-summary-errors {
+            list-style-type: none; /* Removes the dot (bullet) */
+            padding-left: 0; /* Removes the indentation */
+        }
+
+        .validation-summary-errors li {
+            color: red; /* Optional: set the text color to red */
+            font-weight: bold; /* Optional: make the error messages bold */
+        }
+
+        /* .text-danger { */
+        /*     color: red; */
+        /*     font-weight: 400; */
+        /* } */
+
+
+        /* Change icon color */
+        .toggle-password i {
+            color: #B0836E; /* Change to any color you prefer */
+        }
+
+        /* Optionally, change the size of the icon */
+        .toggle-password i {
+            margin-top: 35px;
+            font-size: 20px; /* Adjust the size if necessary */
+        }
+
+        /* Optional: Change color on hover */
+        .toggle-password:hover i {
+            color: #007bff; /* Color when hovering over the icon */
+        }
+
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
+
+    <div class="container" style="position: relative;">
+        <!-- Arrow in the upper left -->
+        <a href="javascript:history.back()" class="text-decoration-none"
+           title="Go Back" style="position: absolute; top: 10px; left: 10px; margin: 30px; font-size: 20px;">
+            <i class="fa-solid fa-arrow-left fs-3 text-light"></i>
+        </a>
+
         <div class="logo">
             <img src="~/images/cozy-logo.png" alt="Cozy Homes Logo">
             <span class="logo">Cozy Homes</span>
@@ -169,6 +217,18 @@
         <h1>Welcome to</h1>
         <h2>Cozy Homes Rental Management System</h2>
         <p>Register with your email to create an account.</p>
+
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
 
         <!-- New User Registration Form-->
         <form asp-action="RegisterUser" method="post">
@@ -184,27 +244,63 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Email Field -->
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" name="Email" id="email" placeholder="Enter your email" required>
             </div>
+
+            <!-- Password and Confirm Password Fields -->
             <div class="form-group" style="display: flex; justify-content: space-between;">
-                <div style="width: 48%;">
+                <!-- Password Field -->
+                <div style="width: 48%; position: relative;">
                     <label for="password">Password</label>
-                    <input type="password" name="Password" id="password" placeholder="Create your password">
-                    <!--required minlength="8" maxlength="100" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                    title="Must contain at least one number, one uppercase, one lowercase letter, and at least 8 characters"-->
+                    <input type="password" name="Password" id="password" placeholder="Create your password"
+                    style="width: 100%; padding-right: 40px;"
+                    oninput="updatePasswordLengthCounter('password', 'passwordCounter')"
+                    required>
+                    <!-- Password length counter -->
+                    <span id="passwordCounter"
+                          style="position: absolute; top: 10px; right: 10px; font-size: 12px; color: gray;">
+                        0/64
+                    </span>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('password', this)"
+                          title="Show/Hide Password"
+                          style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                        <i class="bx bx-hide"></i>
+                    </span>
                 </div>
-                <div style="width: 48%;">
+                <!-- Confirm Password Field -->
+                <div style="width: 48%; position: relative;">
                     <label for="confirm-password">Confirm Password</label>
-                    <input type="password" name="ConfirmPassword" id="confirm-password" placeholder="Confirm your password" required>
+                    <input type="password" name="ConfirmPassword" id="confirm-password" placeholder="Confirm your password"
+                           style="width: 100%; padding-right: 40px;"
+                           oninput="updateConfirmPasswordLengthCounter('confirm-password', 'confirmPasswordCounter')"
+                           required>
+                    <!-- Confirm Password length counter -->
+                    <span id="confirmPasswordCounter"
+                          style="position: absolute; top: 10px; right: 10px; font-size: 12px; color: gray;">
+                        0/64
+                    </span>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password', this)"
+                          title="Show/Hide Password"
+                          style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                        <i class="bx bx-hide"></i>
+                    </span>
                 </div>
             </div>
-            <div class="form-group">
+
+            <!-- Password Mismatch Warning -->
+            <p id="passwordMatchMessage" style="color: red; font-size: 12px; display: none;">
+                Passwords do not match!
+            </p>
+
+            <div class="form-group" style="margin:10px">
                 <label>
-                    <input type="checkbox" name="TermsAndConditions" value="true">
+                    <input type="checkbox" name="TermsAndConditions" value="true" required>
                     I agree to the
-                    <a href="javascript:void(0);" id="termsLink">Terms and Conditions</a>
+                    <a href="javascript:void(0);" id="termsLink" >Terms and Conditions</a>
                     and
                     <a href="javascript:void(0);" id="privacyLink">Privacy Policy</a>.
                 </label>
@@ -364,6 +460,125 @@
                 privacyModal.style.display = "none";
             }
         }
+   // Add
+                  function checkPasswordMatch() {
+                 const password = document.getElementById("password").value;
+                 const confirmPassword = document.getElementById("confirm-password").value;
+                 const message = document.getElementById("passwordMatchMessage");
+
+                 if (password && confirmPassword) {
+                     if (password !== confirmPassword) {
+                         message.textContent = "Passwords do not match.";
+                         message.style.display = "block"; // Show mismatch warning
+                     } else {
+                         message.style.display = "none"; // Hide warning
+                     }
+                 } else {
+                     message.style.display = "none"; // Hide warning if one field is empty
+                 }
+             }
+
+             function togglePasswordVisibility(fieldId, iconElement) {
+                 const field = document.getElementById(fieldId);
+                 const isPasswordVisible = field.type === "text";
+
+                 // Toggle password visibility
+                 field.type = isPasswordVisible ? "password" : "text";
+
+                 // Update icon (optional)
+                 iconElement.innerHTML = isPasswordVisible
+                     ? '<i class="bx bx-hide"></i>'
+                     : '<i class="bx bx-show"></i>';
+             }
+
+
+
+             function togglePasswordVisibility(fieldId, iconElement) {
+                 const field = document.getElementById(fieldId);
+                 const isPasswordVisible = field.getAttribute("type") === "text";
+
+                 // Toggle password visibility
+                 field.setAttribute("type", isPasswordVisible ? "password" : "text");
+
+                 // Toggle icon (optional)
+                 if (isPasswordVisible) {
+                     iconElement.innerHTML = '<i class="bx bx-hide"></i>';
+                 } else {
+                     iconElement.innerHTML = '<i class="bx bx-show"></i>';
+                 }
+             }
+
+
+                     // Show/Hide Password
+                     function togglePasswordVisibility(fieldId, toggleIcon) {
+                         const passwordField = document.getElementById(fieldId);
+                         const icon = toggleIcon.querySelector("i");
+                         if (passwordField.type === "password") {
+                             passwordField.type = "text";
+                             icon.classList.remove("bx-hide");
+                             icon.classList.add("bx-show");
+                         } else {
+                             passwordField.type = "password";
+                             icon.classList.remove("bx-show");
+                             icon.classList.add("bx-hide");
+                         }
+                     }
+
+                     //PasswordLengthCounter
+               function updatePasswordLengthCounter() {
+                 const passwordField = document.getElementById("password");
+                 const counter = document.getElementById("passwordCounter");
+                 const loginButton = document.getElementById("loginButton");
+
+                 const minLength = 15; // Minimum length
+                 const maxLength = 64; // Maximum length
+
+                 // Get current password length
+                 const length = passwordField.value.length;
+
+                 // Update counter display
+                 counter.textContent = `${length}/${maxLength}`;
+
+                 // Change counter color based on length
+                 if (length < minLength) {
+                     counter.style.color = "red"; // Too short
+                     loginButton.disabled = true; // Disable login button
+                 } else if (length > maxLength) {
+                     counter.style.color = "red"; // Exceeds max length
+                     loginButton.disabled = true; // Disable login button
+                 } else {
+                     counter.style.color = "green"; // Valid length
+                     loginButton.disabled = false; // Enable login button
+                 }
+             }
+
+               //PasswordLengthCounter
+               function updateConfirmPasswordLengthCounter() {
+                 const passwordField = document.getElementById("confirm-password");
+                 const counter = document.getElementById("confirmPasswordCounter");
+                 const loginButton = document.getElementById("loginButton");
+
+                 const minLength = 15; // Minimum length
+                 const maxLength = 64; // Maximum length
+
+                 // Get current password length
+                 const length = passwordField.value.length;
+
+                 // Update counter display
+                 counter.textContent = `${length}/${maxLength}`;
+
+                 // Change counter color based on length
+                 if (length < minLength) {
+                     counter.style.color = "red"; // Too short
+                     loginButton.disabled = true; // Disable login button
+                 } else if (length > maxLength) {
+                     counter.style.color = "red"; // Exceeds max length
+                     loginButton.disabled = true; // Disable login button
+                 } else {
+                     counter.style.color = "green"; // Valid length
+                     loginButton.disabled = false; // Enable login button
+                 }
+             }
     </script>
 </body>
 </html>

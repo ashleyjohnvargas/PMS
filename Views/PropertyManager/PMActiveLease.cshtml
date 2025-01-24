@@ -162,13 +162,12 @@
          *@
         <h2>Active Leases</h2>
     </div>
-
     <div class="search-bar" style="margin: 20px 0;">
         <input type="text" placeholder="Search leases..." id="searchInput">
-        <button class="search-unit-button">Search</button>
+        <button class="search-unit-button" onclick="searchLeases()"><i class="fas fa-search"></i></button>
     </div>
 
-    <table>
+    <table id="leasesTable">
         <thead>
             <tr>
                 <th>#</th>
@@ -247,9 +246,58 @@
         <button style="margin: 0 0 0 5px;">Next</button>
     </div>
 
-    
+
+    <script>
+        // Function to search leases
+        function searchLeases() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const leaseRows = document.querySelectorAll("#leasesTable tbody tr");
+
+            leaseRows.forEach(function(row) {
+                const tenantName = row.cells[1].textContent.toLowerCase(); // Tenant Name
+                const unitName = row.cells[2].textContent.toLowerCase(); // Unit Name
+                const status = row.cells[6].textContent.toLowerCase(); // Status
+
+                // Check if any cell matches the search term
+                if (tenantName.includes(searchTerm) || unitName.includes(searchTerm) || status.includes(searchTerm)) {
+                    row.style.display = "table-row"; // Show row if search term matches
+                } else {
+                    row.style.display = "none"; // Hide row if search term doesn't match
+                }
+            });
+        }
+    </script>
+
+    <script>
+        const deactivateLeaseBtn = document.getElementById('deactivate-lease-btn');
+        deactivateLeaseBtn.addEventListener('click', () => {
+            alert('Are you sure you want to deactivate this lease?');
+        });
+
+                        document.addEventListener("DOMContentLoaded", function () {
+                // Add event listeners for all "Edit" buttons
+                document.querySelectorAll("[id^='addStaffBtn-']").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        const leaseId = this.id.split('-')[1]; // Extract LeaseID from button ID
+                        const modal = document.getElementById(`addStaffModal-${leaseId}`);
+                        modal.style.display = "flex"; // Show the modal
+                    });
+                });
+
+                // Add event listeners for all "Cancel" buttons
+                document.querySelectorAll("[id^='closeModalBtn-']").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        const leaseId = this.id.split('-')[1]; // Extract LeaseID from button ID
+                        const modal = document.getElementById(`addStaffModal-${leaseId}`);
+                        modal.style.display = "none"; // Hide the modal
+                    });
+                });
+            });
 
 
+
+    </script>
+    @*
 <script>
     const deactivateLeaseBtn = document.getElementById('deactivate-lease-btn');
     deactivateLeaseBtn.addEventListener('click', () => {
@@ -278,7 +326,7 @@
 
 
 
-</script>
+</script> *@
 
 </body>
 </html>

@@ -19,5 +19,6 @@ namespace PMS.Models
         public virtual Tenant? Tenant { get; set; } // Navigation property
         public virtual PropertyManager? PropertyManager { get; set; }
         public virtual Staff? Staff { get; set; }
+        public DateTime DateCreated { get; internal set; }
     }
 }

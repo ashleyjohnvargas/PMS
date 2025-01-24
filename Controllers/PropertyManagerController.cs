@@ -7,9 +7,11 @@ namespace PMS.Controllers
     public class PropertyManagerController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public PropertyManagerController(ApplicationDbContext context)
+        private readonly ILogger<PropertyManagerController> _logger;
+        public PropertyManagerController(ApplicationDbContext context, ILogger<PropertyManagerController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
 
@@ -379,14 +381,348 @@ namespace PMS.Controllers
             return View(invoicePreviewModel);
         }
 
-        public IActionResult PMTenants()
+        public async Task<IActionResult> PMTenants()
+        {
+            try
+            {
+                // Fetch the list of property managers with email
+                var tenantList = await _context.Tenants
+                    .Where(tenant => tenant.UserId != null && tenant.User.IsActive && tenant.IsActualTenant) // Filter by active users
+                    .Select(tenant => new TenantViewModel
+                    {
+                        TenantID = tenant.TenantID,
+                        TenantName = tenant.User.FirstName + " " + tenant.User.LastName, // Combine FirstName and LastName
+                        Email = tenant.User.Email, // Get the Email of the User related to the Manager
+                    })
+                    .ToListAsync();
+
+                // Pass the list of managers to the view
+                return View(tenantList);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error loading managers: {ex.Message}";
+                return View(new List<TenantViewModel>()); // Return an empty list in case of error
+            }
+        }
+        [HttpPost]
+        public IActionResult DeleteTenant(int id)
+        {
+            // Find the PropertyManager record using the provided Manager ID
+            var tenant = _context.Tenants.FirstOrDefault(t => t.TenantID == id);
+            if (tenant == null)
+            {
+                return NotFound("Tenant not found.");
+            }
+
+            // Find the associated user using the UserId from the PropertyManager record
+            var user = _context.Users.FirstOrDefault(u => u.UserID == tenant.UserId);
+            if (user == null)
+            {
+                return NotFound("Associated user not found.");
+            }
+
+            // Set the IsActive field to false (soft delete)
+            user.IsActive = false;
+
+            // Save changes to the database
+            _context.SaveChanges();
+
+            // Set TempData for the popup
+            TempData["ShowPopup"] = true;
+            TempData["PopupMessage"] = "Tenant deleted successfully!";
+            TempData["PopupTitle"] = "Success!";
+            TempData["PopupIcon"] = "success"; // Set the icon dynamically (success, error, info, warning)
+
+            return RedirectToAction("PMTenants");
+        }
+
+        public async Task<IActionResult> PMManageUsers()
+        {
+            try
+            {
+                // Fetch the list of property managers with email
+                var managerList = await _context.PropertyManagers
+                    .Where(manager => manager.UserId != null && manager.User.IsActive) // Filter by active users
+                    .Select(manager => new ManagerViewModel
+                    {
+                        ManagerID = manager.ManagerID,
+                        ManagerName = manager.User.FirstName + " " + manager.User.LastName, // Combine FirstName and LastName
+                        Email = manager.User.Email, // Get the Email of the User related to the Manager
+                    })
+                    .ToListAsync();
+
+                // Pass the list of managers to the view
+                return View(managerList);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error loading managers: {ex.Message}";
+                return View(new List<ManagerViewModel>()); // Return an empty list in case of error
+            }
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddManager(AddManagerViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("All fields are required.");
+            }
+
+            try
+            {
+                // Hash the password using BCrypt
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                // Create instance of the Users table
+                var newUser = new User
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Password = hashedPassword, // hashed password
+                    Role = "Property Manager", // Default role for all property manager
+                    TermsAndConditions = true // Default value
+                };
+
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+
+                // Get the generated UserId
+                int userId = newUser.UserID;
+
+
+                // Create instance of the Staffs table
+                var newManager = new PropertyManager
+                {
+                    UserId = userId,
+                    //Email = model.Email,
+                    //ManagerID = ManagerID,
+
+                };
+
+                _context.PropertyManagers.Add(newManager);
+                await _context.SaveChangesAsync();
+
+                TempData["ShowPopup"] = true; // Indicate that the popup should be shown
+                TempData["PopupMessage"] = "Manager added successfully!";
+                TempData["PopupTitle"] = "Success!";  // Set the custom title
+                TempData["PopupIcon"] = "success";  // Set the icon dynamically (can be success, error, info, warning)
+
+                return RedirectToAction("PMManageUsers");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteManager(int id)
+        {
+            // Find the PropertyManager record using the provided Manager ID
+            var manager = _context.PropertyManagers.FirstOrDefault(m => m.ManagerID == id);
+            if (manager == null)
+            {
+                return NotFound("Property Manager not found.");
+            }
+
+            // Find the associated user using the UserId from the PropertyManager record
+            var user = _context.Users.FirstOrDefault(u => u.UserID == manager.UserId);
+            if (user == null)
+            {
+                return NotFound("Associated user not found.");
+            }
+
+            // Set the IsActive field to false (soft delete)
+            user.IsActive = false;
+
+            // Save changes to the database
+            _context.SaveChanges();
+
+            // Set TempData for the popup
+            TempData["ShowPopup"] = true;
+            TempData["PopupMessage"] = "Property Manager deleted successfully!";
+            TempData["PopupTitle"] = "Success!";
+            TempData["PopupIcon"] = "success"; // Set the icon dynamically (success, error, info, warning)
+
+            return RedirectToAction("PMManageUsers");
+        }
+
+        //Profile
+        public IActionResult PMProfilePage()
+        {
+            //var model = new Profile(); // Ensure it's initialized
+            //return View(model);
+
+            // Retrieve the logged-in user's ID from session (as string) and convert to int
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                // If the session doesn't contain a valid UserId, redirect to login page
+                //TempData["ErrorMessage"] = "User profile not found.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            // Log the UserId to the console (this will output to the console/logs)
+            _logger.LogInformation($"Logged-in UserId: {userId}");
+
+
+            // Fetch user profile and user details
+            var profile = _context.UserProfiles.FirstOrDefault(p => p.Id == userId);
+            var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
+
+            if (profile == null)
+            {
+                // Create a default profile for new users
+                profile = new Profile
+                {
+                    FirstName = "",
+                    LastName = "",
+
+                    Email = "",
+                    PhoneNumber = "",
+                    Address = ""
+                };
+                _context.UserProfiles.Add(profile);
+                _context.SaveChanges();
+            }
+            return View(profile);
+        }
+
+        public IActionResult PMEditProfile2()
+        {
+            // Retrieve the logged-in user's ID from session (as string) and convert to int
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                // If the session doesn't contain a valid UserId, redirect to login page
+                return RedirectToAction("Login", "Login");
+            }
+            var profile = _context.UserProfiles.FirstOrDefault(p => p.Id == userId);
+            return View(profile);
+        }
+
+
+        // Update profile
+        [HttpPost]
+        public IActionResult UpdateProfile2(Profile model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Return the view with the current model and validation errors
+                TempData["ErrorMessage"] = "Please fill out all required fields.";
+                return View("PMEditProfile2", model);
+            }
+
+            // Retrieve the logged-in user's ID from session (as string) and convert to int
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                // If the session doesn't contain a valid UserId, redirect to login page
+                TempData["ErrorMessage"] = "User not found. Please log in again.";
+                return RedirectToAction("Login", "Login");
+            }
+
+            var profile = _context.UserProfiles.FirstOrDefault(p => p.Id == userId);
+            var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
+
+
+            // Proceed with the update if everything is valid
+            if (profile != null && user != null)
+            {
+                // Only update the fields if the user has provided new values
+                if (!string.IsNullOrEmpty(model.FirstName))
+                {
+                    profile.FirstName = model.FirstName;
+                    user.FirstName = model.FirstName;
+                }
+                if (!string.IsNullOrEmpty(model.LastName))
+                {
+                    profile.LastName = model.LastName;
+                    user.LastName = model.LastName;
+                }
+                if (!string.IsNullOrEmpty(model.Email))
+                {
+                    profile.Email = model.Email;
+                    user.Email = model.Email;
+                }
+                if (!string.IsNullOrEmpty(model.PhoneNumber))
+                {
+                    profile.PhoneNumber = model.PhoneNumber;
+                }
+                if (!string.IsNullOrEmpty(model.Address))
+                {
+                    profile.Address = model.Address;
+                }
+
+                // Save changes to the database
+                _context.SaveChanges();
+
+                // Set success message
+                TempData["SuccessMessage"] = "Profile updated successfully!";
+            }
+
+            // Redirect to the profile page
+            return RedirectToAction("PMProfilePage");
+        }
+
+
+
+
+        public IActionResult PMChangePassword()
         {
             return View();
         }
 
-        public IActionResult PMManageUsers()
+        // Change or Update the password
+        [HttpPost]
+        public IActionResult PMChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
-            return View();
+            // Retrieve the logged-in user's ID from session (as string) and convert to int
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("PMChangePassword");
+            }
+
+            // Check if the current password matches the hashed password (using BCrypt)
+            if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.Password))  // Compare hashed password
+            {
+                TempData["ErrorMessage"] = "Current password is incorrect.";
+                return RedirectToAction("PMChangePassword");
+            }
+
+            // Check if the new password and confirm password match
+            if (newPassword != confirmPassword)
+            {
+                TempData["ErrorMessage"] = "New password and confirm password do not match.";
+                return RedirectToAction("PMChangePassword");
+            }
+
+            // Validate that the new password is between 15 and 64 characters
+            if (newPassword.Length < 15 || newPassword.Length > 64)
+            {
+                TempData["ErrorMessage"] = "Password must be between 15 and 64 characters.";
+                return RedirectToAction("PMChangePassword");
+            }
+
+            // Hash the new password before saving it to the database
+            user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);  // Hash the new password
+
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Password changed successfully!";
+            return RedirectToAction("PMProfilePage");
         }
 
         public IActionResult PMEditProfile()
@@ -725,13 +1061,15 @@ namespace PMS.Controllers
 
             try
             {
+                // Hash the password using BCrypt
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
                 // Create instance of the Users table
                 var newUser = new User
                 {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Email = model.Email,
-                    Password = model.Password, // Consider hashing the password
+                    Password = hashedPassword, // hashed password
                     Role = "Staff", // Default role for all staff
                     TermsAndConditions = true // Default value
                 };

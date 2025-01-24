@@ -15,6 +15,8 @@ namespace PMS.Models
         public DbSet<UnitImage> UnitImages { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<User> Users { get; set; }
+        public required DbSet<Profile> UserProfiles { get; set; }
+
         public DbSet<Request> Requests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

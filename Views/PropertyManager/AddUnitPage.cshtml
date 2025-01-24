@@ -14,7 +14,13 @@
 <div class="container mt-5" style="margin: 50px 20px 140px;">
     <div class="card fade-in shadow" style="min-width: 100vh; min-height: 100vh;">
         <div class="card-body" style="min-width: 100vh; min-height: 100vh;">
+            <span>
+                <a href="javascript:history.back()" class="text-decoration-none" title="Go Back">
+                    <i class="fa-solid fa-arrow-left fs-3 text-light"></i>
+                </a>
+            </span>
             <h2 class="fw-semibold mb-4 text-left" style="text-align: left; background-color: #B0836E; padding: 10px; color: white;">Add Unit</h2>
+            
             <form asp-action="AddUnit" method="post" enctype="multipart/form-data" class="add-unit-form">
 
                 <!--PARENT CONTAINER OF COLUMN ONE AND COLUMN TWO-->

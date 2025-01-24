@@ -2,3 +2,289 @@
     ViewData["Title"] = "Cozy Homes - Tenants";
     Layout = "~/Views/Shared/_LayoutPM.cshtml";
 }
+
+@model List<PMS.Models.TenantViewModel>
+
+<style>
+    * {
+        font-family: "Poppins", serif;
+    }
+
+    body {
+        font-family: "Poppins", serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .header {
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+    }
+
+        .header h1 {
+            color: black;
+            margin: 0;
+        }
+
+        .header .add-unit {
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    .units-list-header {
+        background-color: #B0836E;
+        color: white;
+        text-align: left;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .search-bar {
+        margin: 20px;
+        text-align: right;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .search-bar .left-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar .right-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #B0836E;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+
+
+
+    /* Style for text and icon (grouped together) */
+    th span {
+        display: flex;
+        align-items: center; /* Keep icon aligned with text */
+    }
+
+    /* Sort icon placement and styles */
+    th i {
+        margin-left: auto; /* Push the icon to the far right */
+        font-size: 0.9em;
+        color: #aaa;
+        padding-left: 4px;
+        transition: color 0.2s ease;
+    }
+
+
+    /* Hover effect for headers */
+    th:hover i {
+        color: #555; /* Darker color for sort icon on hover */
+    }
+
+    /* Active sorting icon colors */
+    .fas.fa-sort-up {
+        color: #2c89d9; /* Blue for ascending */
+    }
+
+    .fas.fa-sort-down {
+        color: #d9534f; /* Red for descending */
+    }
+
+    .pagination {
+        text-align: right;
+        margin: 20px 0;
+    }
+
+        .pagination button {
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .pagination button.active {
+                background-color: #B0836E;
+                color: white;
+            }
+
+    .action-icons i {
+        cursor: pointer;
+        margin: 0 5px;
+    }
+
+        .action-icons i.edit {
+            color: #007bff;
+        }
+
+        .action-icons i.delete {
+            color: #dc3545;
+        }
+
+    #manage-units-body {
+        margin-right: 15px;
+    }
+</style>
+
+@if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: '@TempData["PopupTitle"]',  // Set the title dynamically
+                text: '@TempData["PopupMessage"]', // Set the message dynamically
+                icon: '@TempData["PopupIcon"]',    // Set the icon dynamically (success, error, warning, info)
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
+<div class="header" style="margin-top: 20px; padding: 10px 0;">
+</div>
+
+<div class="tenants-page">
+    <div class="units-list-header">
+        <h2>Tenants</h2>
+    </div>
+
+    <div class="search-bar">
+        <div class="left-buttons">
+            <button class="search-button" onclick="exportToPDF()">Export to PDF</button>
+            <button class="search-button" onclick="exportToCSV()">Export to CSV</button>
+        </div>
+
+        <div class="right-search">
+            <input type="text" placeholder="Search tenant..." id="searchTenantInput" style="margin-right: 10px;">
+            <button class="search-unit-button" onclick="searchTenant()"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <table id="tenants-table" class="tenants-table" data-sort-column="" data-sort-order="">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">#</th>
+                <th onclick="sortTable(1)"><span>Tenant Name<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(2)"><span>Email<i class="fas fa-sort"></i></span></th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int index = 1;
+                foreach (var tenant in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@tenant.TenantName</td>
+                        <td>@tenant.Email</td>
+                        <td class="action-icons">
+                            <form asp-action="DeleteTenant" asp-route-id="@tenant.TenantID" method="post" style="display:inline;">
+                                <button type="submit" title="Delete" style="background: none; border: none; padding: 0; width: fit-content; height: fit-content;">
+                                    <i class="fas fa-trash delete" style="font-size: 20px;"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;">No tenants found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="pagination" style="margin: 20px 0 200px;">
+    <button>Previous</button>
+    <button style="margin: 0 0 0 5px;">Next</button>
+</div>
+
+<script>
+    document.getElementById("searchTenantInput").addEventListener("keyup", searchTenant);
+
+    function searchTenant() {
+        const searchTerm = document.getElementById("searchTenantInput").value.toLowerCase();
+        const tenantRows = document.querySelectorAll("#tenants-table tbody tr");
+
+        tenantRows.forEach(function(row) {
+            const tenantName = row.cells[1].textContent.toLowerCase();
+            if (tenantName.includes(searchTerm)) {
+                row.style.display = "table-row";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    function sortTable(columnIndex) {
+        const table = document.getElementById("tenants-table");
+        const rows = Array.from(table.tBodies[0].rows);
+        const ascending = table.getAttribute('data-sort-order') !== 'asc';
+
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.cells[columnIndex].textContent.trim();
+            const cellB = rowB.cells[columnIndex].textContent.trim();
+            return ascending
+                ? (cellA > cellB ? 1 : -1)
+                : (cellA < cellB ? 1 : -1);
+        });
+
+        rows.forEach(row => table.tBodies[0].appendChild(row));
+        table.setAttribute('data-sort-order', ascending ? 'asc' : 'desc');
+    }
+</script>

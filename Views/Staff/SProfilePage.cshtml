@@ -1,0 +1,227 @@
+﻿@{
+    ViewData["Title"] = "Cozy Homes - Staff Profile";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    // Layout = null;
+}
+
+ @model PMS.Models.Profile
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozy Homes: Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            background-color: #e7e1d3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .profile-page {
+            padding: 40px 10px;
+            background-color: #e7e1d3;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .cancel-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0px;
+            color: #B0836E;
+            /* border: none; */
+            /* border-radius: 5px; */
+            /* justify-content: center; */
+            /* margin-left: 100px; */
+        }
+
+            .cancel-profile a {
+                /* margin: 10px auto; */
+                /* margin-left: 20px; */
+                width: 13%;
+                /* max-width: 800px; */
+                text-align: left; /* Align the button to the left */
+                text-decoration: none;
+                font-size: 20px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                color: #B0836E;
+                border: none;
+                border-radius: 5px;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+
+                .cancel-profile a:hover {
+                    color: #7d5847;
+                }
+
+            .cancel-profile:hover {
+                color: #7d5847;
+            }
+
+            .cancel-profile i {
+                font-size: 30px;
+                margin-left: 30px;
+                margin-right: 15px; /* Space between the arrow and text */
+            }
+
+        /* Card Styles */
+        .profile-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: left;
+            text-align: center;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .profile-info {
+            margin-left: 5px;
+            margin-bottom: 15px;
+        }
+
+            .profile-info p {
+                margin: 5px 0;
+                font-size: 1.1rem;
+            }
+
+        .actions-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px;
+            margin: 5px auto;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 70%;
+            font-family: 'Poppins';
+        }
+
+        .btn-primary {
+            background-color: #B0836E;
+        }
+
+            .btn-primary:hover {
+                background-color: #A06A5C;
+            }
+
+        .btn-secondary {
+            background-color: #6C757D;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5A6268;
+            }
+    </style>
+</head>
+<body>
+    <!-- Page Header -->
+    <section class="profile-page">      
+        @* @TempData["ErrorMessage"] *@
+
+        @* @if (TempData["ErrorMessage"] != null) *@
+        @* { *@
+        @*     <div class="alert alert-danger"> *@
+        @*         @TempData["ErrorMessage"] *@
+        @*     </div> *@
+        @* } *@
+        @* @if (TempData["SuccessMessage"] != null) *@
+        @* { *@
+        @*     <div class="alert alert-success"> *@
+        @*         @TempData["SuccessMessage"] *@
+        @*     </div> *@
+        @* } *@
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+
+            <div class="cancel-profile" align="left">
+                <a href="javascript:history.back()" class="text-decoration-none"
+                   title="Go Back" style="position: relative; top: 0px; left: 30px; bottom:0px; font-size: 20px;">
+                    <i class="fa-solid fa-arrow-left-long"></i>
+                    <h1 style="margin-left: 10px;">Profile</h1>
+                </a>
+            </div>
+
+            @{
+                var successMessage = TempData["SuccessMessage"];
+                var errorMessage = TempData["ErrorMessage"];
+            }
+
+            @if (successMessage != null)
+            {
+                <div class="alert alert-success">
+                    @successMessage
+                </div>
+            }
+
+            @if (errorMessage != null)
+            {
+                <div class="alert alert-danger">
+                    @errorMessage
+                </div>
+            }
+
+            <div class="profile-info" align="left">
+                <p><strong>First Name:</strong> @(Model.FirstName ?? "First name not provided")</p>
+
+            </div>
+            <div class="profile-info" align="left">
+                <p><strong>Last Name:</strong> @(Model.LastName ?? "Last name not provided")</p>
+            </div>
+            <div class="profile-info" align="left">
+                <p><strong>Email:</strong> @(Model.Email ?? "Email not provided")</p>
+            </div>
+            <div class="profile-info" align="left">
+                <p><strong>Phone Number:</strong> @(Model.PhoneNumber ?? "Phone number not provided")</p>
+            </div>
+
+            <div class="profile-info" align="left">
+                <p><strong>Address:</strong> @(Model.Address ?? "Address not provided")</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="actions-container">
+                <a asp-controller="Staff" asp-action="SEditProfile">
+                    <button class="btn btn-primary">
+                        <i class="fa-solid fa-user-edit"></i> Edit Profile
+                    </button>
+                </a>
+                <a asp-controller="Staff" asp-action="ChangePassword"> 
+                <button  class="btn btn-secondary">
+                    <i class="fa-solid fa-key"></i> Change Password
+                </button>
+                </a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

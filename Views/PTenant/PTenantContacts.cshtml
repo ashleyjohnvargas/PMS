@@ -1,0 +1,351 @@
+﻿@{
+    //Layout = null; // Disable the layout for this view
+    ViewData["Title"] = "Cozy Homes - Contacts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+    <style>
+
+        /* Banner Section */
+        .contact-banner {
+            margin-top: 0;
+            width: 100%;
+            height: 550px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .contact-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Adjust Side Text */
+        .ptside {
+            position: absolute;
+            color: whitesmoke;
+            font-size: 35px;
+            font-weight: 500;
+            line-height: 1.5;
+            text-align: left;
+            max-width: 50%;
+            word-wrap: break-word;
+            padding-left: 50px;
+        }
+
+        /* Contacts Section */
+        .pt-contacts {
+            padding: 40px 0;
+            background-color: #e7e1d3;
+            text-align: center;
+        }
+
+        .contact-container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+            .contact-container h2 {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+                color: #333;
+                font-weight: 500;
+                position: relative;
+            }
+
+                .contact-container h2::after {
+                    content: '';
+                    width: 10%;
+                    height: 5px;
+                    background: #333;
+                    position: absolute;
+                    left: 50%;
+                    bottom: -7px;
+                    transform: translateX(-50%);
+                }
+
+            .contact-container p {
+                color: #333;
+                text-align: center;
+                margin-top: 30px;
+            }
+
+        .pt-mail {
+            padding: 30px 0;
+            background-color: #e7e1d3;
+            text-align: center;
+        }
+
+    /* Newsletter Form Styles */
+    .mail-container form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 15px;
+        padding: 0; /* Ensure there's no internal padding in the form */
+    }
+
+        .mail-container form input {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 70%;
+            font-size: 1rem;
+            margin-right: 0; /* Remove any margin on the right side */
+            margin-bottom: 0; /* Prevent any extra space at the bottom */
+        }
+
+        .mail-container form button {
+            background: linear-gradient(45deg, #B0836E, #8b6c56);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-left: 0; /* Remove margin on the left side */
+        }
+
+            .mail-container form button i {
+                margin: 0; /* Remove extra space from the icon */
+                padding: 5px;
+            }
+
+            .mail-container form button:hover {
+                background: linear-gradient(45deg, #8b6c56, #B0836E);
+                transform: scale(1.05);
+            }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+            .contact-form label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+
+            .contact-form input, .contact-form textarea {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+        .card-btn {
+            background-color: #B0836E;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            top: 555px;
+        }
+
+        /* hover effects for buttons */
+        button, .card-btn {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+            button:hover, .card-btn:hover {
+                background-color: #8b6c56;
+                transform: scale(1.05);
+            }
+
+        /* card layout */
+        .con-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            display: inline-block;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 20%;
+            margin: 10px;
+            margin-top: 25px;
+        }
+
+        .card-contain {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: nowrap;
+            margin-top: 5%;
+            display: flex;
+        }
+
+        .con-card h3 {
+            color: #B0836E;
+            font-size: 1.2rem;
+        }
+
+        .con-card i {
+            color: #323232;
+            font-size: 2rem;
+        }
+
+        /* Newsletter Section Styles */
+        .pt-mail {
+            padding: 30px 0;
+            background-color: #e7e1d3;
+            text-align: center;
+        }
+
+        .mail-container {
+            width: 40%;
+            margin: 0 auto;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .mail-container h2 {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+                color: #333;
+                font-weight: 500;
+                position: relative;
+            }
+
+                .mail-container h2::after {
+                    content: '';
+                    width: 10%;
+                    height: 5px;
+                    background: #333;
+                    position: absolute;
+                    left: 50%;
+                    bottom: -7px;
+                    transform: translateX(-50%);
+                }
+
+            .mail-container p {
+                color: #333;
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+        /* Newsletter Form Styles */
+        .mail-container form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            gap: 10px; /* Small space between the input and button */
+        }
+
+            .mail-container form input {
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                width: 70%; /* Adjust width */
+                font-size: 1rem;
+                height: 40px; /* Ensure both input and button have the same height */
+            }
+
+            .mail-container form button {
+                background: linear-gradient(45deg, #B0836E, #8b6c56);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 20px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.3s ease;
+                height: 40px; /* Same height as the input field */
+                width: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .mail-container form button i {
+                    margin-left: 8px; /* Space between the icon and text */
+                }
+
+                .mail-container form button:hover {
+                    background: linear-gradient(45deg, #8b6c56, #B0836E);
+                    transform: scale(1.05);
+                }
+
+</style>
+
+    <!-- Top Header -->
+    <div class="ptop-header">
+    </div>
+
+   
+    <!-- Banner Section -->
+    <section class="contact-banner">
+        <img src="~/images/contact.jpeg" alt="Banner Image" class="contact-img">
+        <div class="ptside">
+            <span>We're just a ring away.</span> <br>
+            <span>What's up?</span>
+        </div>
+    </section>
+
+
+    <!-- Contacts Section -->
+    <section class="pt-contacts">
+        <div class="contact-container">
+            <h2>GET IN TOUCH</h2>
+            <p>If you have any questions, feel free to reach out!</p>
+            <div class="contact-contain">
+                <div class="con-card">
+                    <i class="fa-solid fa-city"></i>
+                    <h3>Office Location</h3>
+                    <p>121 Don Fabian Quezon City</p>
+                    <a href="https://www.google.com/maps/place/121+Don+Fabian+Quezon+City" class="card-btn" target="_blank">View on Map</a>
+                </div>
+                <div class="con-card">
+                    <i class="fa-solid fa-envelope"></i>
+                    <h3>Email Us</h3>
+                    <p>cozyhomes@gmail.com</p>
+                    <a href="mailto:cozyhomesrms@gmail.com
+                            " class="card-btn">Send Email</a>
+                </div>
+                <div class="con-card">
+                    <i class="fa-solid fa-phone"></i>
+                    <h3>Call Us</h3>
+                    <p>(123) 456-7890</p>
+                    <a href="tel:1234567890" class="card-btn">Call Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+<section class="pt-mail">
+    <div class="mail-container">
+        <div class="mail-row">
+            <div class="col-md-12">
+                <h2>RECEIVE A NEWSLETTER</h2>
+                <p>Enter your email to receive news from us.</p>
+                <form action="#" aria-label="Subscribe to newsletter">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit" aria-label="Submit email">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+

@@ -10,6 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" asp-append-version="true">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Include CSS files -->
+    <link rel="stylesheet" href="~/css/loginpage.css" asp-append-version="true" />
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons/css/boxicons.min.css" rel="stylesheet" asp-append-version="true">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+    <!--Font Awesome Icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     @* <link rel="stylesheet" href="~/RMS.auth.css" asp-append-version="true" /> *@
     <style>
@@ -45,7 +59,8 @@
         }
 
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="text"] {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -102,41 +117,162 @@
             font-weight: bold;
             color: #B0836E;
         }
+
+        span.toggle-password {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 10px;
+            pointer-events: auto;
+            margin-top: 14px;
+            margin-left: 10px;
+            color: #B0836E; /* Change to any color you prefer */
+        }
+
+        /* input[type="password"] { */
+        /*     padding-right: 40px; /* Leave enough space for the icon */ */
+        /*     width: 100%; /* Ensure consistent width */ */
+        /*     box-sizing: border-box; /* Include padding and border in width */ */
+        /* } */
+        /* Change icon color */ */
+        /* .toggle-password i { */
+        /*     margin-top: 14px; */
+        /*     margin-left: 10px; */
+        /*     color: #B0836E; /* Change to any color you prefer */
+        /* } */
+        /* Optionally, change the size of the icon */
+        .toggle-password i {
+            font-size: 30px; /* Adjust the size if necessary */
+        }
+
+        /* Optional: Change color on hover */
+        .toggle-password:hover i {
+            color: #333; /* Color when hovering over the icon */
+        }
+
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+
+
+    <div class="container" style="position: relative;">
+        <!-- Arrow in the upper left -->
+        <a href="javascript:history.back()" class="text-decoration-none"
+           title="Go Back" style="position: absolute; top: 10px; left: 10px; margin: 30px; font-size: 20px;">
+            <i class="fa-solid fa-arrow-left fs-3 text-light"></i>
+        </a>
+
         <div class="logo">
+
             <img src="~/images/cozy-logo.png" alt="Cozy Homes Logo">
             <span class="logo">Cozy Homes</span>
         </div>
+
+
         <h1>Welcome to</h1>
         <h2>Cozy Homes Rental Management System</h2>
         <p>Please Login to your account.</p>
-        <form asp-action="LoginUser" method="post">
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
+            @* <div class="form-group"> *@
+            @*     <!-- Password Field --> *@
+            @*     <div style="width: 100%; position: relative;"> *@
+            @*         <label for="password">Password</label> *@
+            @*         <input type="password" id="password" name="password" placeholder="Enter your password" required> *@
+            @*         <span class="toggle-password" onclick="togglePasswordVisibility('password', this)" *@
+            @*               title="Show/Hide Password" *@
+            @*               style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;"> *@
+            @*             <i class="bx bx-hide"></i> *@
+            @*         </span> *@
+            @*     </div> *@
+            @*   </div> *@
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <!-- Password Field with Counter -->
+                <div style="width: 100%; position: relative;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password"
+                           oninput="updatePasswordLengthCounter()" required>
+                    <!-- Password length counter -->
+                    <span id="passwordLengthCounter"
+                          style="position: absolute; top: 10px; right: 10px; font-size: 12px; color: gray;">
+                        0/64
+                    </span>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('password', this)"
+                          title="Show/Hide Password"
+                          style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                        <i class="bx bx-hide"></i>
+                    </span>
+                </div>
             </div>
-            @* <div class="form-group">
-            <label>
-            <input type="checkbox"> Remember Me
-            </label>
-            </div> *@
-            <a asp-controller="Login" asp-action="ForgotPass" class="forgot-password">Forgot Password?</a>
+            <br>
+            @* <a asp-controller="Login" asp-action="ForgotPass" class="forgot-password">Forgot Password?</a> *@
             <!-- <a asp-controller="Home" asp-action="Index" class="login-btn">  </a>-->
             <button type="submit" class="login-btn">Log In</button>
 
 
             <p>
-                New member here? <a asp-controller="Login" asp-action="Register" class="register">Register Now</a>
+                New user here? <a asp-controller="Login" asp-action="Register" class="register">Register Now</a>
             </p>
         </form>
     </div>
+    <script>
+        //PasswordLengthCounter
+          function updatePasswordLengthCounter() {
+            const passwordField = document.getElementById("password");
+            const counter = document.getElementById("passwordLengthCounter");
+            const loginButton = document.getElementById("loginButton");
 
+            const minLength = 15; // Minimum length
+            const maxLength = 64; // Maximum length
+
+            // Get current password length
+            const length = passwordField.value.length;
+
+            // Update counter display
+            counter.textContent = `${length}/${maxLength}`;
+
+            // Change counter color based on length
+            if (length < minLength) {
+                counter.style.color = "red"; // Too short
+                loginButton.disabled = true; // Disable login button
+            } else if (length > maxLength) {
+                counter.style.color = "red"; // Exceeds max length
+                loginButton.disabled = true; // Disable login button
+            } else {
+                counter.style.color = "green"; // Valid length
+                loginButton.disabled = false; // Enable login button
+            }
+        }
+
+            // Show/Hide Password
+        function togglePasswordVisibility(fieldId, toggleIcon) {
+            const passwordField = document.getElementById(fieldId);
+            const icon = toggleIcon.querySelector("i");
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("bx-hide");
+                icon.classList.add("bx-show");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("bx-show");
+                icon.classList.add("bx-hide");
+            }
+        }
+    </script>
 </body>
 </html>

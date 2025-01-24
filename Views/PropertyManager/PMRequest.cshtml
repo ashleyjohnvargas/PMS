@@ -116,6 +116,87 @@
                 cursor: pointer;
             }
 
+
+        /* Styling for dropdown filters */
+        #staffList thead select {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 14px;
+            color: #333;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+            /* Highlight dropdown on hover or focus */
+            #staffList thead select:hover,
+            #staffList thead select:focus {
+                border-color: #007bff;
+                outline: none;
+                background-color: #eef7ff;
+            }
+
+        /* Style for text and icon (grouped together) */
+        th span {
+            display: flex;
+            align-items: center; /* Keep icon aligned with text */
+        }
+
+        /* Sort icon placement and styles */
+        th i {
+            margin-left: auto; /* Push the icon to the far right */
+            font-size: 0.9em;
+            color: #aaa;
+            padding-left: 4px;
+            transition: color 0.2s ease;
+        }
+
+        /* Dropdown styling */
+        th select {
+            margin-left: 10px; /* Space between the icon and the dropdown */
+            padding: 4px 6px;
+            font-size: 0.9em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        /* Hover effect for headers */
+        th:hover i {
+            color: #555; /* Darker color for sort icon on hover */
+        }
+
+        /* Active sorting icon colors */
+        .fas.fa-sort-up {
+            color: #2c89d9; /* Blue for ascending */
+        }
+
+        .fas.fa-sort-down {
+            color: #d9534f; /* Red for descending */
+        }
+
+        .pagination {
+            text-align: right;
+            margin: 20px 0;
+        }
+
+            .pagination button {
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                margin: 0 5px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+                .pagination button.active {
+                    background-color: #B0836E;
+                    color: white;
+                }
+
         .action-icons i {
             cursor: pointer;
             margin: 0 5px;
@@ -149,7 +230,7 @@
         </script>
     }
 
-    <div class="header" style="margin-top: 50px; padding: 10px 0;">
+    <div class="header" style="margin-top: 30px; padding: 10px 0;">
 
         @* <h1 style="color: #B0836E;">Leases</h1> *@
         @*         <a asp-action="AddUnitPage" style="text-decoration: none;background-color: #B0836E;color: white;padding: 10px 20px;border-radius: 10px;">Add Lease</a>
@@ -162,19 +243,48 @@
 
     <div class="search-bar" style="margin: 20px 0;">
         <input type="text" placeholder="Search requests..." id="searchInput">
-        <button class="search-unit-button">Search</button>
+        <button class="search-unit-button" onclick="searchRequests()"><i class="fas fa-search"></i></button>
     </div>
 
-    <table>
+    <table id="requestList" data-sort-column="" data-sort-order="">
         <thead>
             <tr>
-                <th>#</th>
-                <th>Tenant Name</th>
-                <th>Unit</th>
-                <th>Request Date</th>
-                <th>Issue</th>
-                <th>Assigned Staff</th>
-                <th>Status</th>
+                <th onclick="sortTable(0)">#</th>
+                <th onclick="sortTable(1)"><span>Tenant Name<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(2)"><span>Unit<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(3)"><span>Request Date<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(4)">
+                    <span>
+                        Issue
+                        <select id="issueFilter" onchange="filterRequests()">
+                            <option value="">All</option>
+                            <option value="Plumbing">Plumbing</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Structural">Structural</option>
+                            <option value="Appliance">Appliance</option>
+                            <option value="Internet">Internet</option>
+                        </select>
+                        <i class="fas fa-sort"></i>
+                    </span>
+                </th>
+                <th onclick="sortTable(5)">
+                    <span>
+                        Assigned Staff
+                        <i class="fas fa-sort"></i>
+                    </span>
+                </th>
+                <th onclick="sortTable(6)">
+                    <span>
+                        Status
+                        <select id="statusFilter" onchange="filterRequests()">
+                            <option value="">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Started">Started</option>
+                            <option value="Done">Done</option>
+                        </select>
+                        <i class="fas fa-sort"></i>
+                    </span>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -208,9 +318,79 @@
         <button>Previous</button>
         <button style="margin: 0 0 0 5px;">Next</button>
     </div>
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", searchRequests);
 
+        // Function to search requests
+        function searchRequests() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const requestRows = document.querySelectorAll("#requestList tbody tr");
+            requestRows.forEach(function(row) {
+                const requestName = row.cells[1].textContent.toLowerCase(); // Tenant Name
+                if (requestName.includes(searchTerm)) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        // Function to filter requests by issue and status
+        function filterRequests() {
+            const issueFilter = document.getElementById("issueFilter").value.toLowerCase();
+            const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
+            const requestRows = document.querySelectorAll("#requestList tbody tr");
+
+            requestRows.forEach(function(row) {
+                const issue = row.cells[4].textContent.toLowerCase(); // Issue column
+                const status = row.cells[6].textContent.toLowerCase(); // Status column
+
+                const matchesIssue = !issueFilter || issue.includes(issueFilter);
+                const matchesStatus = !statusFilter || status.includes(statusFilter);
+
+                if (matchesIssue && matchesStatus) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        // Optional: Enable search on "Enter" key press
+        document.getElementById("searchInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                searchRequests();
+            }
+        });
+
+        // Function to sort table
+        function sortTable(columnIndex) {
+            const table = document.getElementById("requestList");
+            const rows = Array.from(table.tBodies[0].rows);
+            let ascending = true;
+
+            if (table.dataset.sortColumn == columnIndex) {
+                ascending = table.dataset.sortOrder === "asc" ? false : true;
+            }
+
+            table.dataset.sortColumn = columnIndex;
+            table.dataset.sortOrder = ascending ? "asc" : "desc";
+
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+                const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+
+                if (cellA < cellB) return ascending ? -1 : 1;
+                if (cellA > cellB) return ascending ? 1 : -1;
+                return 0;
+            });
+
+            const tbody = table.tBodies[0];
+            tbody.innerHTML = "";
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
 </body>
 </html>
-
 
 
