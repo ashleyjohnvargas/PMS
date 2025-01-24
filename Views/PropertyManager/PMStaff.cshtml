@@ -166,6 +166,137 @@
         <input type="text" placeholder="Search staff..." id="searchStaffInput">
         <button class="search-unit-button" onclick="searchStaff()">Search</button>
     </div>
+    <div>
+    <label for="filterRole">Role:</label>
+    <select id="filterRole" onchange="filterStaff()">
+        <option value="">All</option>
+        <option value="IT Technician">IT Technician</option>
+        <option value="Plumber">Plumber</option>
+        <option value="Carpenter">Carpenter</option>
+        <option value="Electrician">Electrician</option>
+
+        <!-- Add more roles as needed -->
+    </select>
+
+    <label for="filterShift">Shift:</label>
+    <select id="filterShift" onchange="filterStaff()">
+        <option value="">All</option>
+        <option value="First">Morning</option>
+        <option value="Second">Afternoon</option>
+        <option value="Third">Night</option>
+        <!-- Add more shifts as needed -->
+    </select>
+
+    <label for="filterAvailability">Availability:</label>
+    <select id="filterAvailability" onchange="filterStaff()">
+        <option value="">All</option>
+        <option value="Available">Available</option>
+        <option value="Occupied">Occupied</option>
+        <!-- Add more availability statuses as needed -->
+    </select>
+</div>
+<table id="staffList">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Staff</th>
+            <th>
+                Role
+                <select id="filterRole" onchange="filterStaff()">
+                    <option value="">All</option>
+                    <option value="Technician">Technician</option>
+                    <option value="Electrician">Electrician</option>
+                    <option value="Plumber">Plumber</option>
+                    <option value="Carpenter">Carpenter</option>
+                    <option value="IT Technician">IT Technician</option>
+                </select>
+            </th>
+            <th>
+                Shift
+                <select id="filterShift" onchange="filterStaff()">
+                    <option value="">All</option>
+                    <option value="First">Morning</option>
+                    <option value="Second">Afternoon</option>
+                    <option value="Third">Night</option>
+                </select>
+            </th>
+            <th>
+                Availability
+                <select id="filterAvailability" onchange="filterStaff()">
+                    <option value="">All</option>
+                    <option value="Available">Available</option>
+                    <option value="Occupied">Occupied</option>
+                </select>
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int index = 1;
+            foreach (var staff in Model)
+            {
+                <tr class="staff-item" data-role="@staff.StaffRole" data-shift="@staff.Shift" data-availability="@staff.Availability">
+                    <td>@index</td>
+                    <td>@staff.StaffName</td>
+                    <td>@staff.StaffRole</td>
+                    <td>@staff.Shift</td>
+                    <td>@staff.Availability</td>
+                    <td class="action-icons">
+                        <a asp-action="DeleteStaff" asp-route-id="@staff.StaffID" onclick="return confirmDelete(@staff.StaffID)">
+                            <i class="fas fa-trash delete"></i>
+                        </a>
+                    </td>
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" style="text-align:center;">No staff found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    function filterStaff() {
+        const roleFilter = document.getElementById("filterRole").value.toLowerCase();
+        const shiftFilter = document.getElementById("filterShift").value.toLowerCase();
+        const availabilityFilter = document.getElementById("filterAvailability").value.toLowerCase();
+
+        const rows = document.querySelectorAll("#staffList tbody tr.staff-item");
+
+        // Map shifts for display
+        const shiftMap = {
+            "first": "morning",
+            "second": "afternoon",
+            "third": "night"
+        };
+
+        rows.forEach(row => {
+            const role = row.getAttribute("data-role").toLowerCase();
+            const shift = row.getAttribute("data-shift").toLowerCase();
+            const availability = row.getAttribute("data-availability").toLowerCase();
+
+            // Match the shift filter using the mapped display value
+            const mappedShift = shiftMap[shift] || shift;
+
+            if (
+                (roleFilter === "" || role.includes(roleFilter)) &&
+                (shiftFilter === "" || mappedShift.includes(shiftFilter)) &&
+                (availabilityFilter === "" || availability.includes(availabilityFilter))
+            ) {
+                row.style.display = ""; // Show the row
+            } else {
+                row.style.display = "none"; // Hide the row
+            }
+        });
+    }
+</script>
+
+@*
 
     <table id="staffList">
         <thead>
@@ -206,7 +337,7 @@
                 </tr>
             }
         </tbody>
-    </table>
+    </table>*@
 
     <div class="pagination" style="margin: 20px 0 200px;">
         <button>Previous</button>
@@ -329,6 +460,68 @@
             // document.getElementById("addStaffForm").reset();
         });
     </script>
+
+@*     <script> *@
+@*     function filterStaff() { *@
+@*         const roleFilter = document.getElementById("filterRole").value.toLowerCase(); *@
+@*         const shiftFilter = document.getElementById("filterShift").value.toLowerCase(); *@
+@*         const availabilityFilter = document.getElementById("filterAvailability").value.toLowerCase(); *@
+
+@*         const rows = document.querySelectorAll("#staffList tbody tr.staff-item"); *@
+
+@*         // Map shifts for display *@
+@*         const shiftMap = { *@
+@*             "first": "morning", *@
+@*             "second": "afternoon", *@
+@*             "third": "night" *@
+@*         }; *@
+
+@*         rows.forEach(row => { *@
+@*             const role = row.getAttribute("data-role").toLowerCase(); *@
+@*             const shift = row.getAttribute("data-shift").toLowerCase(); *@
+@*             const availability = row.getAttribute("data-availability").toLowerCase(); *@
+
+@*             // Match the shift filter using the mapped display value *@
+@*             const mappedShift = shiftMap[shift] || shift; *@
+
+@*             if ( *@
+@*                 (roleFilter === "" || role.includes(roleFilter)) && *@
+@*                 (shiftFilter === "" || mappedShift.includes(shiftFilter)) && *@
+@*                 (availabilityFilter === "" || availability.includes(availabilityFilter)) *@
+@*             ) { *@
+@*                 row.style.display = ""; // Show the row *@
+@*             } else { *@
+@*                 row.style.display = "none"; // Hide the row *@
+@*             } *@
+@*         }); *@
+@*     } *@
+@* </script> *@
+
+@*     <script> *@
+@*     function filterStaff() { *@
+@*         const roleFilter = document.getElementById("filterRole").value.toLowerCase(); *@
+@*         const shiftFilter = document.getElementById("filterShift").value.toLowerCase(); *@
+@*         const availabilityFilter = document.getElementById("filterAvailability").value.toLowerCase(); *@
+
+@*         const rows = document.querySelectorAll("#staffList tbody tr.staff-item"); *@
+
+@*         rows.forEach(row => { *@
+@*             const role = row.getAttribute("data-role").toLowerCase(); *@
+@*             const shift = row.getAttribute("data-shift").toLowerCase(); *@
+@*             const availability = row.getAttribute("data-availability").toLowerCase(); *@
+
+@*             if ( *@
+@*                 (roleFilter === "" || role.includes(roleFilter)) && *@
+@*                 (shiftFilter === "" || shift.includes(shiftFilter)) && *@
+@*                 (availabilityFilter === "" || availability.includes(availabilityFilter)) *@
+@*             ) { *@
+@*                 row.style.display = ""; // Show the row *@
+@*             } else { *@
+@*                 row.style.display = "none"; // Hide the row *@
+@*             } *@
+@*         }); *@
+@*     } *@
+@* </script> *@
 
 </body>
 </html>

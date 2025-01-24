@@ -17,8 +17,9 @@ namespace PMS.Models
         public string RequestStatus { get; set; } // Pending, Ongoing, Completed
         public DateTime? RequestStartDateTime { get; set; } // Start date and time of request is null when a request is pending
         public DateTime? CompletedDateTime { get; set; } // CompletedDateTime is null when request is pending and ongoing
-        
-        
+        public decimal? Cost { get; set; } // Cost of the request
+
+
         public virtual Tenant? Tenant { get; set; }
         public virtual Staff? Staff { get; set; }
     }

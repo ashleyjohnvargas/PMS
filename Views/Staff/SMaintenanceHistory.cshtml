@@ -1,10 +1,11 @@
-﻿@{
+﻿﻿@{
     ViewData["Title"] = "Cozy Homes - Maintenance History";
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
 }
 
-@* <!DOCTYPE html> *@
-@* <html lang="en"> *@
+@model List<MaintenanceHistoryViewModel>
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,184 +17,70 @@
     <link rel="stylesheet" href="~/css/maintenance.css" />
 </head>
 
-@* <body> *@
-@*     <div class="top-header"> *@
-@*         <div class="logo-section"> *@
-@*             <img src="~/images/cozy-logo.png" alt="logo" class="logo-img"> *@
-@*             <h1 class="logo-text">Cozy Homes</h1> *@
-@*         </div> *@
 
-@*         <div class="profile-section"> *@
-@*             <a href="#" class="dropbtn"> *@
-@*                 <img src="~/images/user-pic.png" alt="logo" class="profile-pic"> *@
-@*                 Profile *@
-@*             </a> *@
-@*             <div class="dropdown-content"> *@
-@*                 <a href="#">Edit Profile</a> *@
-@*                 <a href="#" class="logout" onclick="return confirmLogout(event);">Log Out</a> *@
-@*             </div> *@
-@*         </div> *@
-@*     </div> *@
-
-    <header> 
-        <div class="main-header">
-            <p><span class="header-title">MAINTENANCE HISTORY</span></p>
-            @* <nav> *@
-            @*     <ul> *@
-@*                     <li><a href="#">Maintenance Assignment</a></li> *@
-@*                     <li><a href="#">Maintenance History</a></li> *@
-@*                     <li class="dropdown"></li> *@
-@*                 </ul> *@
-@*             </nav> *@
-        </div>
-   </header>
+<header>
+    <div class="main-header">
+        <p><span class="header-title">MAINTENANCE HISTORY</span></p>
+    </div>
+</header>
 
 
-    <main class="container">
-        <div class="header-panel">
-            @* <div class="dropdown-container"> *@
-            @*     @* <img src="imgs/calendar icon.png" alt="calendar" class="calendar-img"> *@
-            @*     <i class="fas fa-calendar"></i> *@
-            @*     <select id="date-dropdown"> *@
-            @*         <option value="2025-01-15">January 15, 2025</option> *@
-            @*         <option value="2025-01-14">January 14, 2025</option> *@
-            @*     </select> *@
-            @* </div> *@
-            @* <div class="search-bar"> *@
-            @*     <input type="text" placeholder="Search..." id="search" /> *@
-            @*     <button><i class="fas fa-search"></i></button> *@
-            @* </div> *@
-        @* <div class="dropdown-container"> *@
-        @*     <label for="date-picker" style="color: #fff;">Select Date:  </label> *@
-        @*     <input id="date-picker" type="text" style="padding: 5px; " placeholder="Pick a date"> *@
-        @* </div> *@
+<main class="container" style="min-height: 100vh;">
 
-        <div class="dropdown-container" style="font-size: 16px;">
-            <label for="month-picker" style="color: #fff; ">Select Month:</label>
-            <input id="month-picker" type="text" style="padding: 5px; border-radius: 5px; margin-left: 8px; width: 140px" placeholder="Select a month">
-        </div>
-        </div>
-   
-        <div class="table-container">
-            <table>
-                <thead>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Unit Name</th>
+                    <th>Date Requested</th>
+                    <th>Request Task</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Date Started</th>
+                    <th>Date Finished</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int index = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td>@item.UnitName</td>
+                            <td>@item.DateRequested</td>
+                            <td>@item.RequestTask</td>
+                            <td>@item.Category</td>
+                            <td>@item.Status</td>
+                            <td>@item.DateStarted</td>
+                            <td>@item.DateFinished</td>
+                        </tr>
+                        index++;
+                    }
+                }
+                else
+                {
                     <tr>
-                        <th>#</th>
-                        <th>Unit Name</th>
-                        <th>Date Requested</th>
-                        <th>Request Task</th>
-                        <th>Category</th>
-                        <th>Urgency Level</th>
-                        <th>Date Started</th>
-                        <th>Date Finished</th>
+                        <td colspan="7" style="text-align:center;">No maintenance history.</td>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>
-                            Cozy Suite 10
-                            <button class="details-btn">Details</button>
-                        </td>
-                        <td>January 1, 2025<br>10:09 PM</td>
-                        <td>Fix Water Pipe</td>
-                        <td>Electrical</td>
-                        <td>High</td>
-                        <td>January 2, 2025<br>9:30 AM</td>
-                        <td>In Progress</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>
-                            Cozy Suite 11
-                            <button class="details-btn">Details</button>
-                        </td>
-                        <td>January 1, 2025<br>11:15 PM</td>
-                        <td>Electrical Wire</td>
-                        <td>Electrical</td>
-                        <td>High</td>
-                        <td>January 2, 2025<br>7:30 AM</td>
-                        <td>In Progress</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>
-                            Cozy Suite 12
-                            <button class="details-btn">Details</button>
-                        </td>
-                        <td>January 2, 2025<br>1:15 AM</td>
-                        <td>Cleaning</td>
-                        <td>Housekeeping</td>
-                        <td>Low</td>
-                        <td>January 2, 2025<br>12:00 PM</td>
-                        <td>January 5, 2025<br>3:30 PM</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>
-                            Cozy Suite 13
-                            <button class="details-btn">Details</button>
-                        </td>
-                        <td>January 1, 2025<br>12:00 AM</td>
-                        <td>TV Screen Cracked</td>
-                        <td>Electrical</td>
-                        <td>Medium</td>
-                        <td>January 2, 2025<br>1:00 PM</td>
-                        <td>Pending</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>
-                            Cozy Suite 14
-                            <button class="details-btn">Details</button>
-                        </td>
-                        <td>January 6, 2025<br>1:23 PM</td>
-                        <td>Table Leg</td>
-                        <td>Equipment</td>
-                        <td>Low</td>
-                        <td>Pending</td>
-                        <td>Pending</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="pagination">
-                <button class="prev">Previous</button>
-                <div class="page-item">
-                    <span class="circle active"></span>
-                    <span class="page-number active">1</span>
-                </div>
-                <div class="page-item">
-                    <span class="circle"></span>
-                    <span class="page-number">2</span>
-                </div>
-                <div class="page-item">
-                    <span class="circle"></span>
-                    <span class="page-number">3</span>
-                </div>
-                <span class="dots">...</span>
-                <div class="page-item">
-                    <span class="circle"></span>
-                    <span class="page-number">12</span>
-                </div>
-                <button class="next">Next</button>
-            </div>
-        </div>
-    </main>
+                }
+            </tbody>
 
-    @* <footer> *@
-    @*     <p>&copy; 2025 Cozy Homes. All Rights Reserved.</p> *@
-    @* </footer> *@
+        </table>
 
-    <script>
-        function confirmLogout(event) {
-            const confirmation = confirm("Are you sure you want to log out?");
-            if (!confirmation) {
-                event.preventDefault();
-            }
-            return confirmation;
+    </div>
+</main>
+
+<script>
+    function confirmLogout(event) {
+        const confirmation = confirm("Are you sure you want to log out?");
+        if (!confirmation) {
+            event.preventDefault();
         }
-    </script>
+        return confirmation;
+    }
+</script>
 
-    <script src="~/js/maintenance.js"></script>
-@* </body> *@
-@* </html> *@
+<script src="~/js/maintenance.js"></script>
