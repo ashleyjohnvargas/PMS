@@ -1,0 +1,283 @@
+﻿@{
+    //Layout = null; // Disable the layout for this view
+    ViewData["Title"] = "Cozy Homes - Apply for Leasing";
+    Layout = "~/Views/Shared/_LayoutPM.cshtml";
+
+}
+
+@model List<PMUnitViewModel>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        font-family: "Poppins", serif;
+    }
+
+    body {
+        font-family: "Poppins", serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .header {
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+    }
+
+        .header h1 {
+            color: black;
+            margin: 0;
+        }
+
+        .header{
+            background-color: #B0836E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    /* Apply for Leasing Page */
+    .apply-leasing {
+        padding: 40px 10px;
+        background-color: #e7e1d3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-container {
+        margin: 0;
+        max-width: 800px;
+        background: #ffffff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        width: -webkit-fill-available;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    form fieldset {
+        border: 1px solid #ddd;
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 5px;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+    }
+
+    form legend {
+        font-weight: bold;
+        color: #555;
+    }
+
+    form label {
+        display: block;
+        margin-top: 10px;
+        color: #555;
+    }
+
+    form input, form select, form textarea {
+        width: -webkit-fill-available;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    form textarea {
+        resize: none;
+    }
+
+    /* Fix for "I agree to the terms and conditions" alignment */
+    fieldset {
+        display: block;
+    }
+
+    form label {
+        display: block;
+        margin-top: 10px;
+        color: #555;
+    }
+
+    fieldset input[type="checkbox"] {
+        vertical-align: middle;
+        margin-right: 5px; /* Add space between the checkbox and text */
+    }
+
+    fieldset label[for="agree"] {
+        display: inline-flex; /* Keeps the text next to the checkbox */
+        white-space: nowrap; /* Prevents text wrapping to a new line */
+        margin: 0;
+    }
+
+    form button {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-left: 30%;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        width: 40%;
+    }
+
+        form button:hover {
+            background-color: #000;
+        }
+
+    .cancel-button {
+        text-align: center; /* Align the button to the left */
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: bold;
+        align-items: center;
+        color: #B0836E;
+        border: none;
+        border-radius: 5px;
+        justify-content: center;
+    }
+
+        .cancel-button:hover {
+            color: #7d5847; /* Optional hover color */
+        }
+
+        .cancel-button i {
+            font-size: 30px;
+            margin-right: 5px; /* Space between the arrow and text */
+        }
+
+</style>
+<!-- Home Details Section -->
+<section class="apply-leasing">
+    @* <div class="cancel-button">
+    <a asp-controller="PTenant" asp-action="PTenantHomePage" style="text-decoration: none; display: flex; gap:5px; font-size:25px; align-items: center; color: #333;">
+    <i class="fa-solid fa-arrow-left-long"></i> Cancel
+    </a>
+    </div> *@
+    <div class="form-container">
+        <h1>Apply for Leasing</h1>
+        <form asp-action="PMApplyForLease" method="post" style="display: flex;flex-direction: column;gap: 40px;">
+
+
+            <!-- Personal Information Section -->
+            <fieldset>
+                @* <p>UnitId passed to the view: @Model</p> *@
+
+                @* <input type="hidden" name="UnitId" value="@Model" required /> *@
+                <legend>Personal Information</legend>
+                <label for="FullName">Full Name:</label>
+                <input type="text" id="FullName" name="FullName" required>
+
+                <label for="BirthDate">Date of Birth:</label>
+                <input type="date" id="BirthDate" name="BirthDate">
+
+                <label for="ContactNumber">Contact Number:</label>
+                <input type="text" id="ContactNumber" name="ContactNumber" required>
+
+                <label for="Email">Email Address:</label>
+                <input type="email" id="Email" name="Email" required>
+
+                <label for="CurrentAddress">Current Address:</label>
+                <textarea id="CurrentAddress" name="CurrentAddress" rows="3"></textarea>
+            </fieldset>
+
+            <!-- Employment Information Section -->
+            <fieldset>
+                <legend>Employment and Income</legend>
+                <label for="EmploymentStatus">Employment Status:</label>
+                <select id="EmploymentStatus" name="EmploymentStatus" required>
+                    <option value="">Select</option>
+                    <option value="employed">Employed</option>
+                    <option value="self-employed">Self-employed</option>
+                    <option value="student">Student</option>
+                    <option value="unemployed">Unemployed</option>
+                    <option value="retired">Retired</option>
+                </select>
+
+                <label for="EmployerName">Employer Name:</label>
+                <input type="text" id="EmployerName" name="EmployerName">
+
+                <label for="MonthlyIncome">Monthly Income:</label>
+                <input type="number" id="MonthlyIncome" name="MonthlyIncome" step="0.01">
+            </fieldset>
+
+            <!-- Desired Leasing Details Section -->
+            <fieldset>
+                <legend>Leasing Details</legend>
+                @* <label for="preferred-property">Preferred Property:</label>
+                <select id="preferred-property" name="preferred_property" required>
+                <option value="">Select</option>
+                <option value="property1">Property 1</option>
+                <option value="property2">Property 2</option>
+                </select> *@
+
+                <label for="UnitId">Preferred Unit:</label>
+                <select id="UnitId" name="UnitId" required>
+                    @foreach (var unit in Model)
+                    {
+                        <option value="@unit.UnitId">@unit.UnitName</option>
+                    }
+                </select>
+
+                <label for="LeaseDuration">Lease Duration:</label>
+                <select id="LeaseDuration" name="LeaseDuration" required>
+                    <option value="6">6 Months</option>
+                    <option value="7">7 Months</option>
+                    <option value="8">8 Months</option>
+                    <option value="9">9 Months</option>
+                    <option value="10">10 Months</option>
+                    <option value="11">11 Months</option>
+                    <option value="12">12 Months</option>
+                </select>
+
+                <label for="LeaseStartDate">Move-in Date:</label>
+                <input type="date" id="LeaseStartDate" name="LeaseStartDate" required>
+            </fieldset>
+
+            @* <!-- References Section -->
+            <fieldset>
+            <legend>References</legend>
+            <label for="reference-name">Reference Name:</label>
+            <input type="text" id="reference-name" name="reference_name" required>
+
+            <label for="reference-contact">Reference Contact:</label>
+            <input type="tel" id="reference-contact" name="reference_contact" required>
+            </fieldset> *@
+
+            <!-- Terms and Agreement -->
+            <fieldset>
+                <legend>Terms and Agreement</legend>
+                <div style="display: flex;">
+                    <!-- The hidden field will send false when checkbox is unchecked -->
+                    @* <input type="hidden" name="TermsAndConditions" value="false" /> *@
+                    <input type="checkbox" id="TermsAndConditions" name="TermsAndConditions" value="true" style="width: auto;" required>
+                    <label for="TermsAndConditions">
+                        I agree to the terms and conditions.
+                    </label>
+                </div>
+            </fieldset>
+            <!-- Submit -->
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+</section>
+
+

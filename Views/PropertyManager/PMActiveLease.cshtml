@@ -35,19 +35,19 @@
             padding: 10px 20px;
         }
 
-        .header h1 {
-            color: black;
-            margin: 0;
-        }
+            .header h1 {
+                color: black;
+                margin: 0;
+            }
 
-        .header .add-unit {
-            background-color: #B0836E;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+            .header .add-unit {
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
 
         .units-list-header {
             background-color: #B0836E;
@@ -64,21 +64,21 @@
             text-align: right;
         }
 
-        .search-bar input[type="text"] {
-            padding: 10px;
-            width: 200px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+            .search-bar input[type="text"] {
+                padding: 10px;
+                width: 200px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
 
-        .search-bar button {
-            padding: 10px 15px;
-            background-color: #B0836E;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+            .search-bar button {
+                padding: 10px 15px;
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
 
         table {
             width: 100%;
@@ -86,48 +86,48 @@
             margin: 20px 0;
         }
 
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
+            table th, table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+            }
 
-        table th {
-            background-color: #B0836E;
-            color: white;
-        }
+            table th {
+                background-color: #B0836E;
+                color: white;
+            }
 
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+            table tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
 
         .pagination {
             text-align: right;
             margin: 20px 0;
         }
 
-        .pagination button {
-            background-color: #B0836E;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+            .pagination button {
+                background-color: #B0836E;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                margin: 0 5px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
 
         .action-icons i {
             cursor: pointer;
             margin: 0 5px;
         }
 
-        .action-icons i.edit {
-            color: #007bff;
-        }
+            .action-icons i.edit {
+                color: #007bff;
+            }
 
-        .action-icons i.delete {
-            color: #dc3545;
-        }
+            .action-icons i.delete {
+                color: #dc3545;
+            }
 
         #manage-units-body {
             margin-right: 15px;
@@ -165,10 +165,10 @@
 
     <div class="search-bar" style="margin: 20px 0;">
         <input type="text" placeholder="Search leases..." id="searchInput">
-        <button class="search-unit-button">Search</button>
+        <button class="search-unit-button" onclick="searchLeases()"><i class="fas fa-search"></button>
     </div>
 
-    <table>
+    <table id="leasesTable">
         <thead>
             <tr>
                 <th>#</th>
@@ -198,17 +198,36 @@
                         <td>@(lease.LeaseEndDate.HasValue ? lease.LeaseEndDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
                         <td>@lease.LeaseStatus</td>
                         <td>
-                            <a asp-action="DownloadLeaseAgreement" asp-route-id="@lease.LeaseID">View Full Document</a>
+                            <a asp-action="DownloadLeaseAgreement" asp-route-id="@lease.LeaseID" style="text-decoration: none;background-color: #B0836E;padding: 5px 10px;border-radius: 7px;color: white;">View Full Document</a>
                         </td>
                         <td class="action-icons">
-                            <a title="Edit" href="@Url.Action("EditLease", "Lease", new { id = lease.LeaseID })" style="font-size: 20px;">
+                            <a id="addStaffBtn-@lease.LeaseID" title="Edit" style="font-size: 20px;">
                                 <i class="fas fa-edit edit"></i>
                             </a>
-                            <form method="post" action="@Url.Action("DeleteLease", "Lease", new { id = lease.LeaseID })" style="display:inline;">
-                                <button type="submit" title="Delete" style="background: none; border: none; padding: 0; width: fit-content; height: fit-content;">
-                                    <i class="fas fa-trash delete" style="font-size: 20px;"></i>
-                                </button>
-                            </form>
+                            <a asp-action="DeactivateActiveLease" asp-route-id="@lease.LeaseID" id="deactivate-lease-btn">
+                                <i class="fas fa-trash delete" style="font-size: 20px;"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <!-- Add Staff Modal -->
+                            <div id="addStaffModal-@lease.LeaseID" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+                                <div style="background-color: white; padding: 20px; border-radius: 10px; width: 400px;">
+                                    <h3>Edit Lease</h3>
+                                    <form asp-action="EditLease" method="post" id="addStaffForm">
+                                        <input type="hidden" name="LeaseId" value="@lease.LeaseID" />
+                                        <div style="display: flex;">
+                                            <label for="StartDate" style="flex:1;">Start Date:</label>
+                                            <input type="date" id="StartDate" name="StartDate" style="flex:1;">
+                                        </div>
+                                        <div style="display: flex;">
+                                            <label for="EndDate" style="flex:1;">End Date:</label>
+                                            <input type="date" id="EndDate" name="EndDate" style="flex:1;">
+                                        </div>
+                                        <button type="submit" id="submitStaffBtn-@lease.LeaseID" style="margin-top: 10px;">Update Lease</button>
+                                        <button type="button" id="closeModalBtn-@lease.LeaseID" style="margin-top: 10px;">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     index++;
@@ -229,66 +248,58 @@
     </div>
 
 
-    @*
+
+
     <script>
-    document.querySelector(".search-unit-button").addEventListener("click", function () {
-    var searchQuery = document.querySelector("input[type='text']").value;
+        // Function to search leases
+        function searchLeases() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const leaseRows = document.querySelectorAll("#leasesTable tbody tr");
 
-    // Make an AJAX request to search for units based on the input
-    fetch(`/PropertyManager/SearchUnits?query=${searchQuery}`)
-    .then(response => response.json())
-    .then(data => {
-    updateUnitsTable(data);
-    })
-    .catch(error => console.error('Error:', error));
-    });
+            leaseRows.forEach(function(row) {
+                const tenantName = row.cells[1].textContent.toLowerCase(); // Tenant Name
+                const unitName = row.cells[2].textContent.toLowerCase(); // Unit Name
+                const status = row.cells[6].textContent.toLowerCase(); // Status
+
+                // Check if any cell matches the search term
+                if (tenantName.includes(searchTerm) || unitName.includes(searchTerm) || status.includes(searchTerm)) {
+                    row.style.display = "table-row"; // Show row if search term matches
+                } else {
+                    row.style.display = "none"; // Hide row if search term doesn't match
+                }
+            });
+        }
+    </script>
+
+    <script>
+        const deactivateLeaseBtn = document.getElementById('deactivate-lease-btn');
+        deactivateLeaseBtn.addEventListener('click', () => {
+            alert('Are you sure you want to deactivate this lease?');
+        });
+
+                        document.addEventListener("DOMContentLoaded", function () {
+                // Add event listeners for all "Edit" buttons
+                document.querySelectorAll("[id^='addStaffBtn-']").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        const leaseId = this.id.split('-')[1]; // Extract LeaseID from button ID
+                        const modal = document.getElementById(`addStaffModal-${leaseId}`);
+                        modal.style.display = "flex"; // Show the modal
+                    });
+                });
+
+                // Add event listeners for all "Cancel" buttons
+                document.querySelectorAll("[id^='closeModalBtn-']").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        const leaseId = this.id.split('-')[1]; // Extract LeaseID from button ID
+                        const modal = document.getElementById(`addStaffModal-${leaseId}`);
+                        modal.style.display = "none"; // Hide the modal
+                    });
+                });
+            });
 
 
-    // Function to handle input field changes
-    document.querySelector("#searchInput").addEventListener("input", function () {
-    var searchQuery = this.value;
 
-    // If the search input is empty, fetch all units
-    if (searchQuery === "") {
-    fetch(`/PropertyManager/SearchUnits?query=`)
-    .then(response => response.json())
-    .then(data => {
-    updateUnitsTable(data);
-    })
-    .catch(error => console.error('Error:', error));
-    }
-    });
-
-
-    // Update the table with the search results
-    function updateUnitsTable(units) {
-    const tbody = document.querySelector("table tbody");
-    tbody.innerHTML = ''; // Clear the existing rows
-
-    if (units.length > 0) {
-    units.forEach((unit, index) => {
-    let row = document.createElement('tr');
-    row.innerHTML = `
-    <td>${index + 1}</td>
-    <td>${unit.unitName}</td>
-    <td>${unit.pricePerMonth}</td>
-    <td>${unit.unitStatus}</td>
-    <td class="action-icons">
-    <a href="/Units/EditUnitPage/${unit.unitId}" title="Edit"><i class="fas fa-edit edit"></i></a>
-    <form action="/Units/DeleteUnit/${unit.unitId}" method="post" style="display:inline;">
-    <button type="submit" title="Delete" style="background: none; border: none;">
-    <i class="fas fa-trash delete"></i>
-    </button>
-    </form>
-    </td>
-    `;
-    tbody.appendChild(row);
-    });
-    } else {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No units found.</td></tr>';
-    }
-    }
-    </script> *@
+    </script>
 
 </body>
 </html>

@@ -133,8 +133,51 @@
         #manage-units-body {
             margin-right: 15px;
         }
+
+        /* Style for text and icon (grouped together) */
+        th span {
+            display: flex;
+            align-items: center; /* Keep icon aligned with text */
+        }
+
+        /* Sort icon placement and styles */
+        th i {
+            margin-left: auto; /* Push the icon to the far right */
+            font-size: 0.9em;
+            color: #aaa;
+            padding-left: 4px;
+            transition: color 0.2s ease;
+        }
+
+        /* Dropdown styling */
+        th select {
+            margin-left: 10px; /* Space between the icon and the dropdown */
+            padding: 4px 6px;
+            font-size: 0.9em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        /* Hover effect for headers */
+        th:hover i {
+            color: #555; /* Darker color for sort icon on hover */
+        }
+
+        /* Active sorting icon colors */
+        .fas.fa-sort-up {
+            color: #2c89d9; /* Blue for ascending */
+        }
+
+        .fas.fa-sort-down {
+            color: #d9534f; /* Red for descending */
+        }
+
+
     </style>
 </head>
+
+
 <body id="manage-units-body">
     @if (TempData["ShowPopup"] != null && (bool)TempData["ShowPopup"])
     {
@@ -166,19 +209,28 @@
 
     <div class="search-bar" style="margin: 20px 0;">
         <input type="text" placeholder="Search payments..." id="searchInput">
-        <button class="search-unit-button">Search</button>
+        <button class="search-unit-button" onclick="searchPayments()"><i class="fas fa-search"></i></button>
     </div>
+   
 
-    <table>
+    <table id="paymentsList" data-sort-column="" data-sort-order="">
         <thead>
             <tr>
-                <th>#</th>
-                <th>Tenant</th>
-                <th>Amount</th>
-                <th>Unit</th>
-                <th>Monthly Rent</th>
-                <th>Date</th>
-                <th>Payment Method</th>
+                <th onclick="sortTable(0)">#</th>
+                <th onclick="sortTable(1)"><span>Tenant<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(2)"><span>Amount<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(3)"><span>Unit<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(4)"><span>Monthly Rent<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(5)"><span>Date<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(6)"><span>Payment Method
+                        <select id="paymentFilter" onchange="filterPayments()">
+                            <option value="">All</option>
+                            <option value="Card">Card</option>
+                            <option value="E-Wallet">E-Wallet</option>
+                            <option value="Over the Counter">Over the Counter</option>
+                        </select>
+                    
+                    <i class="fas fa-sort"></i></span></th> <!--Add Filter Options: Card, E-Wallet, Over the Counter-->
                 <th>View Invoice</th>
             </tr>
         </thead>
@@ -188,7 +240,7 @@
                 int index = 1;
                 foreach (var payment in Model)
                 {
-                    <tr>
+                    <tr class="payment-row" data-payment-method="@payment.PaymentMethod">
                         <td>@index</td>
                         <td>@payment.TenantFullName</td>
                         <td>@String.Format("{0:C}", payment.Amount).Replace("$", "₱")</td>
@@ -208,7 +260,7 @@
             else
             {
                 <tr>
-                    <td colspan="9" style="text-align:center;">No leases found.</td>
+                    <td colspan="9" style="text-align:center;">No payments found.</td>
                 </tr>
             }
         </tbody>
@@ -220,7 +272,82 @@
     </div>
 
 
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", searchPayments);
 
+        // Function to search payments
+        function searchPayments() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const paymentRows = document.querySelectorAll(".payment-row");
+
+            paymentRows.forEach(function(row) {
+                const tenantName = row.cells[1].textContent.toLowerCase();
+                const paymentMethod = row.cells[6].textContent.toLowerCase();
+
+                // Show/hide row based on search input and payment method filter
+                if (tenantName.includes(searchTerm) && (row.style.display !== 'none')) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        // Function to filter payments by payment method
+        function filterPayments() {
+            const filterValue = document.getElementById("paymentFilter").value.toLowerCase();
+            const paymentRows = document.querySelectorAll(".payment-row");
+
+            paymentRows.forEach(function(row) {
+                const paymentMethod = row.getAttribute("data-payment-method").toLowerCase();
+
+                if (filterValue === "" || paymentMethod === filterValue) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            searchPayments(); // Ensure search also applies after filtering
+        }
+
+        // Optional: Enable search on "Enter" key press
+        document.getElementById("searchInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                searchPayments();
+            }
+        });
+
+        function sortTable(columnIndex) {
+            const table = document.getElementById("paymentsList");
+            const rows = Array.from(table.tBodies[0].rows); // Get rows from tbody
+            let ascending = true; // Initial sort order
+
+            // Toggle ascending/descending if already sorted
+            if (table.dataset.sortColumn == columnIndex) {
+                ascending = table.dataset.sortOrder === "asc" ? false : true;
+            }
+
+            // Store the current sort column and order
+            table.dataset.sortColumn = columnIndex;
+            table.dataset.sortOrder = ascending ? "asc" : "desc";
+
+            // Sort rows
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+                const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+
+                if (cellA < cellB) return ascending ? -1 : 1;
+                if (cellA > cellB) return ascending ? 1 : -1;
+                return 0;
+            });
+
+            // Re-append sorted rows to tbody
+            const tbody = table.tBodies[0];
+            tbody.innerHTML = "";
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
 </body>
 </html>
 

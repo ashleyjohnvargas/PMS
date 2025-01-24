@@ -57,7 +57,7 @@
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
         }
 
         .search-bar {
@@ -102,6 +102,68 @@
                 background-color: #f9f9f9;
             }
 
+
+
+        /* Styling for dropdown filters */
+        #staffList thead select {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 14px;
+            color: #333;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+            /* Highlight dropdown on hover or focus */
+            #staffList thead select:hover,
+            #staffList thead select:focus {
+                border-color: #007bff;
+                outline: none;
+                background-color: #eef7ff;
+            }
+
+        /* Style for text and icon (grouped together) */
+        th span {
+            display: flex;
+            align-items: center; /* Keep icon aligned with text */
+        }
+
+        /* Sort icon placement and styles */
+        th i {
+            margin-left: auto; /* Push the icon to the far right */
+            font-size: 0.9em;
+            color: #aaa;
+            padding-left: 4px;
+            transition: color 0.2s ease;
+        }
+
+        /* Dropdown styling */
+        th select {
+            margin-left: 10px; /* Space between the icon and the dropdown */
+            padding: 4px 6px;
+            font-size: 0.9em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        /* Hover effect for headers */
+        th:hover i {
+            color: #555; /* Darker color for sort icon on hover */
+        }
+
+        /* Active sorting icon colors */
+        .fas.fa-sort-up {
+            color: #2c89d9; /* Blue for ascending */
+        }
+
+        .fas.fa-sort-down {
+            color: #d9534f; /* Red for descending */
+        }
+
         .pagination {
             text-align: right;
             margin: 20px 0;
@@ -116,6 +178,11 @@
                 border-radius: 5px;
                 cursor: pointer;
             }
+
+                .pagination button.active {
+                    background-color: #B0836E;
+                    color: white;
+                }
 
         .action-icons i {
             cursor: pointer;
@@ -163,19 +230,48 @@
 
     <div class="search-bar" style="margin: 20px 0;">
         <input type="text" placeholder="Search requests..." id="searchInput">
-        <button class="search-unit-button">Search</button>
+        <button class="search-unit-button" onclick="searchRequests()"><i class="fas fa-search"></i></button>
     </div>
 
-    <table>
+    <table id="requestList" data-sort-column="" data-sort-order="">
         <thead>
             <tr>
-                <th>#</th>
-                <th>Tenant Name</th>
-                <th>Unit</th>
-                <th>Request Date</th>
-                <th>Issue</th>
-                <th>Assigned Staff</th>
-                <th>Status</th>
+                <th onclick="sortTable(0)">#</th>
+                <th onclick="sortTable(1)"><span>Tenant Name<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(2)"><span>Unit<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(3)"><span>Request Date<i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable(4)">
+                    <span>
+                        Issue
+                        <select id="issueFilter" onchange="filterRequests()">
+                            <option value="">All</option>
+                            <option value="Plumbing">Plumbing</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Structural">Structural</option>
+                            <option value="Appliance">Appliance</option>
+                            <option value="Internet">Internet</option>
+                        </select>
+                        <i class="fas fa-sort"></i>
+                    </span>
+                </th>
+                <th onclick="sortTable(5)">
+                    <span>
+                        Assigned Staff
+                        <i class="fas fa-sort"></i>
+                    </span>
+                </th>
+                <th onclick="sortTable(6)">
+                    <span>
+                        Status
+                        <select id="statusFilter" onchange="filterRequests()">
+                            <option value="">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Started">Started</option>
+                            <option value="Done">Done</option>
+                        </select>
+                        <i class="fas fa-sort"></i>
+                    </span>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -186,12 +282,12 @@
                 {
                     <tr>
                         <td>@index</td>
-                        <td>John Doe</td>
-                        <td>Unit 101</td>
-                        <td>2024-01-05</td>
-                        <td>Electrical</td>
-                        <td>Michael James</td>
-                        <td>Pending</td>
+                        @* <td>@request.Tenant</td> *@
+                        @* <td>@request.Unit</td> *@
+                        @* <td>@request.RequestDate</td> *@
+                        @* <td>@request.Issue</td> *@
+                        @* <td>@request.AssignedStaff</td> *@
+                        @* <td>@request.Status</td> *@
                     </tr>
                     index++;
                 }
@@ -199,7 +295,7 @@
             else
             {
                 <tr>
-                    <td colspan="9" style="text-align:center;">No requests found.</td>
+                    <td colspan="7" style="text-align:center;">No requests found.</td>
                 </tr>
             }
         </tbody>
@@ -210,95 +306,77 @@
         <button style="margin: 0 0 0 5px;">Next</button>
     </div>
 
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", searchRequests);
+
+        // Function to search requests
+        function searchRequests() {
+            const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+            const requestRows = document.querySelectorAll("#requestList tbody tr");
+            requestRows.forEach(function(row) {
+                const requestName = row.cells[1].textContent.toLowerCase(); // Tenant Name
+                if (requestName.includes(searchTerm)) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        // Function to filter requests by issue and status
+        function filterRequests() {
+            const issueFilter = document.getElementById("issueFilter").value.toLowerCase();
+            const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
+            const requestRows = document.querySelectorAll("#requestList tbody tr");
+
+            requestRows.forEach(function(row) {
+                const issue = row.cells[4].textContent.toLowerCase(); // Issue column
+                const status = row.cells[6].textContent.toLowerCase(); // Status column
+
+                const matchesIssue = !issueFilter || issue.includes(issueFilter);
+                const matchesStatus = !statusFilter || status.includes(statusFilter);
+
+                if (matchesIssue && matchesStatus) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        // Optional: Enable search on "Enter" key press
+        document.getElementById("searchInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                searchRequests();
+            }
+        });
+
+        // Function to sort table
+        function sortTable(columnIndex) {
+            const table = document.getElementById("requestList");
+            const rows = Array.from(table.tBodies[0].rows);
+            let ascending = true;
+
+            if (table.dataset.sortColumn == columnIndex) {
+                ascending = table.dataset.sortOrder === "asc" ? false : true;
+            }
+
+            table.dataset.sortColumn = columnIndex;
+            table.dataset.sortOrder = ascending ? "asc" : "desc";
+
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+                const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+
+                if (cellA < cellB) return ascending ? -1 : 1;
+                if (cellA > cellB) return ascending ? 1 : -1;
+                return 0;
+            });
+
+            const tbody = table.tBodies[0];
+            tbody.innerHTML = "";
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
 </body>
 </html>
-
-@* <!DOCTYPE html> *@
-@* <html lang="en"> *@
-@* <head> *@
-@*     <meta charset="UTF-8"> *@
-@*     <meta name="viewport" content="width=device-width, initial-scale=1.0"> *@
-@*     <title>Maintenance Requests</title> *@
-@*     <link rel="stylesheet" href="styles.css"> *@
-@* </head> *@
-@* <body> *@
-@*     <div class="container"> 
-<h1>Maintenance Requests</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Tenant Name</th>
-            <th>Unit</th>
-            <th>Request Date</th>
-            <th>Issue Description</th>
-            <th>Assigned Staff</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>John Doe</td>
-            <td>Unit 101</td>
-            <td>2024-01-05</td>
-            <td>Leaking faucet</td>
-            <td>
-                <select>
-                    <option value="staff1">Alice</option>
-                    <option value="staff2">Bob</option>
-                </select>
-            </td>
-            <td>
-                <select>
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                </select>
-            </td>
-            <td><button class="invoice-button">Assign</button></td>
-        </tr>
-        <tr>
-            <td>Jane Smith</td>
-            <td>Unit 102</td>
-            <td>2024-01-06</td>
-            <td>Broken window</td>
-            <td>
-                <select>
-                    <option value="staff1">Alice</option>
-                    <option value="staff2">Bob</option>
-                </select>
-            </td>
-            <td>
-                <select>
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                </select>
-            </td>
-            <td><button class="invoice-button">Assign</button></td>
-        </tr>
-        <!-- More rows as needed -->
-    </tbody>
-</table>
-@* </div> *@
-
-@* <script>
-            // script.js
-    document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', function () {
-            const row = this.closest('tr');
-            const tenantName = row.cells[0].textContent;
-            const unit = row.cells[1].textContent;
-            const issue = row.cells[3].textContent;
-            const assignedStaff = row.querySelector('select').value;
-            const status = row.querySelectorAll('select')[1].value;
-
-            alert(`Request from ${tenantName} for ${unit}:\nIssue: ${issue}\nAssigned to: ${assignedStaff}\nStatus: ${status}`);
-
-            // In a real application, you could send this information to the backend or update the database.
-        });
-    });
-
-</script>
-@* </body> *@
-@* </html> *@
