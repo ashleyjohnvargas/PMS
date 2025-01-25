@@ -188,25 +188,32 @@
     <section class="edit-profile">
         @TempData["ErrorMessage"]
 
-        @if (TempData["ErrorMessage"] != null)
+        @if (TempData.ContainsKey("ErrorMessage"))
         {
             <div class="alert alert-danger">
                 @TempData["ErrorMessage"]
             </div>
         }
 
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        @if (TempData.ContainsKey("SuccessMessage"))
         {
-            <div class="alert alert-danger">
-                @error.ErrorMessage
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
             </div>
         }
+
+        @* @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors)) *@
+        @* { *@
+        @*     <div class="alert alert-danger"> *@
+        @*         @error.ErrorMessage *@
+        @*     </div> *@
+        @* } *@
 
 
         <div class="edit-card">
             <div class="cancel-profile" style="margin: 0 0 0 26px;">
                 <a href="javascript:history.back()" class="text-decoration-none" title="Go Back">
-                    <i class="fa-solid fa-arrow-left fs-3 text-light"></i>
+                    <i class="fa-solid fa-arrow-left fs-3 text-light" style="color:#B0836E"></i>
                 </a>
 
                 <h1 class="mb-0 fw-bold" style="font-size: 1.8rem; color: #343a40;">Edit Profile</h1>

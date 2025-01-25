@@ -21,57 +21,56 @@
 
 <body>
     <!-- Top Header -->
-    <div class="top-header">
+    <div class="top-header" role="banner">
         <!-- Optional: Add top header content here -->
     </div>
 
     <!-- Main Header -->
-    <header>
+    <header role="banner">
         <div class="main-header">
             <!-- Logo -->
             <div class="logo">
-                <img src="~/images/cozy-logo.png" alt="logo" style="height: 20px; width: 50px;">
+                <img src="~/images/cozy-logo.png" alt="Cozy Homes logo" style="height: 20px; width: 50px;" />
                 <h1>Cozy Homes</h1>
             </div>
 
             <!-- Navigation -->
-            <nav>
+            <nav aria-label="Main navigation">
                 <ul>
-                    <li><a asp-controller="PTenant" asp-action="PTenantHomePage">Home</a></li>
-                    <li><a asp-controller="PTenant" asp-action="PTenantUnits">Units</a></li>
-                    <li><a asp-controller="PTenant" asp-action="PTenantContacts">Contact</a></li>
+                    <li><a asp-controller="PTenant" asp-action="PTenantHomePage" aria-label="Home">Home</a></li>
+                    <li><a asp-controller="PTenant" asp-action="PTenantUnits" aria-label="Units">Units</a></li>
+                    <li><a asp-controller="PTenant" asp-action="PTenantContacts" aria-label="Contact">Contact</a></li>
                     @if (Context.Session.GetInt32("UserId") == null)
                     {
                         <!-- Display Login and Sign Up when user is not logged in -->
-                        <li><a asp-controller="Login" asp-action="Login">Sign In</a></li>
-                        <li><a asp-controller="Login" asp-action="Register">Sign Up</a></li>
+                        <li><a asp-controller="Login" asp-action="Login" aria-label="Sign In">Sign In</a></li>
+                        <li><a asp-controller="Login" asp-action="Register" aria-label="Sign Up">Sign Up</a></li>
                     }
                     else
                     {
                         <!-- Display "Contact" when user is logged in -->
-                        <li><a asp-controller="Login" asp-action="Logout">Logout</a></li>
+                        <li><a asp-controller="Login" asp-action="Logout" aria-label="Logout" onclick="return confirmLogout(event);">Logout</a></li>
                     }
-                    
                 </ul>
             </nav>
         </div>
     </header>
 
-    <div class="layout-container" style="display: flex;flex-wrap: wrap;justify-content: center; margin: 0; min-width: 100%; min-height: 100vh; text-align: center;">
-        <main role="main" class="pb-3" style="min-width: 100%;min-height: 100%;">
+    <div class="layout-container" style="display: flex; flex-wrap: wrap; justify-content: center; margin: 0; min-width: 100%; min-height: 100vh; text-align: center;">
+        <main role="main" class="pb-3" style="min-width: 100%; min-height: 100%;">
             @RenderBody()
         </main>
     </div>
 
     <!-- Footer -->
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
             <p>&copy; 2025 Cozy Homes. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html>

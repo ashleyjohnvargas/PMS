@@ -26,7 +26,7 @@ namespace PMS.Controllers
             if (userId == null)
             {
                 // Handle the case where the session does not have a UserId (e.g., redirect to login)
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Login");
             }
 
             // Retrieve the staff member associated with the logged-in user
@@ -86,7 +86,7 @@ namespace PMS.Controllers
             if (userId == null)
             {
                 // Handle the case where the session does not have a UserId (e.g., redirect to login)
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Login");
             }
 
             // Retrieve the staff member associated with the logged-in user
@@ -218,93 +218,90 @@ namespace PMS.Controllers
 
         // Staff Profile
 
+        //Profile
         public IActionResult SProfilePage()
         {
-            //var model = new Profile(); // Ensure it's initialized
-            //return View(model);
-
-            // Retrieve the logged-in user's ID from session (as string) and convert to int
-            var userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            // Retrieve the logged-in user's ID from the session
+            //var userIdString = HttpContext.Session.GetString("UserId");
+            var userId = HttpContext.Session.GetInt32("UserId"); // Retrieve as an integer
+            if (!userId.HasValue)
             {
-                // If the session doesn't contain a valid UserId, redirect to login page
-                //TempData["ErrorMessage"] = "User profile not found.";
+                // Redirect to login if UserId is not in the session
+                TempData["ErrorMessage"] = "You need to log in to view your profile.";
                 return RedirectToAction("Login", "Login");
             }
 
-            // Log the UserId to the console (this will output to the console/logs)
+            // Log the UserId for debugging purposes
             _logger.LogInformation($"Logged-in UserId: {userId}");
 
-
-            // Fetch user profile and user details
-            var profile = _context.UserProfiles.FirstOrDefault(p => p.Id == userId);
-            var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
+            // Fetch the user profile from the database
+            var profile = _context.UserProfiles.FirstOrDefault(p => p.UserID == userId);
 
             if (profile == null)
             {
-                // Create a default profile for new users
+                // Create a default profile for the user if none exists
                 profile = new Profile
                 {
-                    FirstName = "",
-                    LastName = "",
-
-                    Email = "",
-                    PhoneNumber = "",
-                    Address = ""
+                    UserID = (int)userId,
+                    FirstName = "First name not provided",
+                    LastName = "Last name not provided",
+                    Email = "Email not provided",
+                    PhoneNumber = "Phone number not provided",
+                    Address = "Address not provided"
                 };
+
+                // Save the new profile to the database
                 _context.UserProfiles.Add(profile);
                 _context.SaveChanges();
+
+                // Log the creation of a new profile
+                _logger.LogInformation($"Created a default profile for UserId: {userId}");
             }
+
+            // Pass the profile to the view
             return View(profile);
         }
 
 
         public IActionResult SEditProfile()
         {
+            // Example: Set default values for TempData
+            TempData["ErrorMessage"] = TempData["ErrorMessage"] ?? string.Empty;
+            TempData["SuccessMessage"] = TempData["SuccessMessage"] ?? string.Empty;
             // Retrieve the logged-in user's ID from session (as string) and convert to int
-            var userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            var userId = HttpContext.Session.GetInt32("UserId"); // Retrieve as an integer
+            if (!userId.HasValue)
             {
-                // If the session doesn't contain a valid UserId, redirect to login page
+                // Redirect to login if UserId is not in the session
+                TempData["ErrorMessage"] = "You need to log in to view your profile.";
                 return RedirectToAction("Login", "Login");
             }
+            //var userIdString = HttpContext.Session.GetString("UserId");
+            //if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            //{
+            //    // If the session doesn't contain a valid UserId, redirect to login page
+            //    return RedirectToAction("Login", "Login");
+            //}
             var profile = _context.UserProfiles.FirstOrDefault(p => p.Id == userId);
             return View(profile);
         }
 
-
-        // Update profile
         [HttpPost]
         public IActionResult UpdateProfile(Profile model)
         {
-            if (!ModelState.IsValid)
+            // Retrieve the logged-in user's ID from session
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
             {
-                // Return the view with the current model and validation errors
-                TempData["ErrorMessage"] = "Please fill out all required fields.";
-                return View("SEditProfile", model);
-            }
-
-            // Retrieve the logged-in user's ID from session (as string) and convert to int
-            var userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
-            {
-                // If the session doesn't contain a valid UserId, redirect to login page
-                TempData["ErrorMessage"] = "User not found. Please log in again.";
+                TempData["ErrorMessage"] = "You need to log in to view your profile.";
                 return RedirectToAction("Login", "Login");
             }
 
+            // Retrieve the user profile from the database
             var profile = _context.UserProfiles.FirstOrDefault(p => p.Id == userId);
             var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
 
-         
-            // If ModelState is invalid, show errors and return to the form
-            if (!ModelState.IsValid)
-            {
-                TempData["ErrorMessage"] = "Please correct the errors in the form.";
-                return View("SEditProfile", model);
-            }
-
-            // Proceed with the update if everything is valid
+            // Ensure the profile and user exist before updating
             if (profile != null && user != null)
             {
                 // Only update the fields if the user has provided new values
@@ -338,10 +335,17 @@ namespace PMS.Controllers
                 // Set success message
                 TempData["SuccessMessage"] = "Profile updated successfully!";
             }
+            else
+            {
+                // Handle case where profile or user doesn't exist
+                TempData["ErrorMessage"] = "Profile not found.";
+                return RedirectToAction("SProfilePage");
+            }
 
-            // Redirect to the profile page
+            // Redirect to the profile page after update
             return RedirectToAction("SProfilePage");
         }
+
 
 
         // Display the EditPasswordPage
@@ -355,9 +359,16 @@ namespace PMS.Controllers
         public IActionResult ChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
             // Retrieve the logged-in user's ID from session (as string) and convert to int
-            var userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            //var userIdString = HttpContext.Session.GetString("UserId");
+            //if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            //{
+            //    return RedirectToAction("Login", "Login");
+            //}
+            var userId = HttpContext.Session.GetInt32("UserId"); // Retrieve as an integer
+            if (!userId.HasValue)
             {
+                // Redirect to login if UserId is not in the session
+                TempData["ErrorMessage"] = "You need to log in.";
                 return RedirectToAction("Login", "Login");
             }
 

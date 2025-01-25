@@ -59,6 +59,13 @@ namespace PMS.Models
             modelBuilder.Entity<Request>()
                 .Property(r => r.RequestStatus)
                 .HasDefaultValue("Pending");
+
+            // Configure the relationship between User and Profile
+            modelBuilder.Entity<Profile>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Profiles)
+                .HasForeignKey(p => p.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -201,6 +201,20 @@
             </div>
         }
 
+        @if (TempData.ContainsKey("ErrorMessage"))
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        @if (TempData.ContainsKey("SuccessMessage"))
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
 
         <div class="edit-card">
             <div class="cancel-profile" style="margin: 0 0 0 26px;">

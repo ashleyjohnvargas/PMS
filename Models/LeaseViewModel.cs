@@ -4,6 +4,7 @@
     {
         public int? LeaseID { get; set; }
         public string? TenantName { get; set; }
+        public string? Email { get; set; }
         public string? UnitName { get; set; }
         public decimal? MonthlyRent { get; set; }
         public DateTime? LeaseStartDate { get; set; }

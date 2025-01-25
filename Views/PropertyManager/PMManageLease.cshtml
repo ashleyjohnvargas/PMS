@@ -213,6 +213,7 @@
                 <th>Monthly Rent</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>Email</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -231,6 +232,7 @@
                         
                         <td>@(lease.LeaseStartDate.HasValue ? lease.LeaseStartDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
                         <td>@(lease.LeaseEndDate.HasValue ? lease.LeaseEndDate.Value.ToString("yyyy-MM-dd") : "N/A")</td>
+                        <td>@lease.Email</td>
                         <td>@lease.LeaseStatus</td>
                         <td class="action-icons">
                             <a title="Edit" onclick="openEditModal('@lease.LeaseID')" style="font-size: 20px;">

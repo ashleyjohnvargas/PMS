@@ -15,129 +15,110 @@
     <!-- Boxicons (for the password toggle icons) -->
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
 
-     <!-- Add SweetAlert2 JS -->
+    <!-- Add SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
     <style>
 
     </style>
-
 </head>
-
 
 <body>
 
     <!-- Top Header -->
-    <div class="top-header">
+    <div class="top-header" role="banner">
         <!-- Optional: Add top header content here -->
     </div>
 
     <!-- Main Header -->
-    <header>
-        <div class="main-header" style="position: sticky; ">
+    <header role="navigation" aria-label="Main navigation">
+        <div class="main-header" style="position: sticky;">
             <!-- Sidebar Header: Logo and Brand -->
             <div class="sidebar-header">
-                <img src="~/images/cozy-logo.png" alt="logo">
+                <img src="~/images/cozy-logo.png" alt="Cozy Homes logo" />
                 <h1>Cozy Homes</h1>
-                @* <div class="hamburger-icon" onclick="toggleSidebar()"> *@
-                @*     <i class="fas fa-bars"></i> *@
-                @* </div> *@
-
             </div>
 
             <!-- Navigation and Profile -->
             <nav>
                 <ul>
-                    <li class="dropdown">
-                        <a href="#" class="dropbtn" aria-label="Notifications">
+                    <li class="dropdown" role="menuitem">
+                        <a href="#" class="dropbtn" aria-label="Notifications" aria-haspopup="true">
                             <i class="fas fa-bell" style="margin-right: 10px;"></i>
                             Notifications
                         </a>
-
                     </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropbtn" aria-label="User Profile">
-                            <div style="height: 35px; width: 35px; border-radius: 50%;
-                                    background-color: #555; display: inline-flex;
-                                    align-items: center; justify-content: center;
-                                    font-weight: bold; color: #fff; margin-right: 10px;">
+                    <li class="dropdown" role="menuitem">
+                        <a href="#" class="dropbtn" aria-label="User Profile" aria-haspopup="true">
+                            <div style="height: 35px; width: 35px; border-radius: 50%; background-color: #555; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; margin-right: 10px;" aria-label="User initials">
                                 @($"{Context.Session.GetString("FirstName")?.Substring(0, 1)}{Context.Session.GetString("LastName")?.Substring(0, 1)}")
                             </div>
-                            @* <img src="~/images/user-pic.png" alt="logo"> *@
-                            @* @Context.Session.GetString("FirstName")  *@
-                            @* @Context.Session.GetString("LastName") *@
-                            @* @Context.Session.GetString("FirstName") @Context.Session.GetString("LastName") *@
-
                         </a>
 
-                        <div class="dropdown-content">
-
-                            <!--edit as row instead of column-->
-                            <a asp-controller="PropertyManager" asp-action="PMProfilePage">Profile</a>
-                            <a asp-controller="Login" asp-action="Logout" class="logout" onclick="return confirmLogout(event);">Log Out</a>
+                        <div class="dropdown-content" role="menu" aria-labelledby="user-profile">
+                            <a asp-controller="PropertyManager" asp-action="PMProfilePage" role="menuitem">Profile</a>
+                            <a asp-controller="Login" asp-action="Logout" class="logout" onclick="return confirmLogout(event);" role="menuitem">Log Out</a>
                         </div>
                     </li>
                 </ul>
             </nav>
         </div>
-
     </header>
 
     <div class="sidebar-content-container" style="display: grid; grid-template-columns: auto 1fr; column-gap: 25px; min-height: 100vh; min-width: 100vh;">
-        <div class="sidebar">
+        <div class="sidebar" role="complementary" aria-label="Sidebar navigation">
             <ul>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMDashboard" class="nav-link active">
+                    <a asp-controller="PropertyManager" asp-action="PMDashboard" class="nav-link active" aria-label="Dashboard">
                         <i class="fas fa-dashboard"></i>
                         Dashboard
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMmanageUnits" class="nav-link">
+                    <a asp-controller="PropertyManager" asp-action="PMmanageUnits" class="nav-link" aria-label="Manage Units">
                         <i class="fas fa-house"></i>
                         Units
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMTenants" class="nav-link">
+                    <a asp-controller="PropertyManager" asp-action="PMTenants" class="nav-link" aria-label="Manage Tenants">
                         <i class="fas fa-people-roof"></i>
                         Tenants
                     </a>
                 </li>
                 <li id="pending-lease">
-                    <a asp-controller="PropertyManager" asp-action="PMManageLease" class="nav-link" > 
-                        <i class="fas fa-clipboard"></i>
+                    <a asp-controller="PropertyManager" asp-action="PMManageLease" class="nav-link" aria-label="Pending Lease">
+                        <i class="fas fa-hourglass-half"></i>
                         Pending Lease
                     </a>
                 </li>
                 <li id="active-lease">
-                    <a asp-controller="PropertyManager" asp-action="PMActiveLease" class="nav-link" >
+                    <a asp-controller="PropertyManager" asp-action="PMActiveLease" class="nav-link" aria-label="Active Lease">
                         <i class="fas fa-clipboard"></i>
                         Active Lease
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMPaymentsOrig" class="nav-link">
+                    <a asp-controller="PropertyManager" asp-action="PMPaymentsOrig" class="nav-link" aria-label="Payments">
                         <i class="fas fa-receipt"></i>
                         Payments
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMRequest" class="nav-link">
+                    <a asp-controller="PropertyManager" asp-action="PMRequest" class="nav-link" aria-label="Request">
                         <i class="fas fa-hammer"></i>
                         Request
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMStaff" class="nav-link">
+                    <a asp-controller="PropertyManager" asp-action="PMStaff" class="nav-link" aria-label="Staff">
                         <i class="fas fa-wrench"></i>
                         Staff
                     </a>
                 </li>
                 <li>
-                    <a asp-controller="PropertyManager" asp-action="PMManageUsers" class="nav-link">
-                        <i class="fas fa-user"></i> <!-- Adjusted icon to a more relevant user icon -->
+                    <a asp-controller="PropertyManager" asp-action="PMManageUsers" class="nav-link" aria-label="Manage Users">
+                        <i class="fas fa-user"></i>
                         <span class="link-text">Users</span>
-                    </a>
                     </a>
                 </li>
             </ul>
@@ -146,26 +127,22 @@
         <section>
             <div class="container">
                 <main role="main" class="pb-3">
-
                     <!-- NOTE: put the body/content here -->
                     @RenderBody()
-
                 </main>
             </div>
         </section>
     </div>
 
-
-
     <!-- Footer -->
     <footer>
-        <div class="container">
+        <div class="container" role="contentinfo">
             <p>&copy; 2025 Cozy Homes. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-            document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const sidebar = document.getElementById("sidebar");
             const hamburger = document.getElementById("hamburger");
             const mainContent = document.querySelector(".main-content");
@@ -180,8 +157,6 @@
                 }
             });
         });
-
-
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

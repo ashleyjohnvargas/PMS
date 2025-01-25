@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="~/css/styles.css">
     <!-- Add SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
-
 </head>
 <body>
     <!-- Top Header -->
@@ -22,33 +21,27 @@
         <div class="main-header">
             <!-- Logo -->
             <div class="logo">
-                <img src="~/images/cozy-logo.png" alt="logo" style="height: 20px; width: 50px;">
+                <img src="~/images/cozy-logo.png" alt="Cozy Homes Logo" style="height: 20px; width: 50px;">
                 <h1>Cozy Homes</h1>
             </div>
 
             <!-- Navigation -->
-            <nav>
+            <nav aria-label="Main navigation">
                 <ul>
-                    <li><a asp-controller="ATenant" asp-action="ATenantHome">Home</a></li>
-                    <li><a asp-controller="ATenant" asp-action="ATenantUnits">Units</a></li>
-                    <li><a asp-controller="ATenant" asp-action="ATenantLease">Lease</a></li>
-                    <li><a asp-controller="ATenant" asp-action="ATenantPayment">Payments</a></li>
-                    <li><a asp-controller="ATenant" asp-action="ATenantMaintenance">Requests</a></li>
+                    <li><a asp-controller="ATenant" asp-action="ATenantHome" aria-label="Go to Home page">Home</a></li>
+                    <li><a asp-controller="ATenant" asp-action="ATenantUnits" aria-label="View available units">Units</a></li>
+                    <li><a asp-controller="ATenant" asp-action="ATenantLease" aria-label="View lease details">Lease</a></li>
+                    <li><a asp-controller="ATenant" asp-action="ATenantPayment" aria-label="View payment history">Payments</a></li>
+                    <li><a asp-controller="ATenant" asp-action="ATenantMaintenance" aria-label="Request maintenance services">Requests</a></li>
                     <li>
-                        <a>
+                        <a href="#" aria-label="View notifications">
                             <!-- Notification Icon -->
-                            <i class="fas fa-bell" style="font-size: 18px; color: #ff4500;"></i>
+                            <i class="fas fa-bell" style="font-size: 18px; color: #ff4500;" aria-hidden="true"></i>
                         </a>
                     </li>
-                    <!-- <li><a href="#">About</a></li> -->
                     <li class="at-dropdown">
-                        @* <a href="#" class="at-dropbtn" aria-label="User Profile"> *@
-                        @*     <img src="~/images/user-pic.png" alt="logo" style="height: 35px; width: 35px; margin-right: 10px;"> *@
-                        @*         @Context.Session.GetString("FirstName")  *@
-                        @*         @Context.Session.GetString("LastName") *@
-                        @* </a> *@
-
-                        <a href="#" class="at-dropbtn" aria-label="User Profile">
+                        <!-- Profile Dropdown -->
+                        <a href="#" class="at-dropbtn" aria-haspopup="true" aria-expanded="false" aria-label="User profile">
                             @if (Context.Session.GetString("ProfilePicture") != null)
                             {
                                 <!-- Display Profile Picture -->
@@ -66,18 +59,12 @@
                                     @($"{Context.Session.GetString("FirstName")?.Substring(0, 1)}{Context.Session.GetString("LastName")?.Substring(0, 1)}")
                                 </div>
                             }
-
-                            <!-- Display User Name -->
-                            @* @Context.Session.GetString("FirstName") @Context.Session.GetString("LastName") *@
                         </a>
 
-                        <div class="atdropdown-content">
-                            <a asp-controller="ATenant" asp-action="ATenantProfilePage">Profile</a>
-
-                            <a asp-controller="Login" asp-action="Logout">Log Out</a>
+                        <div class="atdropdown-content" aria-label="Profile options">
+                            <a asp-controller="ATenant" asp-action="ATenantProfilePage" aria-label="Go to profile page">Profile</a>
+                            <a asp-controller="Login" asp-action="Logout" aria-label="Log out of the account">Log Out</a>
                         </div>
-
-
                     </li>
                 </ul>
             </nav>
@@ -89,12 +76,10 @@
         </main>
     </div>
 
-
     <!-- Footer -->
     <footer>
         <div class="container">
             <p>&copy; 2025 Cozy Homes. All rights reserved.</p>
-
         </div>
     </footer>
 
@@ -113,13 +98,9 @@
             document.getElementById(popupId).style.display = 'none';
         }
 
-
         // Function to display a success message
         function showMessage(message) {
-            // Set the message text
             document.getElementById('message-text').textContent = message;
-
-            // Display the message box
             document.getElementById('message-box').style.display = 'block';
         }
 
@@ -130,18 +111,14 @@
 
         // Example usage: Call this function after submitting the form
         function handlePayRent() {
-            // Simulate a successful payment action
-            closePopup('pay-rent-popup'); // Close the Pay Rent popup
+            closePopup('pay-rent-popup');
             showMessage('You have successfully paid your rent.');
         }
 
         function handleTerminateLease() {
-            // Simulate a successful lease termination action
-            closePopup('terminate-lease-popup'); // Close the Terminate Lease popup
+            closePopup('terminate-lease-popup');
             showMessage('Your lease has been successfully terminated.');
         }
-
-
     </script>
 </body>
 </html>

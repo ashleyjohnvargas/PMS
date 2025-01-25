@@ -212,7 +212,7 @@ namespace PMS.Controllers
             var userId = HttpContext.Session.GetInt32("UserId");
             //if (string.IsNullOrEmpty(userId))
             //{
-            //    return RedirectToAction("Login", "Account"); // Redirect to login if no user is logged in
+            //    return RedirectToAction("Login", "Login"); // Redirect to login if no user is logged in
             //}
 
             // Get the tenant's details based on the UserId
@@ -316,8 +316,8 @@ namespace PMS.Controllers
             if (userId == null)
             {
                 // Handle the case where the user is not logged in or session is missing
-                TempData["ErrorMessage"] = "You must be logged in to view your payments.";
-                return RedirectToAction("Login", "Account"); // Redirect to the login page or appropriate action
+                TempData["ErrorMessage"] = "You must be logged in to view your payments.";  
+                return RedirectToAction("Login", "Login"); // Redirect to the login page or appropriate action
             }
 
             // Retrieve the Tenant associated with the UserId
@@ -493,7 +493,7 @@ namespace PMS.Controllers
 
             if (userId == null)
             {
-                return RedirectToAction("Login", "Account"); // Redirect to login if not logged in
+                return RedirectToAction("Login", "Login"); // Redirect to login if not logged in
             }
 
             // Find the Tenant based on the UserId
@@ -552,11 +552,11 @@ namespace PMS.Controllers
             //return View(model);
 
             // Retrieve the logged-in user's ID from session (as string) and convert to int
-            var userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            var userId = HttpContext.Session.GetInt32("UserId"); // Retrieve as an integer
+            if (!userId.HasValue)
             {
-                // If the session doesn't contain a valid UserId, redirect to login page
-                //TempData["ErrorMessage"] = "User profile not found.";
+                // Redirect to login if UserId is not in the session
+                TempData["ErrorMessage"] = "You need to log in to view your profile.";
                 return RedirectToAction("Login", "Login");
             }
 
@@ -590,10 +590,11 @@ namespace PMS.Controllers
         {
 
             // Retrieve the logged-in user's ID from session (as string) and convert to int
-            var userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            var userId = HttpContext.Session.GetInt32("UserId"); // Retrieve as an integer
+            if (!userId.HasValue)
             {
-                // If the session doesn't contain a valid UserId, redirect to login page
+                // Redirect to login if UserId is not in the session
+                TempData["ErrorMessage"] = "You need to log in to view your profile.";
                 return RedirectToAction("Login", "Login");
             }
             var profile = _context.UserProfiles.FirstOrDefault(p => p.Id == userId);
@@ -604,6 +605,11 @@ namespace PMS.Controllers
         [HttpPost]
         public IActionResult UpdateProfile2(Profile model)
         {
+            // Ensure TempData["ErrorMessage"] is initialized
+            TempData["ErrorMessage"] = TempData["ErrorMessage"] ?? string.Empty;
+            TempData["SuccessMessage"] = TempData["SuccessMessage"] ?? string.Empty;
+
+
             if (!ModelState.IsValid)
             {
                 // Return the view with the current model and validation errors
@@ -612,8 +618,8 @@ namespace PMS.Controllers
             }
 
             // Retrieve the logged-in user's ID from session (as string) and convert to int
-            var userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            var userId = HttpContext.Session.GetInt32("UserId"); // Retrieve as an integer
+            if (!userId.HasValue)
             {
                 // If the session doesn't contain a valid UserId, redirect to login page
                 TempData["ErrorMessage"] = "User not found. Please log in again.";
@@ -695,9 +701,11 @@ namespace PMS.Controllers
         public IActionResult ATenantChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
             // Retrieve the logged-in user's ID from session (as string) and convert to int
-            var userIdString = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            var userId = HttpContext.Session.GetInt32("UserId"); // Retrieve as an integer
+            if (!userId.HasValue)
             {
+                // Redirect to login if UserId is not in the session
+                TempData["ErrorMessage"] = "You need to log in.";
                 return RedirectToAction("Login", "Login");
             }
 

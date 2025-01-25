@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿﻿﻿@using Microsoft.AspNetCore.Http
 
 @{
     //Layout = null; // Disable the layout for this view
@@ -6,8 +6,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
-
-@using Microsoft.AspNetCore.Http
 
 <!DOCTYPE html>
 <html>
@@ -18,7 +16,9 @@
     <meta name="theme-color" content="#000000" />
     <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 
     <style>
         /* General reset */
@@ -104,12 +104,12 @@
         /* Home Details Page */
         .home-details {
             /* margin-left: auto;
-                margin-right: auto;
-                gap: 16px;
-                display: flex;
-                align-self: stretch;
-                max-width: 15254px;
-                width: 100%; */
+                                margin-right: auto;
+                                gap: 16px;
+                                display: flex;
+                                align-self: stretch;
+                                max-width: 15254px;
+                                width: 100%; */
             padding: 40px 10px;
             background-color: #e7e1d3;
         }
@@ -212,7 +212,7 @@
             font-size: 16px;
         }
 
-        .btn {
+        .btn, #seeLocation {
             padding: 10px 40px;
             background-color: #B0836E;
             color: white;
@@ -248,6 +248,7 @@
                 footer a:hover {
                     text-decoration: underline;
                 }
+
     </style>
 </head>
 <body>
@@ -284,7 +285,7 @@
                             @Model.Desc
                         </p>
                     </div>
-                    
+
                     <div>
                         <h3 class="property-det">Property Information</h3>
                         <div class="header-row">
@@ -303,12 +304,12 @@
                                 </div>
                                 <div class="add-info" style="gap: 96px;align-self: stretch;display: flex;">
                                     <span class="address-1">Address:</span>
-                                    <span class="address-2">@Model.PropertyAddress</span>
+                                    <span id="address-info" class="address-2">@Model.PropertyAddress</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
 
                     @if (Context.Session.GetInt32("UserId") == null)
                     {
@@ -320,13 +321,35 @@
                     {
                         <!-- Button to trigger AJAX request -->
                         <button id="bookUnitBtn" class="btn" data-unit-id="@Model.UnitId">Book This Unit Now</button>
+
                     }
+                    <button id="seeLocation" style="margin-top: 10px; width: 230.56px;">View Map</button>
+
                 </div>
             </div>
         </div>
     </section>
 
+
+    <div id="map" style="display: none;position: absolute;top: 20%;left: 52%; border:5px solid;">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d61757.81791605726!2d121.0384384!3d14.663680000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1737769289064!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
     <script>
+        seeLoc = document.getElementById('seeLocation');
+        map = document.getElementById('map');
+        seeLoc.addEventListener('click', () => {
+            map.style.display = 'flex';
+        });
+
+        // Hide the map when clicking outside of it
+        document.addEventListener('click', (event) => {
+            // Check if the clicked element is outside the map and button
+            if (!map.contains(event.target) && event.target !== seeLoc) {
+                map.style.display = 'none';
+            }
+        });
+
         document.getElementById("bookUnitBtn").addEventListener("click", function (event) {
             // Prevent the default behavior (if any)
             event.preventDefault();
@@ -357,6 +380,8 @@
             // Send the request
             xhr.send();
         });
+
+
     </script>
 
 

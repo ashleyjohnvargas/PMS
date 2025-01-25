@@ -47,7 +47,11 @@ namespace PMS.Controllers
             {
 
                 // Store user information in session
-                HttpContext.Session.SetString("UserId", user.UserID.ToString());
+                //HttpContext.Session.SetInt32("UserId", user.UserID);
+                //HttpContext.Session.SetString("UserId", user.UserID.ToString());
+                //HttpContext.Session.SetInt32("UserId", user.UserID);
+                HttpContext.Session.SetInt32("UserId", user.UserID);
+
                 HttpContext.Session.SetString("UserEmail", user.Email);
                 HttpContext.Session.SetString("FirstName", user.FirstName);
                 HttpContext.Session.SetString("LastName", user.LastName);
@@ -175,7 +179,9 @@ namespace PMS.Controllers
             _context.SaveChanges();
 
             // Store user information in the session
-            HttpContext.Session.SetString("UserId", newUser.UserID.ToString());
+            //HttpContext.Session.SetString("UserId", newUser.UserID.ToString());
+            HttpContext.Session.SetInt32("UserId", newUser.UserID);
+
             HttpContext.Session.SetString("FirstName", newUser.FirstName);
             HttpContext.Session.SetString("LastName", newUser.LastName);
             HttpContext.Session.SetString("UserEmail", newUser.Email);
